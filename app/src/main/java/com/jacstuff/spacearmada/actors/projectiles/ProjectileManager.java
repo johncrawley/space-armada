@@ -27,15 +27,12 @@ public class ProjectileManager implements DrawableItemGroup {
 
     private int currentLogNum = 0;
     private int logInterval = 400;
-    private Context context;
     private int screenTop, screenBottom;
-    private MediaPlayer mediaPlayer;
     private ImageLoader imageLoader;
 
-    public ProjectileManager(Context context, Rect gameScreenBounds, ImageLoader imageLoader){
+    public ProjectileManager(Rect gameScreenBounds, ImageLoader imageLoader){
         projectiles = new ArrayList<>();
         this.imageLoader = imageLoader;
-        this.context = context;
         this.screenTop = gameScreenBounds.top;
         this.screenBottom = gameScreenBounds.bottom;
     }
@@ -49,6 +46,8 @@ public class ProjectileManager implements DrawableItemGroup {
     private void log(String msg){
         Log.i("ProjectileManager", msg);
     }
+
+
     public void createProjectile(float x, float y, int energy, ArmedShip ownerShip){
         synchronized(projectiles){
             projectiles.add(new Bullet((int)x, (int)y, 3, 7, energy, Direction.UP, imageLoader, ownerShip, R.drawable.bullet1));

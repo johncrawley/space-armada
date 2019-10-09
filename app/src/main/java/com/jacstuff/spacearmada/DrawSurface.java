@@ -26,11 +26,9 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback {
 
     private Context context;
     private AnimationThread animationThread;
-
     protected SurfaceHolder surfaceHolder;
     private ScheduledExecutorService scheduledExecutorService;
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
     private StateManager stateManager;
 
     public DrawSurface(Context context){
@@ -92,46 +90,45 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback {
 
 
 
-        class AnimationThread extends Thread{
+    class AnimationThread extends Thread{
 
 
-            private final SurfaceHolder sh = surfaceHolder;
-            Context ctx;
+        private final SurfaceHolder sh = surfaceHolder;
+        Context ctx;
 
-            AnimationThread(Context context){
-                this.ctx = context;
-            }
+        AnimationThread(Context context){
+            this.ctx = context;
+        }
 
-            public void run() {
+        public void run() {
 
-                    stateManager.update();
+                stateManager.update();
 
-                    Canvas canvas = null;
-                    try {
-                        canvas = sh.lockCanvas(null);
-                        synchronized (sh) {
-                            if (canvas == null){
-                                return;
-                            }
-                            paint.setColor(Color.BLACK);
-                            canvas.drawRect(0,0,1080, 1980, paint);
-                             stateManager.draw(canvas,paint);
+                Canvas canvas = null;
+                try {
+                    canvas = sh.lockCanvas(null);
+                    synchronized (sh) {
+                        if (canvas == null){
+                            return;
                         }
-                    } finally {
-                        if (canvas != null) {
-                            sh.unlockCanvasAndPost(canvas);
-                        }
+                        paint.setColor(Color.BLACK);
+                        canvas.drawRect(0,0,1080, 1980, paint);
+                         stateManager.draw(canvas,paint);
                     }
-                //}
-            }
-
-
-            private void setSurfaceSize(int width, int height) {
-                synchronized (sh) {
-
+                } finally {
+                    if (canvas != null) {
+                        sh.unlockCanvasAndPost(canvas);
+                    }
                 }
-            }
+        }
 
+        private void setSurfaceSize(int width, int height) {
+            synchronized (sh) {
+
+            }
+        }
 
     }
+
+
 }

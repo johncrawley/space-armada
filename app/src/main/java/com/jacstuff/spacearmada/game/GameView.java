@@ -8,12 +8,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.res.ResourcesCompat;
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import com.jacstuff.spacearmada.DrawableItem;
 import com.jacstuff.spacearmada.DrawableItemGroup;
 import com.jacstuff.spacearmada.R;
@@ -44,8 +40,6 @@ public class GameView {
     private Context context;
     private Paint topPanelPaint;
     private Paint bottomPanelPaint;
-    private Shader topPanelShader;
-    private Shader bottomPanelShader;
 
     GameView(Context context, int gameScreenTop, int gameScreenBottom){
         this.gameScreenTop = gameScreenTop;
@@ -59,12 +53,11 @@ public class GameView {
     }
 
     private void initPanelPaint(){
-        //Color color = ResourcesCompat.getColor(context.getResources(), R.color.colorPrimaryDark, null);
         int darkGrey = Color.rgb(66,66,66);
-        int blueGrey = Color.rgb(100,100,123);
+        //int blueGrey = Color.rgb(100,100,123);
         int darkerGrey = Color.rgb(34,34,40);
-        bottomPanelShader = new LinearGradient(0, gameScreenBottom, 0, gameScreenBottom +50, darkerGrey, darkGrey, Shader.TileMode.CLAMP);
-        topPanelShader = new LinearGradient(0, gameScreenTop-40, 0, gameScreenTop, darkGrey, darkerGrey, Shader.TileMode.CLAMP);
+        Shader bottomPanelShader = new LinearGradient(0, gameScreenBottom, 0, gameScreenBottom +50, darkerGrey, darkGrey, Shader.TileMode.CLAMP);
+        Shader topPanelShader = new LinearGradient(0, gameScreenTop-40, 0, gameScreenTop, darkGrey, darkerGrey, Shader.TileMode.CLAMP);
         topPanelPaint= new Paint();
         topPanelPaint.setShader(topPanelShader);
         bottomPanelPaint= new Paint();
@@ -73,14 +66,11 @@ public class GameView {
 
 
     private void initControlDrawables(Context context){
-
-
         dpadDrawable  = context.getDrawable(R.drawable.dpad1);
         fireButtonDrawable  = context.getDrawable(R.drawable.fire_button3);
 
         initDrawableFromCircleCoordinates(dpadDrawable, controls.getDPad());
         initDrawableFromCircleCoordinates(fireButtonDrawable, controls.getFireButton());
-
     }
 
     private void initDrawableFromCircleCoordinates(Drawable drawable, CircularControl circularControl){
@@ -90,27 +80,23 @@ public class GameView {
 
         Rect bounds = new Rect(centreX - radius, centreY - radius, centreX + radius, centreY + radius);
         drawable.setBounds(bounds);
-
     }
 
-    private void log(String msg){
-        Log.i("GameView", msg);
-    }
-    public void register(PlayerShip playerShip){
+    void register(PlayerShip playerShip){
         this.playerShip = playerShip;
     }
 
 
-    public void register(InputControlsManager inputControlsManager){
+    void register(InputControlsManager inputControlsManager){
         this.controls = inputControlsManager;
         initControlDrawables(context);
     }
 
-    public void register(DrawableItemGroup drawableItemGroup){
+    void register(DrawableItemGroup drawableItemGroup){
         this.drawableItemGroups.add(drawableItemGroup);
     }
 
-    public void setBackgroundTiles(BackgroundTiles backgroundTiles){
+    void setBackgroundTiles(BackgroundTiles backgroundTiles){
         this.backgroundTiles = backgroundTiles;
     }
 
@@ -143,20 +129,20 @@ public class GameView {
         int currentColor = paint.getColor();
         drawItems(canvas);
         paint.setColor(currentColor);
-        drawTopPanel(canvas, paint);
+        drawTopPanel(canvas);
         drawScore(canvas, paint);
         drawShipHealth(canvas, paint);
-        drawBottomPanel(canvas, paint);
+        drawBottomPanel(canvas);
         drawControls(canvas);
     }
 
 
-    public void drawGameOver(Canvas canvas, Paint paint){
+    void drawGameOver(Canvas canvas, Paint paint){
         drawBackground(canvas, paint);
         int currentColor = paint.getColor();
         drawItems(canvas);
         paint.setColor(currentColor);
-        drawTopPanel(canvas, paint);
+        drawTopPanel(canvas);
         drawScore(canvas, paint);
         drawGameOverMessage(canvas);
     }
@@ -196,11 +182,11 @@ public class GameView {
 
 
 
-    private void drawTopPanel(Canvas canvas, Paint paint){
+    private void drawTopPanel(Canvas canvas){
         canvas.drawRect(0,0,canvas.getWidth(),gameScreenTop, topPanelPaint);
     }
 
-    private void drawBottomPanel(Canvas canvas, Paint paint){
+    private void drawBottomPanel(Canvas canvas){
         int panelHeight = canvas.getHeight() - gameScreenBottom;
         canvas.drawRect(0, canvas.getHeight() - panelHeight, canvas.getWidth(), canvas.getHeight(), bottomPanelPaint);
     }

@@ -17,9 +17,9 @@ public class Bullet extends CollidableActor implements Projectile{
 
     private Direction direction;
     private ArmedShip ship;
-    int bulletSpeed = 15;
+    private int bulletSpeed = 15;
 
-    public Bullet(int x, int y, int width, int height, int energy, Direction direction, ImageLoader imageLoader,  ArmedShip ship, int drawableId){
+    Bullet(int x, int y, int width, int height, int energy, Direction direction, ImageLoader imageLoader,  ArmedShip ship, int drawableId){
         super(imageLoader, new Rect(x,y,x+width, y+height), drawableId);
 
         this.speed = bulletSpeed;

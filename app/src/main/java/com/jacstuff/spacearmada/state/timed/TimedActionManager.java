@@ -7,12 +7,13 @@ public class TimedActionManager {
 
 
     private List<TimedAction> timedActionList;
-    private List<TimedAction> tempList;
 
     public TimedActionManager(){
         this.timedActionList = new ArrayList<>();
     }
     public void update(int amount){
+
+        List<TimedAction> tempList;
         tempList = new ArrayList<>(timedActionList);
         for(TimedAction timedAction : tempList){
             timedAction.decrementTimer(amount);

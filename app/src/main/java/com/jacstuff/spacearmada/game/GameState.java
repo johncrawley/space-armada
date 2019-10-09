@@ -120,7 +120,7 @@ public class GameState implements State {
 
 
     private void initShipsControlsAndProjectiles(){
-        projectileManager = new ProjectileManager(context, gameScreenBounds, imageLoader);
+        projectileManager = new ProjectileManager(gameScreenBounds, imageLoader);
         playerShip = PlayerShipFactory.createPlayerShip(context, gameScreenBounds, projectileManager, imageLoader);
         initControls();
         enemyShipManager = new EnemyShipManager(projectileManager, imageLoader, canvasHeight);
@@ -195,42 +195,42 @@ public class GameState implements State {
         currentGameStateHandler.handleTouchPoints(touchPoints);
     }
 
-    public void setCurrentGameStateHandler(GameStateHandler gameStateHandler){
+    void setCurrentGameStateHandler(GameStateHandler gameStateHandler){
         this.currentGameStateHandler = gameStateHandler;
     }
 
-    public BackgroundTiles getBackgroundTiles() {
+    BackgroundTiles getBackgroundTiles() {
         return backgroundTiles;
     }
-    public CollisionDetectionManager getCollisionDetectionManager() {
+    CollisionDetectionManager getCollisionDetectionManager() {
         return collisionDetectionManager;
 
     }
-    public EnemyShipManager getEnemyShipManager() {
+    EnemyShipManager getEnemyShipManager() {
         return enemyShipManager;
     }
     public ImageLoader getImageLoader() {
         return imageLoader;
     }
-    public GameView getGameView() {
+    GameView getGameView() {
         return gameView;
     }
-    public InputControlsManager getInputControlsManager() {
+    InputControlsManager getInputControlsManager() {
         return inputControlsManager;
     }
-    public ProjectileManager getProjectileManager() {
+    ProjectileManager getProjectileManager() {
         return projectileManager;
     }
-    public StateManager getStateManager() {
+    StateManager getStateManager() {
         return stateManager;
     }
     public GameStateHandler getCurrentGameStateHandler() {
         return currentGameStateHandler;
     }
-    public PlayerShip getPlayerShip() {
+    PlayerShip getPlayerShip() {
         return playerShip;
     }
-    public MusicPlayer getMusicPlayer(){
+    MusicPlayer getMusicPlayer(){
         return this.musicPlayer;
     }
 }
@@ -276,7 +276,7 @@ abstract class AbstractGameStateHandlerImpl implements GameStateHandler{
 
 class GamePlay extends AbstractGameStateHandlerImpl{
 
-    public GamePlay(Context context, GameState gameState){
+    GamePlay(Context context, GameState gameState){
         super(context, gameState);
     }
 
@@ -292,7 +292,7 @@ class GamePlay extends AbstractGameStateHandlerImpl{
         gameView.draw(canvas,paint);
     }
 
-    int gameOverTimer = 150;
+    private int gameOverTimer = 150;
 
     @Override
     public void update() {
@@ -354,10 +354,9 @@ class GameEnding extends AbstractGameStateHandlerImpl{
         nextStateCountdown--;
         enemyShipManager.update();
         projectileManager.update();
-        if(nextStateCountdown <= 0){
-
+        //if(nextStateCountdown <= 0){
            // gameState.setCurrentGameStateHandler(new GameOverScreen(context, gameState));
-        }
+        //}
     }
 
     @Override
