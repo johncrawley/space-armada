@@ -1,6 +1,7 @@
 package com.jacstuff.spacearmada.game;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -8,15 +9,19 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 import com.jacstuff.spacearmada.DrawableItem;
 import com.jacstuff.spacearmada.DrawableItemGroup;
 import com.jacstuff.spacearmada.R;
+import com.jacstuff.spacearmada.actors.DrawInfo;
 import com.jacstuff.spacearmada.actors.background.BackgroundTiles;
 import com.jacstuff.spacearmada.actors.background.Tile;
 import com.jacstuff.spacearmada.actors.ships.player.PlayerShip;
 import com.jacstuff.spacearmada.controls.CircularControl;
+import com.jacstuff.spacearmada.image.BitmapManager;
 import com.jacstuff.spacearmada.managers.InputControlsManager;
 
 /**
@@ -24,15 +29,16 @@ import com.jacstuff.spacearmada.managers.InputControlsManager;
  * Responsible for drawing everything on the canvas
  */
 
-public class GameView {
+class GameView {
 
 
     private PlayerShip playerShip;
     private InputControlsManager controls;
     private List<DrawableItemGroup> drawableItemGroups;
+    private List<DrawableItemGroup> bitmapItemGroups;
 
     private int gameScreenTop;
-    private int gameScreenBottom;
+    private int gameScreenBottom, gameScreenWidth;
     private BackgroundTiles backgroundTiles;
     private String scoreLabel, gameOverText;
     private Drawable dpadDrawable, fireButtonDrawable;
@@ -40,16 +46,34 @@ public class GameView {
     private Context context;
     private Paint topPanelPaint;
     private Paint bottomPanelPaint;
+    private BitmapManager bitmapManager;
 
-    GameView(Context context, int gameScreenTop, int gameScreenBottom){
+    GameView(Context context, BitmapManager bitmapManager, int gameScreenTop, int gameScreenBottom, int gameScreenWidth){
+
+        this.context = context;
+        this.bitmapManager = bitmapManager;
+        initBounds(gameScreenTop, gameScreenBottom, gameScreenWidth);
+        drawableItemGroups = new ArrayList<>();
+        bitmapItemGroups = new ArrayList<>();
+        initLabels();
+        initGameOverTextPaint();
+        initPanelPaint();
+        Log.i("GameView", "exiting constructor!");
+    }
+
+    private void initBounds(int gameScreenTop, int gameScreenBottom, int gameScreenWidth){
+
         this.gameScreenTop = gameScreenTop;
         this.gameScreenBottom = gameScreenBottom;
-        drawableItemGroups = new ArrayList<>();
+        this.gameScreenWidth = gameScreenWidth;
+
+    }
+
+    private void initLabels(){
+
         scoreLabel = context.getResources().getString(R.string.score_text);
         gameOverText = context.getResources().getString(R.string.game_over_text);
-        initGameOverTextPaint();
-        this.context = context;
-        initPanelPaint();
+
     }
 
     private void initPanelPaint(){
@@ -96,11 +120,16 @@ public class GameView {
         this.drawableItemGroups.add(drawableItemGroup);
     }
 
+
+    void registerBitmapGroup(DrawableItemGroup bitmapGroup){
+        this.bitmapItemGroups.add(bitmapGroup);
+    }
+
     void setBackgroundTiles(BackgroundTiles backgroundTiles){
         this.backgroundTiles = backgroundTiles;
     }
 
-    private void drawItems(Canvas canvas){
+    private void drawItems(Canvas canvas, Paint paint){
         Drawable drawable;
         if(canvas == null){
             return;
@@ -113,21 +142,78 @@ public class GameView {
                 if(item == null) {
                     continue;
                 }
+
                 drawable = item.getDrawable();
                 if(drawable == null){
                      continue;
                 }
                 drawable.draw(canvas);
+
             }
+
         }
+    }
+    private void drawBitmaps(Canvas canvas, Paint paint){
+
+        DrawInfo drawInfo;
+        if(canvas == null){
+            return;
+        }
+        for(DrawableItemGroup group : bitmapItemGroups){
+
+            if(group == null || group.getDrawableItems() == null){
+                continue;
+            }
+            for(DrawableItem item : group.getDrawableItems()){
+                if(item == null){
+                    continue;
+                }
+                drawInfo = item.getDrawInfo();
+                if(drawInfo == null){
+                    continue;
+                }
+                drawBitmap(canvas, paint, drawInfo);
+            }
+
+
+        }
+
+
     }
 
 
-    public void draw(Canvas canvas, Paint paint){
+    private void drawBitmap(Canvas canvas, Paint paint, DrawInfo drawInfo){
+
+       Bitmap bitmap = bitmapManager.getBitmap(drawInfo);
+       if(bitmap == null){
+           return;
+       }
+       canvas.drawBitmap(bitmap , drawInfo.getX(), drawInfo.getY(), paint);
+
+
+    }
+
+
+
+    private int logLimit = 30;
+    private int currentLog = 0;
+
+    void logDraw(){
+        currentLog+=1;
+        if(currentLog > logLimit){
+            //Log.i("GameView draw", "calling draw()");
+            currentLog = 0;
+        }
+    }
+
+    void draw(Canvas canvas, Paint paint){
+        //logDraw();
+        drawPlainBackground(canvas, paint);
         drawBackground(canvas, paint);
         playerShip.getDrawable().draw(canvas);
         int currentColor = paint.getColor();
-        drawItems(canvas);
+        drawItems(canvas, paint);
+        drawBitmaps(canvas, paint);
         paint.setColor(currentColor);
         drawTopPanel(canvas);
         drawScore(canvas, paint);
@@ -137,10 +223,24 @@ public class GameView {
     }
 
 
-    void drawGameOver(Canvas canvas, Paint paint){
-        drawBackground(canvas, paint);
+    void drawPlainBackground(Canvas canvas, Paint paint){
+
         int currentColor = paint.getColor();
-        drawItems(canvas);
+        paint.setColor(Color.BLACK);
+        Rect r = new Rect(0,0,gameScreenBottom,gameScreenWidth);
+        canvas.drawRect(r, paint);
+        paint.setColor(currentColor);
+
+
+    }
+
+
+
+
+    void drawGameOver(Canvas canvas, Paint paint){
+        //drawBackground(canvas, paint);
+        int currentColor = paint.getColor();
+        drawItems(canvas, paint);
         paint.setColor(currentColor);
         drawTopPanel(canvas);
         drawScore(canvas, paint);

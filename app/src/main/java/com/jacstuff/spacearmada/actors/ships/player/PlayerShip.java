@@ -8,6 +8,7 @@ import android.util.Log;
 import com.jacstuff.spacearmada.Direction;
 import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.actors.ActorState;
+import com.jacstuff.spacearmada.actors.AnimationInfoService;
 import com.jacstuff.spacearmada.actors.CollidableActor;
 import com.jacstuff.spacearmada.actors.projectiles.ProjectileManager;
 import com.jacstuff.spacearmada.actors.ships.ControllableShip;
@@ -49,7 +50,9 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
         }
 
         PlayerShip(Context context, float initialX, float initialY, int shield, int speed, ProjectileManager projectileManager, ImageLoader imageLoader, int defaultResourceId){
-            super(imageLoader, new Rect((int)initialX, (int)initialY, (int)initialX + 55, (int)initialY + 96), defaultResourceId);
+            super(new AnimationInfoService("PLAYER1"),
+                    imageLoader,
+                    new Rect((int)initialX, (int)initialY, (int)initialX + 55, (int)initialY + 96), defaultResourceId);
             this.gameScreenBounds = new Rect(0,0,400,640);
             direction = Direction.NONE;
             this.energy = shield;
@@ -60,7 +63,7 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
         }
 
         public boolean isDead(){
-            return this.actorState == ActorState.DESTROYED;
+            return getActorState() == ActorState.DESTROYED;
         }
 
         public void setGameScreenBounds(Rect bounds){
@@ -118,7 +121,7 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
                     fireBullet();
                 }
             }
-            if(this.getEnergy() < 1 && actorState!= ActorState.DESTROYED){
+            if(this.getEnergy() < 1 && getActorState() != ActorState.DESTROYED){
                 setActorState(ActorState.DESTROYING);
                 canFireWeapons = false;
                 canMove = false;

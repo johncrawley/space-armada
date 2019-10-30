@@ -30,13 +30,16 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback {
     private ScheduledExecutorService scheduledExecutorService;
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private StateManager stateManager;
+    private int width, height;
 
     public DrawSurface(Context context){
         super(context);
     }
 
-    public DrawSurface(Context context, StateManager stateManager) {
+    public DrawSurface(Context context, StateManager stateManager, int width, int height) {
         super(context);
+        this.width = width;
+        this.height = height;
         this.stateManager = stateManager;
         this.context = context;
         surfaceHolder = getHolder();
@@ -112,8 +115,8 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback {
                             return;
                         }
                         paint.setColor(Color.BLACK);
-                        canvas.drawRect(0,0,1080, 1980, paint);
-                         stateManager.draw(canvas,paint);
+                        canvas.drawRect(0,0,width, height, paint);
+                         stateManager.draw(canvas, paint);
                     }
                 } finally {
                     if (canvas != null) {

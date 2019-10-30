@@ -17,6 +17,10 @@ import com.jacstuff.spacearmada.TouchPoint;
 import com.jacstuff.spacearmada.actors.background.BackgroundTiles;
 import com.jacstuff.spacearmada.actors.ships.player.PlayerShip;
 import com.jacstuff.spacearmada.actors.ships.player.PlayerShipFactory;
+import com.jacstuff.spacearmada.image.BitmapLoader;
+import com.jacstuff.spacearmada.image.BitmapManager;
+import com.jacstuff.spacearmada.image.SimpleBitmapLoader;
+import com.jacstuff.spacearmada.image.SimpleBitmapManagerImpl;
 import com.jacstuff.spacearmada.managers.CollisionDetectionManager;
 import com.jacstuff.spacearmada.actors.ships.enemies.EnemyShipManager;
 import com.jacstuff.spacearmada.managers.InputControlsManager;
@@ -56,13 +60,8 @@ public class GameState implements State {
 
     public GameState(StateManager stateManager, Context context, int canvasWidth, int canvasHeight){
         this.stateManager = stateManager;
-        musicPlayer = new MusicPlayer(context);
-        int gameScreenTop = 120;
-        int gameScreenBottom = canvasHeight - 480;
-        gameScreenBounds = new Rect(0,gameScreenTop, canvasWidth, gameScreenBottom);
+        setupScreenBounds(0, canvasWidth, canvasHeight);
         this.context = context;
-        this.canvasHeight = canvasHeight;
-        this.canvasWidth = canvasWidth;
         imageLoader = new ImageLoader(context, canvasWidth, canvasHeight);
         timedActionManager = new TimedActionManager();
         initShipsControlsAndProjectiles();
@@ -70,18 +69,42 @@ public class GameState implements State {
         initAnimtionThread();
         initBackgroundTiles();
         initView();
-        initMusicPlayer();
+        initMusicPlayer(context);
        this.currentGameStateHandler = new GamePlay(context, this);
+       enemyShipManager.createShip(400,100);
     }
 
+    private void setupScreenBounds(int top, int width, int bottom){
+        int gameScreenTop = 120;
+        int gameScreenBottom = bottom - 480;
+        this.canvasHeight = bottom;
+        this.canvasWidth = width;
+        gameScreenBounds = new Rect(0,gameScreenTop, canvasWidth, gameScreenBottom);
+
+    }
 
     public void update(){
         currentGameStateHandler.update();
     }
 
 
+
+    private int currentLog = 0;
+
+    private void logDraw(){
+        int logLimit = 30;
+        currentLog+=1;
+        if(currentLog > logLimit){
+            //Log.i("GameState draw", "calling draw()");
+            currentLog = 0;
+        }
+    }
+
+
     public void draw(Canvas canvas, Paint paint){
-       currentGameStateHandler.draw(canvas, paint);
+
+        logDraw();
+        currentGameStateHandler.draw(canvas, paint);
     }
 
 
@@ -138,7 +161,7 @@ public class GameState implements State {
     private void initBackgroundTiles(){
         Log.i("GameState", "Entered init background tiles");
         backgroundTiles = new BackgroundTiles(context, 4,1, canvasWidth, gameScreenBounds.top, gameScreenBounds.bottom);
-
+/*
         backgroundTiles.addTiles(
                 R.drawable.level1_bg_1,
                 R.drawable.level1_bg_2,
@@ -152,9 +175,15 @@ public class GameState implements State {
                 R.drawable.level1_bg_10,
                 R.drawable.level1_bg_11,
                 R.drawable.level1_bg_12);
+  */
+
+        backgroundTiles.addTiles(
+                R.drawable.level1_bg_1);
+
     }
 
-    private void initMusicPlayer(){
+    private void initMusicPlayer(Context context){
+        musicPlayer = new MusicPlayer(context);
         musicPlayer.playTrack(R.raw.bensound_straight);
     }
 
@@ -164,10 +193,14 @@ public class GameState implements State {
 
     private void initView(){
         log("Entered initView()");
-        gameView = new GameView(context, gameScreenBounds.top, gameScreenBounds.bottom);
+        BitmapManager bitmapManager = new SimpleBitmapManagerImpl();
+        BitmapLoader bitmapLoader = new SimpleBitmapLoader(context, bitmapManager);
+        bitmapLoader.load();
+        gameView = new GameView(context, bitmapManager, gameScreenBounds.top, gameScreenBounds.bottom, gameScreenBounds.right);
+
         gameView.register(playerShip);
         gameView.register(inputControlsManager);
-        gameView.register(enemyShipManager);
+        gameView.registerBitmapGroup(enemyShipManager);
         gameView.register(projectileManager);
         gameView.setBackgroundTiles(backgroundTiles);
         log("background tiles assigned to view");
@@ -306,7 +339,7 @@ class GamePlay extends AbstractGameStateHandlerImpl{
             gameOverTimer--;
         }
         else{
-            backgroundTiles.update();
+           // backgroundTiles.update();
         }
         if(gameOverTimer <= 0){
             gameState.setCurrentGameStateHandler( new GameEnding(context, gameState));
@@ -330,7 +363,7 @@ class GameEnding extends AbstractGameStateHandlerImpl{
         init();
     }
 
-    public void init(){
+    private void init(){
 
         musicPlayer.release();
         musicPlayer.playTrack(R.raw.game_over_1, false);

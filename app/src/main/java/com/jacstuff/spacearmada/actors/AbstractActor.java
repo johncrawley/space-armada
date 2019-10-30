@@ -15,22 +15,36 @@ import com.jacstuff.spacearmada.utils.ImageLoader;
 
 public class AbstractActor implements DrawableItem {
 
-    protected ActorState actorState;
+    private ActorState actorState;
     protected AnimationManager animationManager;
     private Rect boundingBox;
     private Drawable currentDrawable;
+    private DrawInfo drawInfo;
     protected int speed = 2;
 
     public AbstractActor(){
 
     }
-    public AbstractActor(ImageLoader imageLoader, Rect rect, int defaultResourceId){
+    public AbstractActor(AnimationInfoService animationInfoService, ImageLoader imageLoader, Rect rect, int defaultResourceId){
         actorState = ActorState.DEFAULT;
         animationManager = new AnimationManager(imageLoader);
         addAnimation(actorState, defaultResourceId);
         this.boundingBox = new Rect(rect);
+        this.drawInfo = new DrawInfo(animationInfoService, this.boundingBox.left, this.boundingBox.top);
+    }
+
+
+/*
+    public AbstractActor(ImageLoader imageLoader,  Rect rect, int defaultResourceId){
+        actorState = ActorState.DEFAULT;
+        animationManager = new AnimationManager(imageLoader);
+        addAnimation(actorState, defaultResourceId);
+        this.boundingBox = new Rect(rect);
+        AnimationInfoService animationInfoService = new AnimationInfoService("ENEMY_SHIPS");
+        this.drawInfo = new DrawInfo(animationInfoService, this.boundingBox.left, this.boundingBox.top);
 
     }
+*/
 
     private void log(String msg){
         Log.i("AbstractActor", msg);
@@ -38,10 +52,21 @@ public class AbstractActor implements DrawableItem {
 
     public void offsetBounds(int dx, int dy){
         this.boundingBox.offset(dx,dy);
+        this.drawInfo.setXY(boundingBox.left, boundingBox.top);
+
+    }
+
+
+    public ActorState getState(){
+        return this.actorState;
     }
 
     protected boolean doesBoundingBoxIntersectWith(Rect otherBoundingBox){
         return new Rect(boundingBox).intersect(otherBoundingBox);
+    }
+
+    public DrawInfo getDrawInfo(){
+        return this.drawInfo;
     }
 
     public ActorState getActorState(){
@@ -49,6 +74,8 @@ public class AbstractActor implements DrawableItem {
     }
 
     public void setActorState(ActorState actorState){
+
+        drawInfo.setState(actorState);
         this.actorState = actorState;
     }
 
@@ -78,9 +105,9 @@ public class AbstractActor implements DrawableItem {
 
     public void updateAnimation(){
         animationManager.updateFrame();
+        drawInfo.incFrame();
         try {
             if (actorState == ActorState.DESTROYING) {
-
                 if(animationManager.isLastFrame(actorState)){
                     this.actorState = ActorState.DESTROYED;
                 }

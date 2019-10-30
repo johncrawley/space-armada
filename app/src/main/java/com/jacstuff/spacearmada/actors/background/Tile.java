@@ -9,14 +9,14 @@ public class Tile {
     private int initialY;
     private int resetY;
 
-    public Tile(Bitmap bitmap, int initialY, int resetY){
+    Tile(Bitmap bitmap, int initialY, int resetY){
         this.initialY = initialY;
         this.y = initialY;
         this.resetY = resetY;
         this.bitmap = bitmap;
     }
 
-    public void offsetY(int amount){
+    void offsetY(int amount){
         y += amount;
     }
 

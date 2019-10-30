@@ -11,6 +11,8 @@ public enum ActorState {
     MOVIG_UP_LEFT,
     MOVING_DOWN_RIGHT,
     MOVING_DOWN_LEFT,
+    FIRING,
+    TAKING_HIT,
     DESTROYING,
     DESTROYED
 

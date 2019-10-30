@@ -77,13 +77,14 @@ public class EnemyShipManager implements DrawableItemGroup {
         enemyShips.add(enemyShipFactory.createShip(initialX,initialY));
 
         //logShipXs();
-        Log.i("EnemyShipMngr", "enemy ship created! - current enemyShips: " + this.enemyShips.size());
+        //Log.i("EnemyShipMngr", "enemy ship created! - current enemyShips: " + this.enemyShips.size());
     }
+
     public EnemyShip createTestShip(){
         EnemyShip ship = enemyShipFactory.createShip(0,0);
         enemyShips.add(ship);
         //logShipXs();
-        Log.i("EnemyShipMngr", "enemy ship created! - current enemyShips: " + this.enemyShips.size());
+        //Log.i("EnemyShipMngr", "enemy ship created! - current enemyShips: " + this.enemyShips.size());
         return ship;
     }
 

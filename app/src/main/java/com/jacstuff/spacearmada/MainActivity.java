@@ -23,7 +23,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         deriveScreenDimensions();
         stateManager = new StateManager(this, width, height);
-        drawSurface = new DrawSurface(this, stateManager);
+        drawSurface = new DrawSurface(this, stateManager, width, height);
 
         setContentView(drawSurface);
     }
