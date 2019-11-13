@@ -194,14 +194,17 @@ public class GameState implements State {
     private void initView(){
         log("Entered initView()");
         BitmapManager bitmapManager = new SimpleBitmapManagerImpl();
-        BitmapLoader bitmapLoader = new SimpleBitmapLoader(context, bitmapManager);
+        BitmapLoader bitmapLoader = new SimpleBitmapLoader(context, bitmapManager, gameScreenBounds.right, gameScreenBounds.bottom);
         bitmapLoader.load();
         gameView = new GameView(context, bitmapManager, gameScreenBounds.top, gameScreenBounds.bottom, gameScreenBounds.right);
 
+
+        gameView.register(playerShip.getEnergy());
+        gameView.register(playerShip.getScore());
         gameView.register(playerShip);
         gameView.register(inputControlsManager);
         gameView.registerBitmapGroup(enemyShipManager);
-        gameView.register(projectileManager);
+        gameView.registerBitmapGroup(projectileManager);
         gameView.setBackgroundTiles(backgroundTiles);
         log("background tiles assigned to view");
     }

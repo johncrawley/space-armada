@@ -19,7 +19,8 @@ import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.actors.DrawInfo;
 import com.jacstuff.spacearmada.actors.background.BackgroundTiles;
 import com.jacstuff.spacearmada.actors.background.Tile;
-import com.jacstuff.spacearmada.actors.ships.player.PlayerShip;
+import com.jacstuff.spacearmada.actors.ships.player.Energy;
+import com.jacstuff.spacearmada.actors.ships.player.Score;
 import com.jacstuff.spacearmada.controls.CircularControl;
 import com.jacstuff.spacearmada.image.BitmapManager;
 import com.jacstuff.spacearmada.managers.InputControlsManager;
@@ -32,10 +33,10 @@ import com.jacstuff.spacearmada.managers.InputControlsManager;
 class GameView {
 
 
-    private PlayerShip playerShip;
     private InputControlsManager controls;
-    private List<DrawableItemGroup> drawableItemGroups;
+   // private List<DrawableItemGroup> drawableItemGroups;
     private List<DrawableItemGroup> bitmapItemGroups;
+    private List<DrawableItem> drawableItems;
 
     private int gameScreenTop;
     private int gameScreenBottom, gameScreenWidth;
@@ -47,13 +48,17 @@ class GameView {
     private Paint topPanelPaint;
     private Paint bottomPanelPaint;
     private BitmapManager bitmapManager;
+    private Score score;
+    private Energy energy;
 
     GameView(Context context, BitmapManager bitmapManager, int gameScreenTop, int gameScreenBottom, int gameScreenWidth){
 
         this.context = context;
         this.bitmapManager = bitmapManager;
         initBounds(gameScreenTop, gameScreenBottom, gameScreenWidth);
-        drawableItemGroups = new ArrayList<>();
+        //drawableItemGroups = new ArrayList<>(); // we need a list of item groups because a DrawableItemGroup
+                                                // (such as EnemyManager) will take care of the adding and deleting of DrawableItem actors from itself
+        drawableItems = new ArrayList<>();
         bitmapItemGroups = new ArrayList<>();
         initLabels();
         initGameOverTextPaint();
@@ -106,9 +111,6 @@ class GameView {
         drawable.setBounds(bounds);
     }
 
-    void register(PlayerShip playerShip){
-        this.playerShip = playerShip;
-    }
 
 
     void register(InputControlsManager inputControlsManager){
@@ -116,9 +118,15 @@ class GameView {
         initControlDrawables(context);
     }
 
-    void register(DrawableItemGroup drawableItemGroup){
-        this.drawableItemGroups.add(drawableItemGroup);
+
+
+
+    void register(DrawableItem drawableItem){
+        drawableItems.add(drawableItem);
     }
+
+    void register(Score score){ this.score = score;}
+    void register(Energy energy){ this.energy = energy;}
 
 
     void registerBitmapGroup(DrawableItemGroup bitmapGroup){
@@ -129,71 +137,49 @@ class GameView {
         this.backgroundTiles = backgroundTiles;
     }
 
-    private void drawItems(Canvas canvas, Paint paint){
-        Drawable drawable;
-        if(canvas == null){
-            return;
-        }
-        for(DrawableItemGroup dig: drawableItemGroups){
-            if(dig == null || dig.getDrawableItems() == null){
-                continue;
-            }
-            for(DrawableItem item : dig.getDrawableItems()){
-                if(item == null) {
-                    continue;
-                }
 
-                drawable = item.getDrawable();
-                if(drawable == null){
-                     continue;
-                }
-                drawable.draw(canvas);
-
-            }
-
-        }
-    }
     private void drawBitmaps(Canvas canvas, Paint paint){
-
-        DrawInfo drawInfo;
         if(canvas == null){
             return;
         }
-        for(DrawableItemGroup group : bitmapItemGroups){
+        drawItemsInGroupsList(canvas, paint);
+        drawItemsInList(canvas, paint, drawableItems);
+    }
 
+    private void drawItemsInGroupsList(Canvas canvas, Paint paint){
+        for(DrawableItemGroup group : bitmapItemGroups){
             if(group == null || group.getDrawableItems() == null){
                 continue;
             }
-            for(DrawableItem item : group.getDrawableItems()){
-                if(item == null){
-                    continue;
-                }
-                drawInfo = item.getDrawInfo();
-                if(drawInfo == null){
-                    continue;
-                }
-                drawBitmap(canvas, paint, drawInfo);
-            }
-
-
+            drawItemsInList(canvas, paint, group.getDrawableItems());
         }
-
-
     }
+
+
+    private void drawItemsInList(Canvas canvas, Paint paint, List<? extends DrawableItem> drawableItems){
+        DrawInfo drawInfo;
+        for(DrawableItem item : drawableItems) {
+            if (item == null) {
+                continue;
+            }
+            drawInfo = item.getDrawInfo();
+            if (drawInfo == null) {
+                continue;
+            }
+            drawBitmap(canvas, paint, drawInfo);
+        }
+    }
+
 
 
     private void drawBitmap(Canvas canvas, Paint paint, DrawInfo drawInfo){
 
        Bitmap bitmap = bitmapManager.getBitmap(drawInfo);
-       if(bitmap == null){
+       if(bitmap == null || canvas == null || paint == null){
            return;
        }
        canvas.drawBitmap(bitmap , drawInfo.getX(), drawInfo.getY(), paint);
-
-
     }
-
-
 
     private int logLimit = 30;
     private int currentLog = 0;
@@ -210,24 +196,28 @@ class GameView {
         //logDraw();
         drawPlainBackground(canvas, paint);
         drawBackground(canvas, paint);
-        playerShip.getDrawable().draw(canvas);
-        int currentColor = paint.getColor();
-        drawItems(canvas, paint);
         drawBitmaps(canvas, paint);
-        paint.setColor(currentColor);
         drawTopPanel(canvas);
         drawScore(canvas, paint);
         drawShipHealth(canvas, paint);
         drawBottomPanel(canvas);
         drawControls(canvas);
+       // drawInfo(canvas, paint);
     }
 
+    private void drawInfo(Canvas canvas, Paint paint){
 
-    void drawPlainBackground(Canvas canvas, Paint paint){
+        int color = paint.getColor();
+        paint.setColor(Color.WHITE);
+        canvas.drawText(" drawableItems count: " + drawableItems.size(), 100, 100, paint);
+        paint.setColor(color);
+    }
+
+    private void drawPlainBackground(Canvas canvas, Paint paint){
 
         int currentColor = paint.getColor();
         paint.setColor(Color.BLACK);
-        Rect r = new Rect(0,0,gameScreenBottom,gameScreenWidth);
+        Rect r = new Rect(0,0, gameScreenWidth, gameScreenBottom);
         canvas.drawRect(r, paint);
         paint.setColor(currentColor);
 
@@ -240,7 +230,6 @@ class GameView {
     void drawGameOver(Canvas canvas, Paint paint){
         //drawBackground(canvas, paint);
         int currentColor = paint.getColor();
-        drawItems(canvas, paint);
         paint.setColor(currentColor);
         drawTopPanel(canvas);
         drawScore(canvas, paint);
@@ -295,22 +284,8 @@ class GameView {
     private void drawScore(Canvas canvas, Paint paint){
         paint.setColor(Color.LTGRAY);
         paint.setTextSize(40);
-        canvas.drawText(getScoreString(), canvas.getWidth() - 350, gameScreenTop/2 + 12, paint);
+        canvas.drawText(scoreLabel + score.get(), canvas.getWidth() - 350, gameScreenTop/2 + 12, paint);
 
-    }
-
-    private String getScoreString(){
-
-        int score = playerShip.getScore();
-        int numberOfDisplayedDigits = 7;
-        StringBuilder strbldr = new StringBuilder();
-
-        for(int i = 1; i <= numberOfDisplayedDigits; i++){
-            String digit = "" + score % 10;
-            strbldr.append(digit);
-            score /= 10;
-        }
-        return scoreLabel + strbldr.reverse().toString();
     }
 
     private void drawShipHealth(Canvas canvas, Paint paint){
@@ -319,23 +294,30 @@ class GameView {
         int gapBetweenHealthChunks = 4;
         int healthBarX = 120;
         int healthBarY = 80;
-        for(int i =0; i < playerShip.getEnergy()/10; i++){
+
+        for(int i =0; i < energy.get()/10; i++){
             int healthChunkX = healthBarX + (healthChunkWidth + gapBetweenHealthChunks) * i;
             setColorForEnergyLevel(paint);
             canvas.drawRect(healthChunkX, healthBarY, healthChunkX + healthChunkWidth, healthChunkHeight, paint);
         }
+
+
     }
+
+
 
     private void setColorForEnergyLevel(Paint paint){
         final int DARK_GREEN = Color.rgb(10,151,16);
         paint.setColor(DARK_GREEN);
-        if(playerShip.isEnergyLevelLow()){
+        if(energy.isEnergyLevelLow()){
             paint.setColor(Color.YELLOW);
         }
-        if(playerShip.isEnergyLevelDangerouslyLow()){
+        if(energy.isEnergyLevelDangerouslyLow()){
             paint.setColor(Color.RED);
         }
 
     }
+
+
 
 }

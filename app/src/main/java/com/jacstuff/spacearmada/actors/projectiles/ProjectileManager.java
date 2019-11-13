@@ -1,8 +1,6 @@
 package com.jacstuff.spacearmada.actors.projectiles;
 
-import android.content.Context;
 import android.graphics.Rect;
-import android.media.MediaPlayer;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -12,6 +10,8 @@ import com.jacstuff.spacearmada.Direction;
 import com.jacstuff.spacearmada.DrawableItem;
 import com.jacstuff.spacearmada.DrawableItemGroup;
 import com.jacstuff.spacearmada.R;
+import com.jacstuff.spacearmada.actors.ActorState;
+import com.jacstuff.spacearmada.actors.AnimationInfoService;
 import com.jacstuff.spacearmada.actors.ships.ArmedShip;
 import com.jacstuff.spacearmada.utils.ImageLoader;
 
@@ -26,31 +26,29 @@ public class ProjectileManager implements DrawableItemGroup {
     final private List<Projectile> projectiles;
 
     private int currentLogNum = 0;
-    private int logInterval = 400;
     private int screenTop, screenBottom;
     private ImageLoader imageLoader;
+    private AnimationInfoService animationInfoService;
 
     public ProjectileManager(Rect gameScreenBounds, ImageLoader imageLoader){
         projectiles = new ArrayList<>();
         this.imageLoader = imageLoader;
         this.screenTop = gameScreenBounds.top;
         this.screenBottom = gameScreenBounds.bottom;
+         animationInfoService = new AnimationInfoService("BULLET");
+         animationInfoService.registerState(ActorState.DEFAULT, 1, false);
     }
 
 
     public List<DrawableItem> getDrawableItems(){
-
         return new ArrayList<DrawableItem>(this.projectiles);
     }
 
-    private void log(String msg){
-        Log.i("ProjectileManager", msg);
-    }
-
-
     public void createProjectile(float x, float y, int energy, ArmedShip ownerShip){
         synchronized(projectiles){
-            projectiles.add(new Bullet((int)x, (int)y, 3, 7, energy, Direction.UP, imageLoader, ownerShip, R.drawable.bullet1));
+            Bullet bullet = new Bullet((int)x, (int)y, 3, 7, 15, energy, Direction.UP, animationInfoService, ownerShip, R.drawable.bullet1, imageLoader);
+            Log.i("ProjectMngr", "createProjectile() new bullet drawInfo: " + bullet.getDrawInfo().toString());
+            projectiles.add(bullet);
         }
     }
 
@@ -62,33 +60,37 @@ public class ProjectileManager implements DrawableItemGroup {
         synchronized (projectiles){
             updateProjectiles(projectiles);
         }
-
-
     }
 
+
     private void updateProjectiles( List<Projectile> projectiles){
-            List<Projectile> projectileList = new ArrayList<>(projectiles);
-            //logI("projectileList size = " + projectiles.size());
-            for (Projectile projectile : projectileList) {
-                projectile.update();
-                //logI("updated projectile");
-
-
-                if(isOusideBounds(projectile) || projectile.getEnergy() < 1){
-                     projectiles.remove(projectile);
-                }
+            for (Projectile projectile : new ArrayList<>(projectiles)) {
+               projectile.update();
+               removeProjectileIfInvalid(projectile);
             }
     }
 
-    private boolean isOusideBounds(Projectile projectile){
+
+    private void removeProjectileIfInvalid(Projectile projectile){
+        if(isOutsideBounds(projectile) || projectile.getEnergy().isDepleted()){
+            projectiles.remove(projectile);
+        }
+    }
+
+
+    private boolean isOutsideBounds(Projectile projectile){
         Rect bounds = projectile.getBounds();
         return (bounds != null) && (bounds.bottom < screenTop || bounds.top > screenBottom);
     }
 
+
     private void logI(String msg){
+
+        int logInterval = 400;
         currentLogNum++;
-        if(currentLogNum % logInterval == 0){
+        if(currentLogNum == logInterval){
             Log.i("ProjectileManager", msg);
+            currentLogNum = 0;
         }
     }
 }

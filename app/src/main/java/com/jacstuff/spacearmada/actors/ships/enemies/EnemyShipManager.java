@@ -2,7 +2,6 @@ package com.jacstuff.spacearmada.actors.ships.enemies;
 
 
 import android.graphics.Rect;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,10 +49,10 @@ public class EnemyShipManager implements DrawableItemGroup {
             if(bounds.top > gameScreenBottom){
                 enemyShips.remove(ship);
             }
-            if(ship.getEnergy() < 1 && ship.isAlive()) {
+            if(ship.getEnergy().isDepleted() && ship.isAlive()) {
                 ship.setActorState(ActorState.DESTROYING);
             }
-            else if(ship.getActorState() == ActorState.DESTROYED){
+            else if(ship.getState() == ActorState.DESTROYED){
                 enemyShips.remove(ship);
             }
         }

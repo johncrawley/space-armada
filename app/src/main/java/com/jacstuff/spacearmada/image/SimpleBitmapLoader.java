@@ -15,10 +15,13 @@ public class SimpleBitmapLoader implements BitmapLoader {
 
     private Context context;
     private BitmapManager bitmapManager;
+    private int screenWidth, screenHeight;
 
-    public SimpleBitmapLoader(Context context, BitmapManager bitmapManager){
+    public SimpleBitmapLoader(Context context, BitmapManager bitmapManager, int screenWidth, int screenHeight){
         this.context = context;
         this.bitmapManager = bitmapManager;
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
     }
 
 
@@ -26,6 +29,8 @@ public class SimpleBitmapLoader implements BitmapLoader {
     public void load(){
         //TODO: loads lots of other actor bitmaps as well
         Log.i("SimpleBitmapLoader", "Entered load()");
+        loadPlayerShipBitmaps();
+        loadBulletBitmaps();
         loadEnemyShipBitmaps();
 
     }
@@ -34,36 +39,60 @@ public class SimpleBitmapLoader implements BitmapLoader {
     private void loadEnemyShipBitmaps(){
 
         String family = "ENEMY_SHIPS";
+        final int ENEMY_SHIP_SCALE = 2;
 
-        registerGroup(family, ActorState.DEFAULT, R.drawable.ship2);
-        registerGroup(family, ActorState.DESTROYING,
+
+        registerGroup(family, ActorState.DEFAULT, ENEMY_SHIP_SCALE, R.drawable.ship2);
+        registerGroup(family, ActorState.DESTROYING, ENEMY_SHIP_SCALE,
                     R.drawable.ship2e1,
                     R.drawable.ship2e2,
                     R.drawable.ship2e3,
                     R.drawable.ship2e4);
-        registerGroup(family, ActorState.DESTROYED, R.drawable.ship2e5);
+        registerGroup(family, ActorState.DESTROYED, ENEMY_SHIP_SCALE, R.drawable.ship2e5);
     }
 
-    private void registerGroup(String family, ActorState state, Integer... ids){
+    private void loadPlayerShipBitmaps() {
 
-        List<Bitmap> bitmaps = getBitmaps(ids);
+        String family = "PLAYER_SHIP";
+        final int scale = 2;
+        registerGroup(family, ActorState.DEFAULT, scale, R.drawable.ship1);
+        registerGroup(family, ActorState.DESTROYING, scale,
+                R.drawable.ship1e1,
+                R.drawable.ship1e2,
+                R.drawable.ship1e3,
+                R.drawable.ship1e4);
+        registerGroup(family, ActorState.DESTROYED, scale, R.drawable.ship1e5);
+    }
+
+    private void loadBulletBitmaps(){
+
+        String family = "BULLET";
+        int scale = 2;
+        registerGroup(family, ActorState.DEFAULT, scale, R.drawable.bullet1);
+
+    }
+
+    private void registerGroup(String family, ActorState state, int scale, Integer... ids){
+
+        List<Bitmap> bitmaps = getBitmaps(scale, ids);
         bitmapManager.register(family, state, bitmaps);
 
     }
 
 
-    private List<Bitmap> getBitmaps(Integer...resIds){
+    private List<Bitmap> getBitmaps(int scale, Integer...resIds){
         List<Bitmap> bitmaps = new ArrayList<>(resIds.length);
         for(int id : resIds){
-            bitmaps.add(getBitmap(id));
+            bitmaps.add(getBitmap(id, scale));
         }
         return bitmaps;
     }
 
-    private Bitmap getBitmap(int resId){
+    private Bitmap getBitmap(int resId, int scale) {
 
-       return BitmapFactory.decodeResource(context.getResources(), resId);
-
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inSampleSize = scale;
+        return BitmapFactory.decodeResource(context.getResources(), resId, opts);
     }
 
 

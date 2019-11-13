@@ -49,6 +49,21 @@ public class DrawInfo {
         this.y = y;
     }
 
+    public String toString(){
+        StringBuilder str = new StringBuilder();
+        str.append(" x,y: ");
+        str.append(x);
+        str.append(" ");
+        str.append(y);
+        str.append(" actorState: ");
+        str.append(actorState);
+        str.append(" frame: ");
+        str.append(frame);
+        str.append(" family: ");
+        str.append(animationInfoService.getFamily());
+        return str.toString();
+    }
+
     public void moveX(int amount){
         this.x += amount;
     }

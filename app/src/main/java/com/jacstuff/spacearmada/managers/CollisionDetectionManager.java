@@ -25,19 +25,6 @@ public class CollisionDetectionManager {
         this.playerShip = playerShip;
         this.enemyShipManager = enemyShipManager;
         this.projectileManager = projectileManager;
-
-        if(playerShip == null){
-            log("player ship is null!");
-        }
-        if(enemyShipManager == null){
-            log("Enemy ship manager is null!");
-        }
-        if(projectileManager == null){
-            log("projectile manager is null!");
-        }
-        if(playerShip != null && enemyShipManager != null && projectileManager != null){
-            log("ColisionDetection manager is initiated ok!");
-        }
     }
 
     private void log(String msg){
@@ -86,7 +73,7 @@ public class CollisionDetectionManager {
                     continue;
                 }
                 enemyShip.checkForCollision(projectile);
-                if(enemyShip.hasNoEnergy() && enemyShip.isAlive()){
+                if(enemyShip.getEnergy().isDepleted() && enemyShip.isAlive()){
                   playerShip.addToScore(enemyShip.getPoints());
                 }
             }

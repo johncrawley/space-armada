@@ -12,7 +12,7 @@ import com.jacstuff.spacearmada.actors.ships.ArmedShip;
  */
 
 public interface Projectile extends Collidable, DrawableItem {
-    Drawable getDrawable();
+    //Drawable getDrawable();
     void update();
     ArmedShip getOwner();
 

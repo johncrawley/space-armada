@@ -21,13 +21,15 @@ public class SimpleBitmapManagerImpl implements BitmapManager {
 
 
     private Map<String, List<Bitmap>> imageMap;
+    private Map<String, Bitmap> bitmapMap;
 
     public SimpleBitmapManagerImpl(){
+        bitmapMap = new HashMap<>();
         imageMap = new HashMap<>();
     }
 
-    public Bitmap getBitmap(DrawInfo drawInfo){
-        String key = getKey(drawInfo);
+    public Bitmap getBitmap2(DrawInfo drawInfo){
+        String key = getKey2(drawInfo);
 
         if(drawInfo.getState()== ActorState.DESTROYING){
             log("destroying state key: "+  key);
@@ -40,11 +42,28 @@ public class SimpleBitmapManagerImpl implements BitmapManager {
     }
 
 
-    public Bitmap getBitmap(String family, ActorState actorState, int frame){
-        return null;
+    public Bitmap getBitmap(DrawInfo drawInfo){
+        String key = getKey(drawInfo);
+        Bitmap bitmap = bitmapMap.get(key);
+        if(drawInfo.getFamily().equals("PLAYER_SHIP")){
+            Log.i("PlayerShip", "SimpleBitmapManagerImpl :  loading playerShip bitmap for : " + drawInfo.getState() + " frame: " + drawInfo.getFrame());
+        }
+        if(bitmap == null){
+            Log.i("SimpBM_Mngr", "Bitmap is null for drawInfo: " + drawInfo);
+        }
+        return bitmap;
     }
 
     public void register(String family, ActorState state, List<Bitmap> bitmaps){
+
+        for(int i=0; i< bitmaps.size(); i++){
+            String key = getKey(family, state, i);
+            bitmapMap.put(key, bitmaps.get(i));
+
+        }
+    }
+
+    public void register2(String family, ActorState state, List<Bitmap> bitmaps){
         String key = getKey(family, state);
         imageMap.put(key, bitmaps);
         log("bitmap registered with key: "+  key);
@@ -70,8 +89,16 @@ public class SimpleBitmapManagerImpl implements BitmapManager {
 
     }
 
+    private String getKey(String family, ActorState state, int frame){
+        return family + "_" + state + "_" + frame;
+    }
 
     private String getKey(DrawInfo drawInfo){
+        return getKey(drawInfo.getFamily(), drawInfo.getState(), drawInfo.getFrame());
+    }
+
+
+    private String getKey2(DrawInfo drawInfo){
 
 
         String key = getKey(drawInfo.getFamily(), drawInfo.getState());

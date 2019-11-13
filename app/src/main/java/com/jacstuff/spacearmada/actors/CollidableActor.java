@@ -1,9 +1,9 @@
 package com.jacstuff.spacearmada.actors;
 
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 
+import com.jacstuff.spacearmada.actors.ships.player.Energy;
 import com.jacstuff.spacearmada.utils.ImageLoader;
 
 /**
@@ -14,61 +14,32 @@ import com.jacstuff.spacearmada.utils.ImageLoader;
 public abstract class CollidableActor extends AbstractActor implements Collidable {
 
 
-    public CollidableActor(AnimationInfoService animationInfoService, ImageLoader imageLoader, Rect rect, int defaultResourceId){
-        super(animationInfoService, imageLoader,rect, defaultResourceId);
+    public CollidableActor(AnimationInfoService animationInfoService, ImageLoader imageLoader, int x, int y, int width, int height, int initialEnergy, int defaultResourceId){
+        super(animationInfoService, imageLoader,x,y,width,height, defaultResourceId);
+        energy = new Energy(initialEnergy, (initialEnergy / 5) * 3, initialEnergy / 4);
     }
-    protected int energy;
 
-    public int getEnergy(){
+
+    protected Energy energy;
+
+    public Energy getEnergy(){
         return this.energy;
-    }
-
-    public void subtractEnergy(int amount){
-        energy -= amount;
-    }
-
-    public void depleteEnergy() {
-        this.energy = 0;
-    }
-
-    public boolean hasNoEnergy(){
-        return this.energy < 1;
     }
 
     public boolean checkForCollision(Collidable otherCollidable){
         if(otherCollidable == null || !this.intersects(otherCollidable)){
             return false;
         }
-        if(otherCollidable.getEnergy() < this.getEnergy()) {
-            subtractEnergyFrom(this, otherCollidable);
-        }
-        else{
-            subtractEnergyFrom(otherCollidable, this);
-        }
+        this.energy.collideWith(otherCollidable.getEnergy());
         return true;
     }
 
-    //where the first collidable has more energy than the second
-    private void subtractEnergyFrom(Collidable c1, Collidable c2) {
-        c1.subtractEnergy(c2.getEnergy());
-        c2.depleteEnergy();
-    }
-
-
     public boolean intersects(Collidable otherCollidable){
-        //log("Entering intersects, current bounds :" + getBounds().flattenToString());
-
         if( otherCollidable == null){
             return false;
         }
         Rect otherBoundingBox = otherCollidable.getBounds();
-        //return boundingBox.intersect(otherBoundingBox);
-
-        //log("Before intersect, current bounds :" + getBounds().flattenToString());
-        boolean areBoundsIntersecting =  doesBoundingBoxIntersectWith(otherBoundingBox);
-
-       // log("After intersect, current bounds :" + getBounds().flattenToString());
-        return areBoundsIntersecting;
+        return  doesBoundingBoxIntersectWith(otherBoundingBox);
     }
 
     private void log(String msg){

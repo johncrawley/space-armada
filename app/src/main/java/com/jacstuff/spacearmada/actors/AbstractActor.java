@@ -1,7 +1,6 @@
 package com.jacstuff.spacearmada.actors;
 
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 import com.jacstuff.spacearmada.DrawableItem;
@@ -18,50 +17,34 @@ public class AbstractActor implements DrawableItem {
     private ActorState actorState;
     protected AnimationManager animationManager;
     private Rect boundingBox;
-    private Drawable currentDrawable;
+   // private Drawable currentDrawable;
     private DrawInfo drawInfo;
     protected int speed = 2;
 
     public AbstractActor(){
 
     }
-    public AbstractActor(AnimationInfoService animationInfoService, ImageLoader imageLoader, Rect rect, int defaultResourceId){
+
+    AbstractActor(AnimationInfoService animationInfoService, ImageLoader imageLoader, int x, int y, int width, int height, int defaultResourceId){
         actorState = ActorState.DEFAULT;
         animationManager = new AnimationManager(imageLoader);
         addAnimation(actorState, defaultResourceId);
-        this.boundingBox = new Rect(rect);
+        this.boundingBox = new Rect(x,y, x + width, y + height);
         this.drawInfo = new DrawInfo(animationInfoService, this.boundingBox.left, this.boundingBox.top);
     }
 
-
-/*
-    public AbstractActor(ImageLoader imageLoader,  Rect rect, int defaultResourceId){
-        actorState = ActorState.DEFAULT;
-        animationManager = new AnimationManager(imageLoader);
-        addAnimation(actorState, defaultResourceId);
-        this.boundingBox = new Rect(rect);
-        AnimationInfoService animationInfoService = new AnimationInfoService("ENEMY_SHIPS");
-        this.drawInfo = new DrawInfo(animationInfoService, this.boundingBox.left, this.boundingBox.top);
-
-    }
-*/
 
     private void log(String msg){
         Log.i("AbstractActor", msg);
     }
 
-    public void offsetBounds(int dx, int dy){
+    protected void offsetBounds(int dx, int dy){
         this.boundingBox.offset(dx,dy);
         this.drawInfo.setXY(boundingBox.left, boundingBox.top);
-
     }
 
 
-    public ActorState getState(){
-        return this.actorState;
-    }
-
-    protected boolean doesBoundingBoxIntersectWith(Rect otherBoundingBox){
+    boolean doesBoundingBoxIntersectWith(Rect otherBoundingBox){
         return new Rect(boundingBox).intersect(otherBoundingBox);
     }
 
@@ -69,7 +52,7 @@ public class AbstractActor implements DrawableItem {
         return this.drawInfo;
     }
 
-    public ActorState getActorState(){
+    public ActorState getState(){
         return this.actorState;
     }
 
@@ -83,12 +66,9 @@ public class AbstractActor implements DrawableItem {
         return new Rect(boundingBox);
     }
 
-    public void setBounds(Rect newBounds){
-        this.boundingBox = new Rect(newBounds);
-    }
 
+    /*
     public Drawable getDrawable(){
-        //log("Entered getDrawable()");
         currentDrawable = animationManager.getCurrentDrawable(actorState);
         //log("about to set bounds");
         if(currentDrawable == null){
@@ -97,6 +77,8 @@ public class AbstractActor implements DrawableItem {
         currentDrawable.setBounds(boundingBox);
         return currentDrawable;
     }
+
+     */
 
     public void addAnimation(ActorState actorState, int...resIds){
         animationManager.addAnimation(actorState, resIds);

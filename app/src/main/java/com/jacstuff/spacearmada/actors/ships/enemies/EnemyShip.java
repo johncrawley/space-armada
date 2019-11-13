@@ -8,6 +8,7 @@ import com.jacstuff.spacearmada.actors.AnimationInfoService;
 import com.jacstuff.spacearmada.actors.CollidableActor;
 import com.jacstuff.spacearmada.actors.projectiles.ProjectileManager;
 import com.jacstuff.spacearmada.actors.ships.ArmedShip;
+import com.jacstuff.spacearmada.actors.ships.player.Energy;
 import com.jacstuff.spacearmada.utils.ImageLoader;
 
 /**
@@ -20,27 +21,27 @@ public class EnemyShip extends CollidableActor implements ArmedShip {
     private ProjectileManager projectileManager;
     private int points;
     private int logInterval = 0;
-    EnemyShip(int initialX, int initialY, int speed, ProjectileManager projectileManager, ImageLoader imageLoader, AnimationInfoService animationInfoService, int defaultDrawableId){
 
-        super(animationInfoService,
-                imageLoader,
-                new Rect(initialX, initialY, initialX + 40, initialY + 70),
+    EnemyShip(int initialX, int initialY, int initialWidth, int initialHeight, int speed, ProjectileManager projectileManager, ImageLoader imageLoader, AnimationInfoService animationInfoService, int defaultDrawableId){
+
+        super(animationInfoService, imageLoader, initialX, initialY, initialWidth, initialHeight, 80,
                 defaultDrawableId);
 
         this.projectileManager = projectileManager;
         points = 100;
-        this.energy = 60;
+        points = 100;
+        this.energy = new Energy(60, 30, 10);
         this.speed = speed;
         addAnimation(ActorState.DEFAULT, defaultDrawableId);
     }
 
 
     public boolean isAlive(){
-        return getActorState() != ActorState.DESTROYING && getActorState() != ActorState.DESTROYED;
+        return getState() != ActorState.DESTROYING && getState() != ActorState.DESTROYED;
     }
 
     public void update(){
-        if(animationManager.getCurrentDrawable(getActorState()) == null){
+        if(animationManager.getCurrentDrawable(getState()) == null){
             logStatus("EnemyShip drawable is null!");
             return;
         }

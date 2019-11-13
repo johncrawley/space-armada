@@ -7,7 +7,7 @@ import com.jacstuff.spacearmada.actors.DrawInfo;
 
 public interface DrawableItem {
 
-    Drawable getDrawable();
+   // Drawable getDrawable(); //TODO: need to remove this when rendering via bitmaps is complete
     DrawInfo getDrawInfo();
 
 }

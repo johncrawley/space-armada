@@ -45,8 +45,10 @@ public class EnemyShipFactory {
 
 
     public EnemyShip createShip(int initialX, int initialY){
+        int initialWidth = 20;
+        int initialHeight = 35;
 
-       EnemyShip enemyShip = new EnemyShip(initialX, initialY, speed, projectileManager, imageLoader, getAnimationInfoService(), R.drawable.ship2);
+       EnemyShip enemyShip = new EnemyShip(initialX, initialY, initialWidth, initialHeight, speed, projectileManager, imageLoader, getAnimationInfoService(), R.drawable.ship2);
 
         enemyShip.addAnimation(ActorState.DESTROYING,
                 R.drawable.ship2e1,

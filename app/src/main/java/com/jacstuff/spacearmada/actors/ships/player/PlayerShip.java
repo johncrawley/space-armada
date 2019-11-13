@@ -28,42 +28,40 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
         private int updateCount = 0;
         private int fireDelay = 5;
         private int currentFireIteration = 0;
-        private int score;
-        private int warningEnergyLevel = 180;
-        private int emergencyEnergyLevel = 90;
+        private Score score;
         private boolean isFiring = false;
         private Rect tempRect; // used for seeing if the ships rect stays within the game screen bounds
         private ProjectileManager projectileManager;
         private boolean canFireWeapons = true;
         private boolean canMove = true;
-        private MediaPlayer mediaPlayer;
+        private MediaPlayer mediaPlayer; // TODO: MediaPlayer reference shouldn't be in the actor class, need a separate class to handle sounds
         private boolean isMediaPlayerActive = true;
         private Rect gameScreenBounds; // the space that the ship is allowed to move in.
         //private WeaponsManager weaponsManager;
 
-        public boolean isEnergyLevelLow(){
-            return this.energy < warningEnergyLevel;
-        }
 
-        public boolean isEnergyLevelDangerouslyLow(){
-            return this.energy < emergencyEnergyLevel;
-        }
-
-        PlayerShip(Context context, float initialX, float initialY, int shield, int speed, ProjectileManager projectileManager, ImageLoader imageLoader, int defaultResourceId){
-            super(new AnimationInfoService("PLAYER1"),
+        PlayerShip(Context context, float initialX, float initialY, int shield, int speed, AnimationInfoService animationInfoService, ProjectileManager projectileManager, ImageLoader imageLoader, int defaultResourceId){
+            super( animationInfoService,
                     imageLoader,
-                    new Rect((int)initialX, (int)initialY, (int)initialX + 55, (int)initialY + 96), defaultResourceId);
+                    (int)initialX,
+                    (int)initialY,
+                    55,
+                    96,
+                    300,
+                    defaultResourceId);
+
             this.gameScreenBounds = new Rect(0,0,400,640);
             direction = Direction.NONE;
-            this.energy = shield;
+            this.energy = new Energy(shield, shield /3, shield / 4);
             this.speed = speed;
+            this.score = new Score(8);
             tempRect = new Rect(0,0,0,0);
             this.projectileManager = projectileManager;
             mediaPlayer = MediaPlayer.create(context, R.raw.bloop1_short );
         }
 
         public boolean isDead(){
-            return getActorState() == ActorState.DESTROYED;
+            return getState() == ActorState.DESTROYED;
         }
 
         public void setGameScreenBounds(Rect bounds){
@@ -71,10 +69,10 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
         }
 
         public void addToScore(int points){
-            this.score += points;
+            this.score.add(points);
         }
 
-        public int getScore(){
+        public Score getScore(){
             return this.score;
         }
 
@@ -121,7 +119,7 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
                     fireBullet();
                 }
             }
-            if(this.getEnergy() < 1 && getActorState() != ActorState.DESTROYED){
+            if(this.getEnergy().isDepleted() && getState() != ActorState.DESTROYED){
                 setActorState(ActorState.DESTROYING);
                 canFireWeapons = false;
                 canMove = false;
@@ -207,5 +205,12 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
             direction = Direction.NONE;
         }
 
+
+    @Override
+    public void setActorState(ActorState actorState){
+
+            super.setActorState(actorState);
+            Log.i("PlayerShip", " setActorState() @Override : changing player ship state to: " + actorState);
+    }
 
 }
