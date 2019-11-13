@@ -17,7 +17,6 @@ public class AbstractActor implements DrawableItem {
     private ActorState actorState;
     protected AnimationManager animationManager;
     private Rect boundingBox;
-   // private Drawable currentDrawable;
     private DrawInfo drawInfo;
     protected int speed = 2;
 
@@ -66,19 +65,6 @@ public class AbstractActor implements DrawableItem {
         return new Rect(boundingBox);
     }
 
-
-    /*
-    public Drawable getDrawable(){
-        currentDrawable = animationManager.getCurrentDrawable(actorState);
-        //log("about to set bounds");
-        if(currentDrawable == null){
-            log("Current drawable is null!");
-        }
-        currentDrawable.setBounds(boundingBox);
-        return currentDrawable;
-    }
-
-     */
 
     public void addAnimation(ActorState actorState, int...resIds){
         animationManager.addAnimation(actorState, resIds);
