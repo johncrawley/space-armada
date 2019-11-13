@@ -20,36 +20,17 @@ import java.util.Map;
 public class SimpleBitmapManagerImpl implements BitmapManager {
 
 
-    private Map<String, List<Bitmap>> imageMap;
     private Map<String, Bitmap> bitmapMap;
 
     public SimpleBitmapManagerImpl(){
         bitmapMap = new HashMap<>();
-        imageMap = new HashMap<>();
     }
-
-    public Bitmap getBitmap2(DrawInfo drawInfo){
-        String key = getKey2(drawInfo);
-
-        if(drawInfo.getState()== ActorState.DESTROYING){
-            log("destroying state key: "+  key);
-        }
-        List<Bitmap> bitmaps = imageMap.get(key);
-        if(bitmaps == null || bitmaps.isEmpty()){
-            return null;
-        }
-        return bitmaps.get(drawInfo.getFrame());
-    }
-
 
     public Bitmap getBitmap(DrawInfo drawInfo){
         String key = getKey(drawInfo);
         Bitmap bitmap = bitmapMap.get(key);
-        if(drawInfo.getFamily().equals("PLAYER_SHIP")){
-            Log.i("PlayerShip", "SimpleBitmapManagerImpl :  loading playerShip bitmap for : " + drawInfo.getState() + " frame: " + drawInfo.getFrame());
-        }
         if(bitmap == null){
-            Log.i("SimpBM_Mngr", "Bitmap is null for drawInfo: " + drawInfo);
+            logInter("Bitmap is null for drawInfo: " + drawInfo);
         }
         return bitmap;
     }
@@ -61,17 +42,6 @@ public class SimpleBitmapManagerImpl implements BitmapManager {
             bitmapMap.put(key, bitmaps.get(i));
 
         }
-    }
-
-    public void register2(String family, ActorState state, List<Bitmap> bitmaps){
-        String key = getKey(family, state);
-        imageMap.put(key, bitmaps);
-        log("bitmap registered with key: "+  key);
-    }
-
-
-    private String getKey(String family, ActorState actorState){
-        return family + "_" + actorState.toString();
     }
 
     private void log(String msg){
@@ -97,12 +67,4 @@ public class SimpleBitmapManagerImpl implements BitmapManager {
         return getKey(drawInfo.getFamily(), drawInfo.getState(), drawInfo.getFrame());
     }
 
-
-    private String getKey2(DrawInfo drawInfo){
-
-
-        String key = getKey(drawInfo.getFamily(), drawInfo.getState());
-        //logInter("getKey returns: " + key);
-        return key;
-    }
 }
