@@ -2,10 +2,9 @@ package com.jacstuff.spacearmada.actors.projectiles;
 
 
 import com.jacstuff.spacearmada.Direction;
-import com.jacstuff.spacearmada.actors.AnimationInfoService;
+import com.jacstuff.spacearmada.actors.AnimationDefinitionGroup;
 import com.jacstuff.spacearmada.actors.CollidableActor;
 import com.jacstuff.spacearmada.actors.ships.ArmedShip;
-import com.jacstuff.spacearmada.actors.ships.player.Energy;
 import com.jacstuff.spacearmada.utils.ImageLoader;
 
 /**
@@ -18,7 +17,7 @@ public class Bullet extends CollidableActor implements Projectile{
     private Direction direction;
     private ArmedShip ship;
 
-    Bullet(int x, int y, int width, int height, int speed, int energy, Direction direction, AnimationInfoService animationInfoService,  ArmedShip ship, int drawableId,ImageLoader imageLoader){
+    Bullet(int x, int y, int width, int height, int speed, int energy, Direction direction, AnimationDefinitionGroup animationInfoService, ArmedShip ship, int drawableId, ImageLoader imageLoader){
         super(animationInfoService,
                 imageLoader,
                 x,

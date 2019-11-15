@@ -8,7 +8,7 @@ import android.util.Log;
 import com.jacstuff.spacearmada.Direction;
 import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.actors.ActorState;
-import com.jacstuff.spacearmada.actors.AnimationInfoService;
+import com.jacstuff.spacearmada.actors.AnimationDefinitionGroup;
 import com.jacstuff.spacearmada.actors.CollidableActor;
 import com.jacstuff.spacearmada.actors.projectiles.ProjectileManager;
 import com.jacstuff.spacearmada.actors.ships.ControllableShip;
@@ -40,7 +40,7 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
         //private WeaponsManager weaponsManager;
 
 
-        PlayerShip(Context context, float initialX, float initialY, int shield, int speed, AnimationInfoService animationInfoService, ProjectileManager projectileManager, ImageLoader imageLoader, int defaultResourceId){
+        PlayerShip(Context context, float initialX, float initialY, int shield, int speed, AnimationDefinitionGroup animationInfoService, ProjectileManager projectileManager, ImageLoader imageLoader, int defaultResourceId){
             super( animationInfoService,
                     imageLoader,
                     (int)initialX,

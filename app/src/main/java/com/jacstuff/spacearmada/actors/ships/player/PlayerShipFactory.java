@@ -2,11 +2,10 @@ package com.jacstuff.spacearmada.actors.ships.player;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.media.Image;
 
 import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.actors.ActorState;
-import com.jacstuff.spacearmada.actors.AnimationInfoService;
+import com.jacstuff.spacearmada.actors.AnimationDefinitionGroup;
 import com.jacstuff.spacearmada.actors.projectiles.ProjectileManager;
 import com.jacstuff.spacearmada.utils.ImageLoader;
 
@@ -23,7 +22,7 @@ public class PlayerShipFactory {
 
 
 
-        AnimationInfoService animationInfoService = getAnimationInfoService();
+        AnimationDefinitionGroup animationInfoService = getAnimationInfoService();
 
         PlayerShip playerShip = new PlayerShip(context, startingX, startingY, startingShield, startingSpeed, animationInfoService, projectileManager, imageLoader, R.drawable.ship1);
         playerShip.setGameScreenBounds(gameScreenBounds);
@@ -39,8 +38,8 @@ public class PlayerShipFactory {
 
     }
 
-    private static AnimationInfoService getAnimationInfoService(){
-        AnimationInfoService animationInfoService = new AnimationInfoService("PLAYER_SHIP");
+    private static AnimationDefinitionGroup getAnimationInfoService(){
+        AnimationDefinitionGroup animationInfoService = new AnimationDefinitionGroup("PLAYER_SHIP");
         animationInfoService.registerState(ActorState.DEFAULT, 1, false);
         animationInfoService.registerState(ActorState.DESTROYING, 4, false);
         animationInfoService.registerState(ActorState.DESTROYED, 1, false);

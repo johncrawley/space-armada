@@ -11,7 +11,7 @@ import com.jacstuff.spacearmada.DrawableItem;
 import com.jacstuff.spacearmada.DrawableItemGroup;
 import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.actors.ActorState;
-import com.jacstuff.spacearmada.actors.AnimationInfoService;
+import com.jacstuff.spacearmada.actors.AnimationDefinitionGroup;
 import com.jacstuff.spacearmada.actors.ships.ArmedShip;
 import com.jacstuff.spacearmada.utils.ImageLoader;
 
@@ -28,14 +28,14 @@ public class ProjectileManager implements DrawableItemGroup {
     private int currentLogNum = 0;
     private int screenTop, screenBottom;
     private ImageLoader imageLoader;
-    private AnimationInfoService animationInfoService;
+    private AnimationDefinitionGroup animationInfoService;
 
     public ProjectileManager(Rect gameScreenBounds, ImageLoader imageLoader){
         projectiles = new ArrayList<>();
         this.imageLoader = imageLoader;
         this.screenTop = gameScreenBounds.top;
         this.screenBottom = gameScreenBounds.bottom;
-         animationInfoService = new AnimationInfoService("BULLET");
+         animationInfoService = new AnimationDefinitionGroup("BULLET");
          animationInfoService.registerState(ActorState.DEFAULT, 1, false);
     }
 

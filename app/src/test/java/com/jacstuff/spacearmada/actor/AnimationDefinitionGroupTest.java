@@ -1,26 +1,26 @@
 package com.jacstuff.spacearmada.actor;
 
 import com.jacstuff.spacearmada.actors.ActorState;
-import com.jacstuff.spacearmada.actors.AnimationInfoService;
+import com.jacstuff.spacearmada.actors.AnimationDefinitionGroup;
 
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
-public class AnimationInfoServiceTest {
+public class AnimationDefinitionGroupTest {
 
-    private AnimationInfoService animationInfoService;
+    private AnimationDefinitionGroup animationInfoService;
     private String family = "Enemy_Ship";
 
     @Before
     public void setup(){
-        animationInfoService = new AnimationInfoService(family);
+        animationInfoService = new AnimationDefinitionGroup(family);
 
     }
 
     @Test
     public void canSaveFamily(){
-        assertEquals("Family was not saved correctly", family, animationInfoService.getFamily());
+        assertEquals("Family was not saved correctly", family, animationInfoService.getGroupName());
     }
 
     @Test
@@ -42,7 +42,7 @@ public class AnimationInfoServiceTest {
 
 
 
-    private void assertAnimationLoopState(AnimationInfoService animationInfoService, boolean doesAnimationLoop){
+    private void assertAnimationLoopState(AnimationDefinitionGroup animationInfoService, boolean doesAnimationLoop){
 
         int frameLimit = 10;
         ActorState state = ActorState.DESTROYING;

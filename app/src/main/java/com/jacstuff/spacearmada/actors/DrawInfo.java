@@ -8,10 +8,10 @@ public class DrawInfo {
     private ActorState actorState;
     private int x, y;
     private int frame;
-    private AnimationInfoService animationInfoService;
+    private AnimationDefinitionGroup animationInfoService;
 
 
-    public DrawInfo(AnimationInfoService animationInfoService, int x, int y){
+    public DrawInfo(AnimationDefinitionGroup animationInfoService, int x, int y){
         actorState = ActorState.DEFAULT;
         this.animationInfoService = animationInfoService;
         this.x = x;
@@ -28,12 +28,12 @@ public class DrawInfo {
         return this.actorState;
     }
 
-    public void setAnimationInfoService(AnimationInfoService animationInfoService){
+    public void setAnimationInfoService(AnimationDefinitionGroup animationInfoService){
         this.animationInfoService = animationInfoService;
     }
 
     public String getFamily(){
-        return this.animationInfoService.getFamily();
+        return this.animationInfoService.getGroupName();
     }
 
     public void setX(int x){
@@ -60,7 +60,7 @@ public class DrawInfo {
         str.append(" frame: ");
         str.append(frame);
         str.append(" family: ");
-        str.append(animationInfoService.getFamily());
+        str.append(animationInfoService.getGroupName());
         return str.toString();
     }
 

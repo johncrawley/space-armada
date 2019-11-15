@@ -24,7 +24,7 @@ public class AbstractActor implements DrawableItem {
 
     }
 
-    AbstractActor(AnimationInfoService animationInfoService, ImageLoader imageLoader, int x, int y, int width, int height, int defaultResourceId){
+    AbstractActor(AnimationDefinitionGroup animationInfoService, ImageLoader imageLoader, int x, int y, int width, int height, int defaultResourceId){
         actorState = ActorState.DEFAULT;
         animationManager = new AnimationManager(imageLoader);
         addAnimation(actorState, defaultResourceId);

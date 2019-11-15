@@ -3,7 +3,7 @@ package com.jacstuff.spacearmada.actors.ships.enemies;
 
 import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.actors.ActorState;
-import com.jacstuff.spacearmada.actors.AnimationInfoService;
+import com.jacstuff.spacearmada.actors.AnimationDefinitionGroup;
 import com.jacstuff.spacearmada.actors.projectiles.ProjectileManager;
 import com.jacstuff.spacearmada.utils.ImageLoader;
 
@@ -19,7 +19,7 @@ public class EnemyShipFactory {
     private int speed;
     Map<EnemyType, EnemyShip> prototypes;
     enum EnemyType { Grunt}
-    private AnimationInfoService animationInfoService;
+    private AnimationDefinitionGroup animationInfoService;
 
     public EnemyShipFactory(ImageLoader imageLoader, ProjectileManager projectileManager){
 
@@ -32,14 +32,14 @@ public class EnemyShipFactory {
 
     private void setupAnimationInfoService(){
 
-        animationInfoService = new AnimationInfoService("ENEMY_SHIPS");
+        animationInfoService = new AnimationDefinitionGroup("ENEMY_SHIPS");
         animationInfoService.registerState(ActorState.DEFAULT, 1, false);
         animationInfoService.registerState(ActorState.DESTROYING, 4, false);
         animationInfoService.registerState(ActorState.DESTROYED, 1, false);
     }
 
 
-    public AnimationInfoService getAnimationInfoService(){
+    public AnimationDefinitionGroup getAnimationInfoService(){
         return this.animationInfoService;
     }
 

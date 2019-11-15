@@ -4,7 +4,7 @@ import android.graphics.Rect;
 import android.util.Log;
 
 import com.jacstuff.spacearmada.actors.ActorState;
-import com.jacstuff.spacearmada.actors.AnimationInfoService;
+import com.jacstuff.spacearmada.actors.AnimationDefinitionGroup;
 import com.jacstuff.spacearmada.actors.CollidableActor;
 import com.jacstuff.spacearmada.actors.projectiles.ProjectileManager;
 import com.jacstuff.spacearmada.actors.ships.ArmedShip;
@@ -22,7 +22,7 @@ public class EnemyShip extends CollidableActor implements ArmedShip {
     private int points;
     private int logInterval = 0;
 
-    EnemyShip(int initialX, int initialY, int initialWidth, int initialHeight, int speed, ProjectileManager projectileManager, ImageLoader imageLoader, AnimationInfoService animationInfoService, int defaultDrawableId){
+    EnemyShip(int initialX, int initialY, int initialWidth, int initialHeight, int speed, ProjectileManager projectileManager, ImageLoader imageLoader, AnimationDefinitionGroup animationInfoService, int defaultDrawableId){
 
         super(animationInfoService, imageLoader, initialX, initialY, initialWidth, initialHeight, 80,
                 defaultDrawableId);

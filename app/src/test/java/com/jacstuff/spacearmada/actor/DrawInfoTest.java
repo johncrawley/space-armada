@@ -1,7 +1,7 @@
 package com.jacstuff.spacearmada.actor;
 
 import com.jacstuff.spacearmada.actors.ActorState;
-import com.jacstuff.spacearmada.actors.AnimationInfoService;
+import com.jacstuff.spacearmada.actors.AnimationDefinitionGroup;
 import com.jacstuff.spacearmada.actors.DrawInfo;
 
 import org.junit.Before;
@@ -20,7 +20,7 @@ public class DrawInfoTest {
 
     @Before
     public void setup(){
-        AnimationInfoService animationInfoService = new AnimationInfoService(FAMILY_NAME);
+        AnimationDefinitionGroup animationInfoService = new AnimationDefinitionGroup(FAMILY_NAME);
         drawInfo = new DrawInfo(animationInfoService, initialX, initialY);
     }
 
@@ -80,7 +80,7 @@ public class DrawInfoTest {
     @Test
     public void frameCanBeSetIncrementedAndReset(){
 
-        AnimationInfoService animationInfoService = new AnimationInfoService("test");
+        AnimationDefinitionGroup animationInfoService = new AnimationDefinitionGroup("test");
         animationInfoService.registerState(ActorState.DEFAULT, 10);
         drawInfo.setAnimationInfoService(animationInfoService);
         final int newFrame = 5;
@@ -126,7 +126,7 @@ public class DrawInfoTest {
     public void framesSetOnDifferentStates(){
 
         int frameLimit = 3;
-        AnimationInfoService animationInfoService = new AnimationInfoService("NOT_IMPORTANT");
+        AnimationDefinitionGroup animationInfoService = new AnimationDefinitionGroup("NOT_IMPORTANT");
         animationInfoService.registerState(ActorState.DESTROYING, frameLimit, false);
         animationInfoService.registerState(ActorState.FIRING, frameLimit, true);
         drawInfo.setAnimationInfoService(animationInfoService);
