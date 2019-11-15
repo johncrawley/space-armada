@@ -14,7 +14,7 @@ import com.jacstuff.spacearmada.utils.ImageLoader;
 public abstract class CollidableActor extends AbstractActor implements Collidable {
 
 
-    public CollidableActor(AnimationInfoService animationInfoService, ImageLoader imageLoader, int x, int y, int width, int height, int initialEnergy, int defaultResourceId){
+    public CollidableActor(AnimationDefinitionGroup animationInfoService, ImageLoader imageLoader, int x, int y, int width, int height, int initialEnergy, int defaultResourceId){
         super(animationInfoService, imageLoader,x,y,width,height, defaultResourceId);
         energy = new Energy(initialEnergy, (initialEnergy / 5) * 3, initialEnergy / 4);
     }
