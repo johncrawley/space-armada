@@ -64,7 +64,7 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
             return getState() == ActorState.DESTROYED;
         }
 
-        public void setGameScreenBounds(Rect bounds){
+        void setGameScreenBounds(Rect bounds){
             this.gameScreenBounds = bounds;
         }
 
@@ -119,13 +119,17 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
                     fireBullet();
                 }
             }
-            if(this.getEnergy().isDepleted() && getState() != ActorState.DESTROYED){
-                setActorState(ActorState.DESTROYING);
+            if(this.getEnergy().isDepleted() && isAlive()){
+                setState(ActorState.DESTROYING);
                 canFireWeapons = false;
                 canMove = false;
                 mediaPlayer.setLooping(false);
                 isMediaPlayerActive = false;
             }
+        }
+
+        private boolean isAlive(){
+            return getState() != ActorState.DESTROYING && getState() != ActorState.DESTROYED;
         }
 
         private void logUpdate(){
@@ -162,16 +166,7 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
         }
 
 
-        private String directionChangedLog = "";
-        private void recordDirectionChange(Direction newDirection){
-            if(!newDirection.equals(this.direction)){
-                directionChangedLog += ", " + newDirection.toString();
-            }
-        }
-
-
         public void setDirection(Direction direction){
-            recordDirectionChange(direction);
             this.direction = direction;
             //Log.i("basicActor","Setting direction: " + direction);
         }
@@ -207,10 +202,10 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
 
 
     @Override
-    public void setActorState(ActorState actorState){
+    public void setState(ActorState actorState){
 
-            super.setActorState(actorState);
-            Log.i("PlayerShip", " setActorState() @Override : changing player ship state to: " + actorState);
+            super.setState(actorState);
+            Log.i("PlayerShip", " setState() @Override : changing player ship state to: " + actorState);
     }
 
 }

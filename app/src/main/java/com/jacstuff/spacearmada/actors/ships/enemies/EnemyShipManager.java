@@ -50,7 +50,7 @@ public class EnemyShipManager implements DrawableItemGroup {
                 enemyShips.remove(ship);
             }
             if(ship.getEnergy().isDepleted() && ship.isAlive()) {
-                ship.setActorState(ActorState.DESTROYING);
+                ship.setState(ActorState.DESTROYING);
             }
             else if(ship.getState() == ActorState.DESTROYED){
                 enemyShips.remove(ship);

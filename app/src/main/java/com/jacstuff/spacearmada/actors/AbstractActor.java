@@ -14,8 +14,6 @@ import com.jacstuff.spacearmada.utils.ImageLoader;
 
 public class AbstractActor implements DrawableItem {
 
-    private ActorState actorState;
-    protected AnimationManager animationManager;
     private Rect boundingBox;
     private DrawInfo drawInfo;
     protected int speed = 2;
@@ -25,9 +23,6 @@ public class AbstractActor implements DrawableItem {
     }
 
     AbstractActor(AnimationDefinitionGroup animationInfoService, ImageLoader imageLoader, int x, int y, int width, int height, int defaultResourceId){
-        actorState = ActorState.DEFAULT;
-        animationManager = new AnimationManager(imageLoader);
-        addAnimation(actorState, defaultResourceId);
         this.boundingBox = new Rect(x,y, x + width, y + height);
         this.drawInfo = new DrawInfo(animationInfoService, this.boundingBox.left, this.boundingBox.top);
     }
@@ -52,13 +47,12 @@ public class AbstractActor implements DrawableItem {
     }
 
     public ActorState getState(){
-        return this.actorState;
+        return drawInfo.getState();
     }
 
-    public void setActorState(ActorState actorState){
+    public void setState(ActorState actorState){
 
         drawInfo.setState(actorState);
-        this.actorState = actorState;
     }
 
     public Rect getBounds(){
@@ -66,24 +60,8 @@ public class AbstractActor implements DrawableItem {
     }
 
 
-    public void addAnimation(ActorState actorState, int...resIds){
-        animationManager.addAnimation(actorState, resIds);
-    }
-
-
     public void updateAnimation(){
-        animationManager.updateFrame();
         drawInfo.incFrame();
-        try {
-            if (actorState == ActorState.DESTROYING) {
-                if(animationManager.isLastFrame(actorState)){
-                    this.actorState = ActorState.DESTROYED;
-                }
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-            Log.i("PrintTaskRun", "error: " + e.getMessage());
-        }
     }
 
 

@@ -23,8 +23,19 @@ public class AnimationDefinitionGroup {
     public void registerState(ActorState actorState, int frameLimit, boolean doesLoop){
         animationInfoMap.put(actorState, new AnimationDefinition(frameLimit, doesLoop));
     }
+    public void registerState(ActorState actorState, int frameLimit, ActorState nextState){
+        animationInfoMap.put(actorState, new AnimationDefinition(frameLimit, false,nextState));
+    }
 
 
+    ActorState getNextState(ActorState currentState){
+        AnimationDefinition animationDefinition = animationInfoMap.get(currentState);
+        if(animationDefinition == null){
+            return null;
+        }
+        return animationDefinition.getNextState();
+
+    }
     public int getFrameLimit(ActorState actorState){
         AnimationDefinition animationInfo = animationInfoMap.get(actorState);
         if(animationInfo == null){

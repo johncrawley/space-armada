@@ -32,7 +32,6 @@ public class EnemyShip extends CollidableActor implements ArmedShip {
         points = 100;
         this.energy = new Energy(60, 30, 10);
         this.speed = speed;
-        addAnimation(ActorState.DEFAULT, defaultDrawableId);
     }
 
 
@@ -41,10 +40,6 @@ public class EnemyShip extends CollidableActor implements ArmedShip {
     }
 
     public void update(){
-        if(animationManager.getCurrentDrawable(getState()) == null){
-            logStatus("EnemyShip drawable is null!");
-            return;
-        }
         for(int i = 0; i < speed; i++) {
             offsetBounds(0, 1);
         }

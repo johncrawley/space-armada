@@ -26,13 +26,6 @@ public class PlayerShipFactory {
 
         PlayerShip playerShip = new PlayerShip(context, startingX, startingY, startingShield, startingSpeed, animationInfoService, projectileManager, imageLoader, R.drawable.ship1);
         playerShip.setGameScreenBounds(gameScreenBounds);
-        playerShip.addAnimation(ActorState.DESTROYING,
-                R.drawable.ship1e1,
-                R.drawable.ship1e2,
-                R.drawable.ship1e3,
-                R.drawable.ship1e4,
-                R.drawable.ship1e5);
-        playerShip.addAnimation(ActorState.DESTROYED, R.drawable.ship1e5);
 
         return playerShip;
 
@@ -41,7 +34,7 @@ public class PlayerShipFactory {
     private static AnimationDefinitionGroup getAnimationInfoService(){
         AnimationDefinitionGroup animationInfoService = new AnimationDefinitionGroup("PLAYER_SHIP");
         animationInfoService.registerState(ActorState.DEFAULT, 1, false);
-        animationInfoService.registerState(ActorState.DESTROYING, 4, false);
+        animationInfoService.registerState(ActorState.DESTROYING, 4, ActorState.DESTROYED);
         animationInfoService.registerState(ActorState.DESTROYED, 1, false);
         return animationInfoService;
     }
