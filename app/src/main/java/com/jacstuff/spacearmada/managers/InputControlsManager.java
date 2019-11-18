@@ -1,8 +1,6 @@
 package com.jacstuff.spacearmada.managers;
 
 import android.content.Context;
-import android.util.Log;
-
 import java.util.List;
 
 import com.jacstuff.spacearmada.Direction;
@@ -72,24 +70,11 @@ public class InputControlsManager {
         dpad.assignCommand(d, command);
     }
 
-    public void process(float x, float y, boolean isUpEvent){
-        dpad.process(x,y, isUpEvent);
-        fireButton.process(x,y, isUpEvent);
-    }
+
     public void process(List<TouchPoint> touchPoints){
         //Log.i("InputControlsMngr" , "touchPoints list size: " + touchPoints.size() + " " + System.currentTimeMillis());
         dpad.process(touchPoints);
         fireButton.process(touchPoints);
-    }
-
-    public int getDPadRadius(){
-        return (int)dpad.getRadius();
-    }
-    public int getDPadX(){
-        return (int)dpad.getCentreX();
-    }
-    public int getDPadY(){
-        return (int)dpad.getCentreY();
     }
 
     public CircularControl getDPad(){return this.dpad;}
