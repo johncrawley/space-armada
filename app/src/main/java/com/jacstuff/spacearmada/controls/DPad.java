@@ -54,22 +54,6 @@ public class DPad extends CircularControl {
         rightTopLine = initSegmentLine(337.5f, "rightTopLine");
     }
 
-/*
-    public String getLineColour(int index){
-        if(lines[index] == null){
-            return "#BBBBBB";
-        }
-        return lines[index].getColour();
-    }
-
-    public float getLine(int lineNumber, String coordinate){
-        CircleSegmentLine line = lines[lineNumber];
-        if(line == null){
-            return 0.0f;
-        }
-        return line.getCoordinate(coordinate);
-    }
-    */
 
 
     private CircleSegmentLine initSegmentLine(float angle, String label) {
@@ -80,7 +64,10 @@ public class DPad extends CircularControl {
 
         if(contains(x,y)){
             if(isUpEvent){
-                commandMap.get(Direction.NONE).release(); //0, because
+               Command command = commandMap.get(Direction.NONE);
+               if(command != null){
+                   command.release();
+               }
             }
             calculateDirection(x,y);
         }
@@ -91,15 +78,7 @@ public class DPad extends CircularControl {
     // Calculate direction only gets called when the touchpoint is not a release
     // It's getting called when
     public void process(List<TouchPoint> touchPoints){
-      //  boolean containsAReleaseTP = false;
-      //  for(TouchPoint tp : touchPoints){
-       //     if(tp.isRelease())containsAReleaseTP = true;}
-      //  if(containsAReleaseTP){
-           // Log.i("DPad process()", "Release TP detected: Data:");
-          //      for (TouchPoint tp : touchPoints) {
-             //       Log.i("DPad process()", "TP x,y,isRelease:" + tp.getX() + " " + tp.getY() + " " + tp.isRelease());
-            //    }
-       // }
+
         for(TouchPoint touchPoint : touchPoints) {
             float x = touchPoint.getX();
             float y = touchPoint.getY();
@@ -112,13 +91,6 @@ public class DPad extends CircularControl {
 
         commandMap.get(Direction.NONE).release(); //it actually doesn't matter which MoveCommand you call release on.
     }
-/*
-    public boolean containsEvent(MotionEvent e){
-        float x = e.getX();
-        float y = e.getY();
-        return intersects(x, y);
-    }
-    */
 
     private void invoke(Direction d){
 

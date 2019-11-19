@@ -1,7 +1,7 @@
 package com.jacstuff.spacearmada.actor;
 
 import com.jacstuff.spacearmada.actors.ActorState;
-import com.jacstuff.spacearmada.actors.AnimationDefinitionGroup;
+import com.jacstuff.spacearmada.actors.animation.AnimationDefinitionGroup;
 import com.jacstuff.spacearmada.actors.DrawInfo;
 
 import org.junit.Before;

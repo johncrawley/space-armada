@@ -10,6 +10,7 @@ import com.jacstuff.spacearmada.DrawableItem;
 import com.jacstuff.spacearmada.DrawableItemGroup;
 import com.jacstuff.spacearmada.actors.ActorState;
 import com.jacstuff.spacearmada.actors.projectiles.ProjectileManager;
+import com.jacstuff.spacearmada.image.BitmapLoader;
 import com.jacstuff.spacearmada.utils.ImageLoader;
 
 /**
@@ -23,9 +24,9 @@ public class EnemyShipManager implements DrawableItemGroup {
     private EnemyShipFactory enemyShipFactory;
     private int gameScreenBottom;
 
-    public EnemyShipManager(ProjectileManager projectileManager, ImageLoader imageLoader, int gameScreenBottom) {
+    public EnemyShipManager(ProjectileManager projectileManager, BitmapLoader bitmapLoader, int gameScreenBottom) {
         enemyShips = new ArrayList<>();
-        enemyShipFactory = new EnemyShipFactory(imageLoader, projectileManager);
+        enemyShipFactory = new EnemyShipFactory(bitmapLoader, projectileManager);
 
         this.gameScreenBottom = gameScreenBottom;
     }

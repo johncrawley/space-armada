@@ -1,56 +1,36 @@
 package com.jacstuff.spacearmada.actors.ships.enemies;
 
 
-import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.actors.ActorState;
-import com.jacstuff.spacearmada.actors.AnimationDefinitionGroup;
+import com.jacstuff.spacearmada.actors.animation.AnimationDefinitionGroup;
 import com.jacstuff.spacearmada.actors.projectiles.ProjectileManager;
-import com.jacstuff.spacearmada.utils.ImageLoader;
+import com.jacstuff.spacearmada.image.BitmapLoader;
 
 
 import java.util.HashMap;
 
 import java.util.Map;
 
-public class EnemyShipFactory {
+class EnemyShipFactory {
 
-    private ImageLoader imageLoader;
+    private BitmapLoader bitmapLoader;
     private ProjectileManager projectileManager;
     private int speed;
-    Map<EnemyType, EnemyShip> prototypes;
-    enum EnemyType { Grunt}
-    private AnimationDefinitionGroup animationDefinitionGroup;
 
-    public EnemyShipFactory(ImageLoader imageLoader, ProjectileManager projectileManager){
+    EnemyShipFactory(BitmapLoader bitmapLoader, ProjectileManager projectileManager){
 
-        this.imageLoader = imageLoader;
+        this.bitmapLoader = bitmapLoader;
         this.projectileManager = projectileManager;
         speed = 5;
-        prototypes = new HashMap<>();
-        setupAnimationInfoService();
-    }
-
-    private void setupAnimationInfoService(){
-
-        animationDefinitionGroup = new AnimationDefinitionGroup("ENEMY_SHIPS");
-        animationDefinitionGroup.registerState(ActorState.DEFAULT, 1, false);
-        animationDefinitionGroup.registerState(ActorState.DESTROYING, 4, ActorState.DESTROYED);
-        animationDefinitionGroup.registerState(ActorState.DESTROYED, 1, false);
     }
 
 
-    public AnimationDefinitionGroup getAnimationDefinitionGroup(){
-        return this.animationDefinitionGroup;
-    }
-
-
-    public EnemyShip createShip(int initialX, int initialY){
+    EnemyShip createShip(int initialX, int initialY){
         int initialWidth = 20;
         int initialHeight = 35;
 
-       EnemyShip enemyShip = new EnemyShip(initialX, initialY, initialWidth, initialHeight, speed, projectileManager, imageLoader, getAnimationDefinitionGroup(), R.drawable.ship2);
+       return new EnemyShip(initialX, initialY, speed, projectileManager, bitmapLoader.getAnimationDefinitionGroup("ENEMY_SHIPS"));
 
-        return enemyShip;
     }
 
 

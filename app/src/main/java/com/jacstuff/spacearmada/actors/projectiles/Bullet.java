@@ -2,10 +2,9 @@ package com.jacstuff.spacearmada.actors.projectiles;
 
 
 import com.jacstuff.spacearmada.Direction;
-import com.jacstuff.spacearmada.actors.AnimationDefinitionGroup;
+import com.jacstuff.spacearmada.actors.animation.AnimationDefinitionGroup;
 import com.jacstuff.spacearmada.actors.CollidableActor;
 import com.jacstuff.spacearmada.actors.ships.ArmedShip;
-import com.jacstuff.spacearmada.utils.ImageLoader;
 
 /**
  * Created by John on 30/08/2017.
@@ -15,21 +14,17 @@ import com.jacstuff.spacearmada.utils.ImageLoader;
 public class Bullet extends CollidableActor implements Projectile{
 
     private Direction direction;
-    private ArmedShip ship;
+    private ArmedShip ownerShip;
 
-    Bullet(int x, int y, int width, int height, int speed, int energy, Direction direction, AnimationDefinitionGroup animationInfoService, ArmedShip ship, int drawableId, ImageLoader imageLoader){
+    Bullet(int x, int y, int speed, int energy, Direction direction, AnimationDefinitionGroup animationInfoService, ArmedShip ownerShip){
         super(animationInfoService,
-                imageLoader,
                 x,
                 y,
-                width,
-                height,
-                30,
-                drawableId);
+                energy);
 
         this.speed = speed;
         this.direction = direction;
-        this.ship = ship;
+        this.ownerShip = ownerShip;
     }
     public void update(){
        int moveDirection = direction == Direction.DOWN ? 1 : -1;
@@ -38,7 +33,7 @@ public class Bullet extends CollidableActor implements Projectile{
     }
 
     public ArmedShip getOwner(){
-        return ship;
+        return ownerShip;
     }
 
 }

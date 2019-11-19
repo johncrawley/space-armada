@@ -4,7 +4,7 @@ import android.graphics.Rect;
 import android.util.Log;
 
 import com.jacstuff.spacearmada.DrawableItem;
-import com.jacstuff.spacearmada.utils.ImageLoader;
+import com.jacstuff.spacearmada.actors.animation.AnimationDefinitionGroup;
 
 /**
  * Created by John on 30/08/2017.
@@ -22,9 +22,19 @@ public class AbstractActor implements DrawableItem {
 
     }
 
-    AbstractActor(AnimationDefinitionGroup animationInfoService, ImageLoader imageLoader, int x, int y, int width, int height, int defaultResourceId){
+    AbstractActor(AnimationDefinitionGroup animationDefinitionGroup, int x, int y){
+        createInitialBoundingBox(animationDefinitionGroup, x, y);
+        this.drawInfo = new DrawInfo(animationDefinitionGroup, this.boundingBox.left, this.boundingBox.top);
+    }
+
+
+    private void createInitialBoundingBox(AnimationDefinitionGroup animationDefinitionGroup, int x, int y){
+
+        int width = animationDefinitionGroup.getBitmapWidth(ActorState.DEFAULT);
+        int height = animationDefinitionGroup.getBitmapHeight(ActorState.DEFAULT);
+
         this.boundingBox = new Rect(x,y, x + width, y + height);
-        this.drawInfo = new DrawInfo(animationInfoService, this.boundingBox.left, this.boundingBox.top);
+
     }
 
 

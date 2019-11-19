@@ -8,11 +8,10 @@ import android.util.Log;
 import com.jacstuff.spacearmada.Direction;
 import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.actors.ActorState;
-import com.jacstuff.spacearmada.actors.AnimationDefinitionGroup;
+import com.jacstuff.spacearmada.actors.animation.AnimationDefinitionGroup;
 import com.jacstuff.spacearmada.actors.CollidableActor;
 import com.jacstuff.spacearmada.actors.projectiles.ProjectileManager;
 import com.jacstuff.spacearmada.actors.ships.ControllableShip;
-import com.jacstuff.spacearmada.utils.ImageLoader;
 
 /**
  * Created by John on 29/08/2017.
@@ -40,19 +39,15 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
         //private WeaponsManager weaponsManager;
 
 
-        PlayerShip(Context context, float initialX, float initialY, int shield, int speed, AnimationDefinitionGroup animationInfoService, ProjectileManager projectileManager, ImageLoader imageLoader, int defaultResourceId){
+        PlayerShip(Context context, float initialX, float initialY, int shield, int speed, AnimationDefinitionGroup animationInfoService, ProjectileManager projectileManager){
             super( animationInfoService,
-                    imageLoader,
                     (int)initialX,
                     (int)initialY,
-                    55,
-                    96,
-                    300,
-                    defaultResourceId);
+                    shield);
 
             this.gameScreenBounds = new Rect(0,0,400,640);
             direction = Direction.NONE;
-            this.energy = new Energy(shield, shield /3, shield / 4);
+
             this.speed = speed;
             this.score = new Score(8);
             tempRect = new Rect(0,0,0,0);

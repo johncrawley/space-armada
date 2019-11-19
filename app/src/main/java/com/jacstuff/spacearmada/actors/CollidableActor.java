@@ -3,8 +3,8 @@ package com.jacstuff.spacearmada.actors;
 import android.graphics.Rect;
 import android.util.Log;
 
+import com.jacstuff.spacearmada.actors.animation.AnimationDefinitionGroup;
 import com.jacstuff.spacearmada.actors.ships.player.Energy;
-import com.jacstuff.spacearmada.utils.ImageLoader;
 
 /**
  * Created by John on 30/08/2017.
@@ -14,8 +14,8 @@ import com.jacstuff.spacearmada.utils.ImageLoader;
 public abstract class CollidableActor extends AbstractActor implements Collidable {
 
 
-    public CollidableActor(AnimationDefinitionGroup animationInfoService, ImageLoader imageLoader, int x, int y, int width, int height, int initialEnergy, int defaultResourceId){
-        super(animationInfoService, imageLoader,x,y,width,height, defaultResourceId);
+    public CollidableActor(AnimationDefinitionGroup animationInfoService, int x, int y, int initialEnergy){
+        super(animationInfoService,x,y);
         energy = new Energy(initialEnergy, (initialEnergy / 5) * 3, initialEnergy / 4);
     }
 

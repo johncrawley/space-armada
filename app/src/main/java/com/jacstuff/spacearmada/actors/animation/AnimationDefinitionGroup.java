@@ -1,4 +1,7 @@
-package com.jacstuff.spacearmada.actors;
+package com.jacstuff.spacearmada.actors.animation;
+
+import com.jacstuff.spacearmada.actors.ActorState;
+import com.jacstuff.spacearmada.image.BitmapDimension;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,15 +23,31 @@ public class AnimationDefinitionGroup {
         animationInfoMap.put(actorState, new AnimationDefinition(frameLimit, false));
     }
 
+    public void register(ActorState actorState, AnimationDefinition animationDefinition){
+
+        animationInfoMap.put(actorState, animationDefinition);
+    }
+
+
     public void registerState(ActorState actorState, int frameLimit, boolean doesLoop){
         animationInfoMap.put(actorState, new AnimationDefinition(frameLimit, doesLoop));
     }
-    public void registerState(ActorState actorState, int frameLimit, ActorState nextState){
-        animationInfoMap.put(actorState, new AnimationDefinition(frameLimit, false,nextState));
+
+
+    public int getBitmapWidth(ActorState actorState){
+        AnimationDefinition animationDefinition = animationInfoMap.get(actorState);
+        return animationDefinition != null ? animationDefinition.getWidth() : -10;
+
+    }
+
+    public int getBitmapHeight(ActorState actorState){
+
+        AnimationDefinition animationDefinition = animationInfoMap.get(actorState);
+        return animationDefinition != null ? animationDefinition.getHeight() : 0;
     }
 
 
-    ActorState getNextState(ActorState currentState){
+    public ActorState getNextState(ActorState currentState){
         AnimationDefinition animationDefinition = animationInfoMap.get(currentState);
         if(animationDefinition == null){
             return null;
@@ -57,40 +76,4 @@ public class AnimationDefinitionGroup {
     }
 
 
-}
-
-/*
-    Provides information to the owner actor about how many frames of animation a given state has, whether it loops though those frames
-     and what state the owner should go into next if it's reached the end of its frame count
-
- */
-
-class AnimationDefinition {
-
-    private int frame;
-    private boolean doesLoop;
-    private ActorState nextState;
-
-
-    AnimationDefinition(int frame, boolean doesLoop){
-        this(frame, doesLoop, null);
-    }
-
-    AnimationDefinition(int frame, boolean doesLoop, ActorState nextState){
-        this.frame = frame;
-        this.doesLoop = doesLoop;
-        this.nextState = nextState;
-    }
-
-    public int getFrame(){
-        return this.frame;
-    }
-
-    public ActorState getNextState(){
-        return this.nextState;
-    }
-
-    boolean doesLoop(){
-        return doesLoop;
-    }
 }

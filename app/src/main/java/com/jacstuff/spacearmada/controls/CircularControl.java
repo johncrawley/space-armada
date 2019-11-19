@@ -9,7 +9,8 @@ package com.jacstuff.spacearmada.controls;
 public abstract class CircularControl {
 
 
-    private float radius, radiusSquared, circleCentreX, circleCentreY;
+    float radius, circleCentreX, circleCentreY;
+    private float radiusSquared;
 
     CircularControl(int xPos, int yPos, int radius) {
         this.radius = radius;

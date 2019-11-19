@@ -7,22 +7,32 @@ import android.util.Log;
 
 import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.actors.ActorState;
+import com.jacstuff.spacearmada.actors.animation.AnimationDefinition;
+import com.jacstuff.spacearmada.actors.animation.AnimationDefinitionGroup;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SimpleBitmapLoader implements BitmapLoader {
 
     private Context context;
     private BitmapManager bitmapManager;
     private int screenWidth, screenHeight;
+    private Map<String, AnimationDefinitionGroup> animationDefinitionGroups;
+    private int scale;
+
 
     public SimpleBitmapLoader(Context context, BitmapManager bitmapManager, int screenWidth, int screenHeight){
         this.context = context;
         this.bitmapManager = bitmapManager;
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
+        this.scale = 2;
+        animationDefinitionGroups = new HashMap<>();
     }
+
 
 
     @Override
@@ -32,63 +42,96 @@ public class SimpleBitmapLoader implements BitmapLoader {
         loadPlayerShipBitmaps();
         loadBulletBitmaps();
         loadEnemyShipBitmaps();
+    }
+
+    public AnimationDefinitionGroup getAnimationDefinitionGroup(String family){
+
+        return animationDefinitionGroups.get(family);
 
     }
 
+
     //TODO: create a bitmap loader implementation that inputs from a file, so the family string can be added to both the group and the actor object
     private void loadEnemyShipBitmaps(){
+        String groupName = "ENEMY_SHIPS";
+        AnimationDefinitionGroup animationDefinitionGroup = new AnimationDefinitionGroup(groupName);
 
-        String family = "ENEMY_SHIPS";
-        final int ENEMY_SHIP_SCALE = 2;
-
-
-        registerGroup(family, ActorState.DEFAULT, ENEMY_SHIP_SCALE, R.drawable.ship2);
-        registerGroup(family, ActorState.DESTROYING, ENEMY_SHIP_SCALE,
+        registerGroup(ActorState.DEFAULT, animationDefinitionGroup, R.drawable.ship2);
+        registerGroup(ActorState.DESTROYING, ActorState.DESTROYED, animationDefinitionGroup,
                     R.drawable.ship2e1,
                     R.drawable.ship2e2,
                     R.drawable.ship2e3,
                     R.drawable.ship2e4);
-        registerGroup(family, ActorState.DESTROYED, ENEMY_SHIP_SCALE, R.drawable.ship2e5);
+        registerGroup(ActorState.DESTROYED, animationDefinitionGroup, R.drawable.ship2e5);
+
+        animationDefinitionGroups.put(groupName, animationDefinitionGroup);
     }
 
     private void loadPlayerShipBitmaps() {
+        String groupName = "PLAYER_SHIP";
+        AnimationDefinitionGroup animationDefinitionGroup = new AnimationDefinitionGroup(groupName);
 
-        String family = "PLAYER_SHIP";
-        final int scale = 2;
-        registerGroup(family, ActorState.DEFAULT, scale, R.drawable.ship1);
-        registerGroup(family, ActorState.DESTROYING, scale,
+        registerGroup(ActorState.DEFAULT, animationDefinitionGroup, R.drawable.ship1);
+
+        registerGroup(ActorState.DESTROYING, ActorState.DESTROYED, animationDefinitionGroup,
                 R.drawable.ship1e1,
                 R.drawable.ship1e2,
                 R.drawable.ship1e3,
                 R.drawable.ship1e4);
-        registerGroup(family, ActorState.DESTROYED, scale, R.drawable.ship1e5);
+
+        registerGroup(ActorState.DESTROYED, animationDefinitionGroup, R.drawable.ship1e5);
+
+        animationDefinitionGroups.put(groupName, animationDefinitionGroup);
     }
+
 
     private void loadBulletBitmaps(){
-
-        String family = "BULLET";
-        int scale = 2;
-        registerGroup(family, ActorState.DEFAULT, scale, R.drawable.bullet1);
-
-    }
-
-    private void registerGroup(String family, ActorState state, int scale, Integer... ids){
-
-        List<Bitmap> bitmaps = getBitmaps(scale, ids);
-        bitmapManager.register(family, state, bitmaps);
-
+        String groupName = "BULLET";
+        AnimationDefinitionGroup animationDefinitionGroup = new AnimationDefinitionGroup(groupName);
+        registerGroup(ActorState.DEFAULT, animationDefinitionGroup,  R.drawable.bullet1);
+        animationDefinitionGroups.put(groupName, animationDefinitionGroup);
     }
 
 
-    private List<Bitmap> getBitmaps(int scale, Integer...resIds){
+    private void registerGroup(ActorState state, AnimationDefinitionGroup animationDefinitionGroup, Integer... ids) {
+        registerGroup(state, false, null, animationDefinitionGroup, ids);
+
+
+    }
+    private void registerGroup(ActorState state, ActorState nextState, AnimationDefinitionGroup animationDefinitionGroup, Integer... ids) {
+        registerGroup(state, false, nextState, animationDefinitionGroup, ids);
+
+
+    }
+
+
+    private void registerGroup(ActorState state, boolean doesLoop, ActorState nextState, AnimationDefinitionGroup animationDefinitionGroup, Integer... ids){
+
+        List<Bitmap> bitmaps = getBitmaps(ids);
+        bitmapManager.register(animationDefinitionGroup.getGroupName(), state, bitmaps);
+
+        BitmapDimension bitmapDimension = getDimensionsOfFirstBitmap(bitmaps);
+        AnimationDefinition animationDefinition = new AnimationDefinition(ids.length, doesLoop, bitmapDimension, nextState);
+        animationDefinitionGroup.register(state, animationDefinition);
+    }
+
+
+    private BitmapDimension getDimensionsOfFirstBitmap(List<Bitmap> bitmaps){
+        Bitmap bm = bitmaps.get(0);
+        return new BitmapDimension(bm.getWidth(), bm.getHeight());
+    }
+
+
+
+    private List<Bitmap> getBitmaps(Integer...resIds){
         List<Bitmap> bitmaps = new ArrayList<>(resIds.length);
         for(int id : resIds){
-            bitmaps.add(getBitmap(id, scale));
+            bitmaps.add(getBitmap(id));
         }
         return bitmaps;
     }
 
-    private Bitmap getBitmap(int resId, int scale) {
+    private Bitmap getBitmap(int resId) {
 
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inSampleSize = scale;

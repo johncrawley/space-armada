@@ -4,6 +4,8 @@ package com.jacstuff.spacearmada.actors;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.jacstuff.spacearmada.actors.animation.AnimationDefinitionGroup;
+
 public class DrawInfo {
 
     private ActorState actorState;
@@ -21,7 +23,6 @@ public class DrawInfo {
 
     public void setState(ActorState actorState){
         this.actorState = actorState;
-        Log.i("DrawInfo", "Setting ActorState to " + actorState);
         this.frame = 0;
     }
 

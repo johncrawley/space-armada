@@ -9,11 +9,10 @@ import java.util.List;
 import com.jacstuff.spacearmada.Direction;
 import com.jacstuff.spacearmada.DrawableItem;
 import com.jacstuff.spacearmada.DrawableItemGroup;
-import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.actors.ActorState;
-import com.jacstuff.spacearmada.actors.AnimationDefinitionGroup;
+import com.jacstuff.spacearmada.actors.animation.AnimationDefinitionGroup;
 import com.jacstuff.spacearmada.actors.ships.ArmedShip;
-import com.jacstuff.spacearmada.utils.ImageLoader;
+import com.jacstuff.spacearmada.image.BitmapLoader;
 
 /**
  * Created by John on 30/08/2017.
@@ -27,16 +26,13 @@ public class ProjectileManager implements DrawableItemGroup {
 
     private int currentLogNum = 0;
     private int screenTop, screenBottom;
-    private ImageLoader imageLoader;
     private AnimationDefinitionGroup animationInfoService;
 
-    public ProjectileManager(Rect gameScreenBounds, ImageLoader imageLoader){
+    public ProjectileManager(Rect gameScreenBounds, BitmapLoader bitmapLoader){
         projectiles = new ArrayList<>();
-        this.imageLoader = imageLoader;
         this.screenTop = gameScreenBounds.top;
         this.screenBottom = gameScreenBounds.bottom;
-         animationInfoService = new AnimationDefinitionGroup("BULLET");
-         animationInfoService.registerState(ActorState.DEFAULT, 1, false);
+         animationInfoService = bitmapLoader.getAnimationDefinitionGroup("BULLET");
     }
 
 
@@ -46,7 +42,7 @@ public class ProjectileManager implements DrawableItemGroup {
 
     public void createProjectile(float x, float y, int energy, ArmedShip ownerShip){
         synchronized(projectiles){
-            Bullet bullet = new Bullet((int)x, (int)y, 3, 7, 15, energy, Direction.UP, animationInfoService, ownerShip, R.drawable.bullet1, imageLoader);
+            Bullet bullet = new Bullet((int)x, (int)y, 15, energy, Direction.UP, animationInfoService, ownerShip);
             Log.i("ProjectMngr", "createProjectile() new bullet drawInfo: " + bullet.getDrawInfo().toString());
             projectiles.add(bullet);
         }

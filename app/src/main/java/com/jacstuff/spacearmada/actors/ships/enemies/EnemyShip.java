@@ -4,12 +4,11 @@ import android.graphics.Rect;
 import android.util.Log;
 
 import com.jacstuff.spacearmada.actors.ActorState;
-import com.jacstuff.spacearmada.actors.AnimationDefinitionGroup;
+import com.jacstuff.spacearmada.actors.animation.AnimationDefinitionGroup;
 import com.jacstuff.spacearmada.actors.CollidableActor;
 import com.jacstuff.spacearmada.actors.projectiles.ProjectileManager;
 import com.jacstuff.spacearmada.actors.ships.ArmedShip;
 import com.jacstuff.spacearmada.actors.ships.player.Energy;
-import com.jacstuff.spacearmada.utils.ImageLoader;
 
 /**
  * Created by John on 30/08/2017.
@@ -22,13 +21,11 @@ public class EnemyShip extends CollidableActor implements ArmedShip {
     private int points;
     private int logInterval = 0;
 
-    EnemyShip(int initialX, int initialY, int initialWidth, int initialHeight, int speed, ProjectileManager projectileManager, ImageLoader imageLoader, AnimationDefinitionGroup animationInfoService, int defaultDrawableId){
+    EnemyShip(int initialX, int initialY, int speed, ProjectileManager projectileManager, AnimationDefinitionGroup animationInfoService){
 
-        super(animationInfoService, imageLoader, initialX, initialY, initialWidth, initialHeight, 80,
-                defaultDrawableId);
+        super(animationInfoService, initialX, initialY, 80);
 
         this.projectileManager = projectileManager;
-        points = 100;
         points = 100;
         this.energy = new Energy(60, 30, 10);
         this.speed = speed;

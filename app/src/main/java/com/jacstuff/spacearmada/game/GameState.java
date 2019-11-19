@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import com.jacstuff.spacearmada.MusicPlayer;
 import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.TouchPoint;
+import com.jacstuff.spacearmada.actors.animation.AnimationDefinitionGroup;
 import com.jacstuff.spacearmada.actors.background.BackgroundTiles;
 import com.jacstuff.spacearmada.actors.ships.player.PlayerShip;
 import com.jacstuff.spacearmada.actors.ships.player.PlayerShipFactory;
@@ -54,17 +55,23 @@ public class GameState implements State {
     private Context context;
     private MusicPlayer musicPlayer;
     private Rect gameScreenBounds;
+
     private TimedActionManager timedActionManager;
     private GameStateHandler currentGameStateHandler;
     private EnemyCreatorTask enemyCreatorTask;
+    private BitmapLoader bitmapLoader;
+    private BitmapManager bitmapManager;
 
     public GameState(StateManager stateManager, Context context, int canvasWidth, int canvasHeight){
         this.stateManager = stateManager;
         setupScreenBounds(0, canvasWidth, canvasHeight);
         this.context = context;
         imageLoader = new ImageLoader(context, canvasWidth, canvasHeight);
+        BitmapManager bitmapManager = new SimpleBitmapManagerImpl();
+        BitmapLoader bitmapLoader = new SimpleBitmapLoader(context, bitmapManager, gameScreenBounds.right, gameScreenBounds.bottom);
         timedActionManager = new TimedActionManager();
-        initShipsControlsAndProjectiles();
+
+        initShipsControlsAndProjectiles(bitmapLoader);
         createEnemyThread();
         initAnimtionThread();
         initBackgroundTiles();
@@ -142,11 +149,11 @@ public class GameState implements State {
     }
 
 
-    private void initShipsControlsAndProjectiles(){
-        projectileManager = new ProjectileManager(gameScreenBounds, imageLoader);
-        playerShip = PlayerShipFactory.createPlayerShip(context, gameScreenBounds, projectileManager, imageLoader);
+    private void initShipsControlsAndProjectiles(BitmapLoader bitmapLoader){
+        projectileManager = new ProjectileManager(gameScreenBounds, bitmapLoader);
+        playerShip = PlayerShipFactory.createPlayerShip(context, gameScreenBounds, projectileManager, bitmapLoader);
         initControls();
-        enemyShipManager = new EnemyShipManager(projectileManager, imageLoader, canvasHeight);
+        enemyShipManager = new EnemyShipManager(projectileManager, bitmapLoader, canvasHeight);
         collisionDetectionManager = new CollisionDetectionManager(playerShip, enemyShipManager, projectileManager);
     }
 
@@ -193,8 +200,6 @@ public class GameState implements State {
 
     private void initView(){
         log("Entered initView()");
-        BitmapManager bitmapManager = new SimpleBitmapManagerImpl();
-        BitmapLoader bitmapLoader = new SimpleBitmapLoader(context, bitmapManager, gameScreenBounds.right, gameScreenBounds.bottom);
         bitmapLoader.load();
         gameView = new GameView(context, bitmapManager, gameScreenBounds.top, gameScreenBounds.bottom, gameScreenBounds.right);
 
