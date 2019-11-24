@@ -67,8 +67,9 @@ public class GameState implements State {
         setupScreenBounds(0, canvasWidth, canvasHeight);
         this.context = context;
         imageLoader = new ImageLoader(context, canvasWidth, canvasHeight);
-        BitmapManager bitmapManager = new SimpleBitmapManagerImpl();
-        BitmapLoader bitmapLoader = new SimpleBitmapLoader(context, bitmapManager, gameScreenBounds.right, gameScreenBounds.bottom);
+        bitmapManager = new SimpleBitmapManagerImpl();
+        bitmapLoader = new SimpleBitmapLoader(context, bitmapManager, gameScreenBounds.right, gameScreenBounds.bottom);
+        bitmapLoader.load();
         timedActionManager = new TimedActionManager();
 
         initShipsControlsAndProjectiles(bitmapLoader);
@@ -200,16 +201,14 @@ public class GameState implements State {
 
     private void initView(){
         log("Entered initView()");
-        bitmapLoader.load();
         gameView = new GameView(context, bitmapManager, gameScreenBounds.top, gameScreenBounds.bottom, gameScreenBounds.right);
-
 
         gameView.register(playerShip.getEnergy());
         gameView.register(playerShip.getScore());
         gameView.register(playerShip);
         gameView.register(inputControlsManager);
-        gameView.registerBitmapGroup(enemyShipManager);
-        gameView.registerBitmapGroup(projectileManager);
+       gameView.registerBitmapGroup(enemyShipManager);
+       gameView.registerBitmapGroup(projectileManager);
         gameView.setBackgroundTiles(backgroundTiles);
         log("background tiles assigned to view");
     }

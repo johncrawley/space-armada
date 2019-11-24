@@ -21,9 +21,9 @@ public class EnemyShip extends CollidableActor implements ArmedShip {
     private int points;
     private int logInterval = 0;
 
-    EnemyShip(int initialX, int initialY, int speed, ProjectileManager projectileManager, AnimationDefinitionGroup animationInfoService){
+    EnemyShip(int initialX, int initialY, int speed, ProjectileManager projectileManager, AnimationDefinitionGroup animationDefinitionGroup){
 
-        super(animationInfoService, initialX, initialY, 80);
+        super(animationDefinitionGroup, initialX, initialY, 80);
 
         this.projectileManager = projectileManager;
         points = 100;

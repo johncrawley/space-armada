@@ -14,8 +14,8 @@ import com.jacstuff.spacearmada.actors.ships.player.Energy;
 public abstract class CollidableActor extends AbstractActor implements Collidable {
 
 
-    public CollidableActor(AnimationDefinitionGroup animationInfoService, int x, int y, int initialEnergy){
-        super(animationInfoService,x,y);
+    public CollidableActor(AnimationDefinitionGroup animationDefinitionGroup, int x, int y, int initialEnergy){
+        super(animationDefinitionGroup,x,y);
         energy = new Energy(initialEnergy, (initialEnergy / 5) * 3, initialEnergy / 4);
     }
 

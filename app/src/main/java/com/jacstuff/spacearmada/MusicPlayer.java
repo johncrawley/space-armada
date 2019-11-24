@@ -15,8 +15,9 @@ public class MusicPlayer {
     }
 
     public void release(){
+        if(mediaPlayer.isPlaying()){
         mediaPlayer.release();
-        this.isReleased = true;
+        this.isReleased = true;}
     }
 
     public void pause(){
