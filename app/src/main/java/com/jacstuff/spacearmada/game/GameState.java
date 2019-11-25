@@ -169,7 +169,7 @@ public class GameState implements State {
     private void initBackgroundTiles(){
         Log.i("GameState", "Entered init background tiles");
         backgroundTiles = new BackgroundTiles(context, 4,1, canvasWidth, gameScreenBounds.top, gameScreenBounds.bottom);
-/*
+
         backgroundTiles.addTiles(
                 R.drawable.level1_bg_1,
                 R.drawable.level1_bg_2,
@@ -183,10 +183,10 @@ public class GameState implements State {
                 R.drawable.level1_bg_10,
                 R.drawable.level1_bg_11,
                 R.drawable.level1_bg_12);
-  */
 
-        backgroundTiles.addTiles(
-                R.drawable.level1_bg_1);
+
+    //    backgroundTiles.addTiles(
+      //          R.drawable.level1_bg_1);
 
     }
 
@@ -342,15 +342,23 @@ class GamePlay extends AbstractGameStateHandlerImpl{
         projectileManager.update();
         collisionDetectionManager.detect();
         playerShip.updateAnimation();
+        updateBackgroundTiles();
+
+        if(gameOverTimer <= 0){
+            gameState.setCurrentGameStateHandler( new GameEnding(context, gameState));
+        }
+    }
+
+
+    private void updateBackgroundTiles(){
+
         if(playerShip.isDead()){
             gameOverTimer--;
         }
         else{
-           // backgroundTiles.update();
+            backgroundTiles.update();
         }
-        if(gameOverTimer <= 0){
-            gameState.setCurrentGameStateHandler( new GameEnding(context, gameState));
-        }
+
     }
 
 }

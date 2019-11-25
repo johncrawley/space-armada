@@ -22,7 +22,10 @@ public class BackgroundTiles {
     private int gameScreenBottom;
     private int tilesToDraw;
     private int bottomDrawnTileIndex; // this is all assuming that we are vertical scrolling, with the drawables moving downwards
-
+    private int initialTileTopY;
+    private int nextInitialY;
+    private int updateCounterMax = 3;
+    private int updateCounter;
 
     public BackgroundTiles(Context context, int tilesToDraw, int scrollSpeed, int screenWidth, int gameScreenTop, int gameScreenBottom){
         tiles = new ArrayList<>();
@@ -40,8 +43,6 @@ public class BackgroundTiles {
         nextInitialY = initialTileTopY;
     }
 
-    private int initialTileTopY;
-    private int nextInitialY;
 
     public void addTiles(int ... resIds){
         for(int resId : resIds) {
@@ -68,9 +69,24 @@ public class BackgroundTiles {
     }
 
     private void offsetDrawnTiles(){
-        for(int i = 0; i < tilesToDraw; i++){
-            tiles.get(i).offsetY(scrollSpeed);
+        if(shouldUpdate()) {
+            for (int i = 0; i < tilesToDraw; i++) {
+                offsetTile(i);
+            }
         }
+    }
 
+
+    private void offsetTile(int index){
+        tiles.get(index).offsetY(scrollSpeed);
+    }
+
+    private boolean shouldUpdate(){
+        updateCounter++;
+        if(updateCounter > updateCounterMax){
+            updateCounter = 0;
+            return true;
+        }
+        return false;
     }
 }
