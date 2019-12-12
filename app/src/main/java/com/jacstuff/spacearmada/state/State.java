@@ -5,7 +5,7 @@ import android.graphics.Paint;
 
 import java.util.List;
 
-import com.jacstuff.spacearmada.TouchPoint;
+import com.jacstuff.spacearmada.controls.TouchPoint;
 
 /**
  * Created by john on 11/04/18.

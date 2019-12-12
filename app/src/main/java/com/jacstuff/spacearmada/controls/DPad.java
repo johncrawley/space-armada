@@ -6,13 +6,10 @@ package com.jacstuff.spacearmada.controls;
  * based on whether or not an x,y falls between particular segments of the dpad circle;
  */
 
-        import android.util.Log;
-
         import java.util.HashMap;
         import java.util.List;
         import java.util.Map;
         import com.jacstuff.spacearmada.Direction;
-        import com.jacstuff.spacearmada.TouchPoint;
         import com.jacstuff.spacearmada.commands.Command;
 
 /**

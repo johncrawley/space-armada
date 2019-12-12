@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.jacstuff.spacearmada.Direction;
+import com.jacstuff.spacearmada.music.MusicPlayer;
 import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.actors.ActorState;
 import com.jacstuff.spacearmada.actors.animation.AnimationDefinitionGroup;
@@ -21,11 +22,10 @@ import com.jacstuff.spacearmada.actors.ships.ControllableShip;
 
 public class PlayerShip extends CollidableActor implements ControllableShip {
 
-        // String mode;
-        private Direction direction;
 
+        private Direction direction;
         private int updateCount = 0;
-        private int fireDelay = 5;
+        private int fireDelay = 5; //TODO: move into a bullet class
         private int currentFireIteration = 0;
         private Score score;
         private boolean isFiring = false;
@@ -33,10 +33,8 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
         private ProjectileManager projectileManager;
         private boolean canFireWeapons = true;
         private boolean canMove = true;
-        private MediaPlayer mediaPlayer; // TODO: MediaPlayer reference shouldn't be in the actor class, need a separate class to handle sounds
-        private boolean isMediaPlayerActive = true;
-        private Rect gameScreenBounds; // the space that the ship is allowed to move in.
-        //private WeaponsManager weaponsManager;
+        private MusicPlayer musicPlayer;
+        private Rect gameScreenBounds;
 
 
         PlayerShip(Context context, float initialX, float initialY, int shield, int speed, AnimationDefinitionGroup animationInfoService, ProjectileManager projectileManager){
@@ -45,6 +43,7 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
                     (int)initialY,
                     shield);
 
+            musicPlayer = new MusicPlayer(context);
             this.gameScreenBounds = new Rect(0,0,400,640);
             direction = Direction.NONE;
 
@@ -52,7 +51,6 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
             this.score = new Score(8);
             tempRect = new Rect(0,0,0,0);
             this.projectileManager = projectileManager;
-            mediaPlayer = MediaPlayer.create(context, R.raw.bloop1_short );
         }
 
         public boolean isDead(){
@@ -74,15 +72,38 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
 
         public void fire(){
             isFiring = true;
-            playSound();
+            musicPlayer.playLoopingSound(R.raw.bloop1_short);
         }
 
         public void releaseFire(){
             isFiring = false;
-            if(isMediaPlayerActive && mediaPlayer != null){
-                mediaPlayer.setLooping(false);
+            musicPlayer.stopLoopingSound();
+        }
+
+
+        public void update(){
+            updateDirection();
+            releaseBulletIfFiring();
+            killShipIfEnergyGone();
+        }
+
+        private void releaseBulletIfFiring(){
+            if(isFiring){
+                fireBulletIfDelayCompleted();
             }
         }
+
+
+        private void fireBulletIfDelayCompleted(){
+
+            currentFireIteration++;
+            if(currentFireIteration >= fireDelay){
+                currentFireIteration = 0;
+                fireBullet();
+            }
+
+        }
+
 
         private void fireBullet(){
             if(!canFireWeapons){
@@ -94,34 +115,22 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
         }
 
 
-    private void playSound(){
 
-        if(isMediaPlayerActive){
-            if(!mediaPlayer.isPlaying()){
-                mediaPlayer.setLooping(true);
-                mediaPlayer.start();
-            }
-        }
-
-    }
-
-        public void update(){
-            updateDirection();
-            if(isFiring){
-                currentFireIteration++;
-                if(currentFireIteration >= fireDelay){
-                    currentFireIteration = 0;
-                    fireBullet();
-                }
-            }
-            if(this.getEnergy().isDepleted() && isAlive()){
+        private void killShipIfEnergyGone(){
+            if(isEnergyGoneButStillAlive()){
                 setState(ActorState.DESTROYING);
                 canFireWeapons = false;
                 canMove = false;
-                mediaPlayer.setLooping(false);
-                isMediaPlayerActive = false;
+                musicPlayer.release();
             }
+
         }
+
+        private boolean isEnergyGoneButStillAlive(){
+            return this.getEnergy().isDepleted() && isAlive();
+
+        }
+
 
         private boolean isAlive(){
             return getState() != ActorState.DESTROYING && getState() != ActorState.DESTROYED;
@@ -163,7 +172,6 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
 
         public void setDirection(Direction direction){
             this.direction = direction;
-            //Log.i("basicActor","Setting direction: " + direction);
         }
 
 
@@ -180,9 +188,7 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
         updateTempRect(xOffset, yOffset);
         if(gameScreenBounds.contains(tempRect)){
             offsetBounds(xOffset, yOffset);
-           // boundingBox.offset(xOffset, yOffset);
         }
-       // Log.i("PlayerShip moveDrawable", "updated x,y : " + drawable.getBounds().left + " " + drawable.getBounds().top );
     }
 
     private void updateTempRect(int xOffset, int yOffset){

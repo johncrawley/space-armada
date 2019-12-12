@@ -6,12 +6,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
-import android.util.Log;
 
-import com.jacstuff.spacearmada.MusicPlayer;
+import com.jacstuff.spacearmada.music.MusicPlayer;
 import com.jacstuff.spacearmada.R;
-import com.jacstuff.spacearmada.TouchPoint;
+import com.jacstuff.spacearmada.controls.TouchPoint;
 import com.jacstuff.spacearmada.managers.DefaultDrawableLoader;
 import com.jacstuff.spacearmada.managers.DrawableLoader;
 
@@ -19,9 +17,6 @@ import java.util.List;
 
 public class TitleState implements  State {
 
-
-    private DrawableLoader imageLoader;
-    private Rect bounds;
     private int border = 50;
     private int topBorder = 150;
     private StateManager stateManager;
@@ -48,8 +43,8 @@ public class TitleState implements  State {
 
 
     private void initTitleGraphics(int canvasWidth, int canvasHeight){
-        imageLoader = new DefaultDrawableLoader(context);
-        bounds = new Rect(0,0,canvasWidth, canvasHeight);
+        DrawableLoader imageLoader = new DefaultDrawableLoader(context);
+        Rect bounds = new Rect(0,0,canvasWidth, canvasHeight);
         title = imageLoader.getDrawable(R.drawable.title);
         title.setBounds(border, topBorder, bounds.right - border, 600);
         background = imageLoader.getDrawable(R.drawable.title_bg);
@@ -130,22 +125,28 @@ public class TitleState implements  State {
 
     @Override
     public void handleTouchPoints(List<TouchPoint> touchPoints) {
-        if(noClickCounter < noClickLimit){
+        if(isTooSoonToRegisterClickEvents()){
             return;
         }
-        boolean goToGameState = false;
+        stopMusicAndGoToNextStateOnTouch(touchPoints);
+    }
+
+
+    private void stopMusicAndGoToNextStateOnTouch(List<TouchPoint> touchPoints){
+
         for (TouchPoint touchPoint : touchPoints) {
             if (!touchPoint.isRelease()) {
-                goToGameState = true;
+                musicPlayer.release();
+                stateManager.setState(StateManager.StateCode.GAME);
                 break;
             }
         }
-        if (goToGameState) {
-            Log.i("TitleState", "hello!");
-            musicPlayer.release();
-            stateManager.setState(StateManager.StateCode.GAME);
-        }
     }
+
+    private boolean isTooSoonToRegisterClickEvents(){
+        return noClickCounter < noClickLimit;
+    }
+
 
     @Override
     public void destroy(){

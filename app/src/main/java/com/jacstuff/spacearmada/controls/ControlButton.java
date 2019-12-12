@@ -3,7 +3,6 @@ package com.jacstuff.spacearmada.controls;
 import java.util.List;
 
 
-import com.jacstuff.spacearmada.TouchPoint;
 import com.jacstuff.spacearmada.commands.Command;
 
 /**

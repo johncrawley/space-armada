@@ -1,4 +1,4 @@
-package com.jacstuff.spacearmada;
+package com.jacstuff.spacearmada.controls;
 
 /**
  * Created by John on 18/09/2017.

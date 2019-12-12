@@ -4,7 +4,7 @@ import android.content.Context;
 import java.util.List;
 
 import com.jacstuff.spacearmada.Direction;
-import com.jacstuff.spacearmada.TouchPoint;
+import com.jacstuff.spacearmada.controls.TouchPoint;
 import com.jacstuff.spacearmada.actors.ships.ControllableShip;
 import com.jacstuff.spacearmada.commands.Command;
 import com.jacstuff.spacearmada.commands.FireCommand;

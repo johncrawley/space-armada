@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.jacstuff.spacearmada.controls.TouchPoint;
 import com.jacstuff.spacearmada.state.StateManager;
 
 /**

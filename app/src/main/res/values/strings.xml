@@ -4,4 +4,6 @@
     <string name="game_over_text">GAME OVER</string>
     <string name="music_credit">Music: https://www.bensound.com/royalty-free-music</string>
     <string name="tap_to_start">TAP TO START A NEW GAME</string>
+
+    <string name="is_level_music">false</string>
 </resources>

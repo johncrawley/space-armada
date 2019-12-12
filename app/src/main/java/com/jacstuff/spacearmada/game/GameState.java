@@ -11,10 +11,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import com.jacstuff.spacearmada.MusicPlayer;
+import com.jacstuff.spacearmada.music.BackgroundMusicPlayer;
+import com.jacstuff.spacearmada.music.MusicPlayer;
 import com.jacstuff.spacearmada.R;
-import com.jacstuff.spacearmada.TouchPoint;
-import com.jacstuff.spacearmada.actors.animation.AnimationDefinitionGroup;
+import com.jacstuff.spacearmada.controls.TouchPoint;
 import com.jacstuff.spacearmada.actors.background.BackgroundTiles;
 import com.jacstuff.spacearmada.actors.ships.player.PlayerShip;
 import com.jacstuff.spacearmada.actors.ships.player.PlayerShipFactory;
@@ -183,10 +183,6 @@ public class GameState implements State {
                 R.drawable.level1_bg_10,
                 R.drawable.level1_bg_11,
                 R.drawable.level1_bg_12);
-
-
-    //    backgroundTiles.addTiles(
-      //          R.drawable.level1_bg_1);
 
     }
 
