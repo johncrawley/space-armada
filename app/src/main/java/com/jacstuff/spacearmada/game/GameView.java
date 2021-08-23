@@ -9,7 +9,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,22 +31,20 @@ import com.jacstuff.spacearmada.managers.InputControlsManager;
 
 class GameView {
 
-
     private InputControlsManager controls;
    // private List<DrawableItemGroup> drawableItemGroups;
-    private List<DrawableItemGroup> bitmapItemGroups;
-    private List<DrawableItem> drawableItems;
-
+    private final List<DrawableItemGroup> bitmapItemGroups;
+    private final List<DrawableItem> drawableItems;
     private int gameScreenTop;
     private int gameScreenBottom, gameScreenWidth;
     private BackgroundTiles backgroundTiles;
     private String scoreLabel, gameOverText;
     private Drawable dpadDrawable, fireButtonDrawable;
     private Paint gameOverTextPaint;
-    private Context context;
+    private final Context context;
     private Paint topPanelPaint;
     private Paint bottomPanelPaint;
-    private BitmapManager bitmapManager;
+    private final BitmapManager bitmapManager;
     private Score score;
     private Energy energy;
 
@@ -63,23 +60,21 @@ class GameView {
         initLabels();
         initGameOverTextPaint();
         initPanelPaint();
-        Log.i("GameView", "exiting constructor!");
     }
 
-    private void initBounds(int gameScreenTop, int gameScreenBottom, int gameScreenWidth){
 
+    private void initBounds(int gameScreenTop, int gameScreenBottom, int gameScreenWidth){
         this.gameScreenTop = gameScreenTop;
         this.gameScreenBottom = gameScreenBottom;
         this.gameScreenWidth = gameScreenWidth;
-
     }
+
 
     private void initLabels(){
-
         scoreLabel = context.getResources().getString(R.string.score_text);
         gameOverText = context.getResources().getString(R.string.game_over_text);
-
     }
+
 
     private void initPanelPaint(){
         int darkGrey = Color.rgb(66,66,66);
@@ -102,6 +97,7 @@ class GameView {
         initDrawableFromCircleCoordinates(fireButtonDrawable, controls.getFireButton());
     }
 
+
     private void initDrawableFromCircleCoordinates(Drawable drawable, CircularControl circularControl){
         int centreX = (int)circularControl.getCentreX();
         int centreY = (int)circularControl.getCentreY();
@@ -112,13 +108,10 @@ class GameView {
     }
 
 
-
     void register(InputControlsManager inputControlsManager){
         this.controls = inputControlsManager;
         initControlDrawables(context);
     }
-
-
 
 
     void register(DrawableItem drawableItem){
@@ -133,6 +126,7 @@ class GameView {
         this.bitmapItemGroups.add(bitmapGroup);
     }
 
+
     void setBackgroundTiles(BackgroundTiles backgroundTiles){
         this.backgroundTiles = backgroundTiles;
     }
@@ -145,6 +139,7 @@ class GameView {
         drawItemsInGroupsList(canvas, paint);
         drawItemsInList(canvas, paint, drawableItems);
     }
+
 
     private void drawItemsInGroupsList(Canvas canvas, Paint paint){
         for(DrawableItemGroup group : bitmapItemGroups){
@@ -171,9 +166,7 @@ class GameView {
     }
 
 
-
     private void drawBitmap(Canvas canvas, Paint paint, DrawInfo drawInfo){
-
        Bitmap bitmap = bitmapManager.getBitmap(drawInfo);
        if(bitmap == null || canvas == null || paint == null){
            return;
@@ -181,16 +174,6 @@ class GameView {
        canvas.drawBitmap(bitmap , drawInfo.getX(), drawInfo.getY(), paint);
     }
 
-    private int logLimit = 30;
-    private int currentLog = 0;
-
-    void logDraw(){
-        currentLog+=1;
-        if(currentLog > logLimit){
-            //Log.i("GameView draw", "calling draw()");
-            currentLog = 0;
-        }
-    }
 
     void draw(Canvas canvas, Paint paint){
         //logDraw();
@@ -205,16 +188,16 @@ class GameView {
        // drawInfo(canvas, paint);
     }
 
-    private void drawInfo(Canvas canvas, Paint paint){
 
+    private void drawInfo(Canvas canvas, Paint paint){
         int color = paint.getColor();
         paint.setColor(Color.WHITE);
         canvas.drawText(" drawableItems count: " + drawableItems.size(), 100, 100, paint);
         paint.setColor(color);
     }
 
-    private void drawPlainBackground(Canvas canvas, Paint paint){
 
+    private void drawPlainBackground(Canvas canvas, Paint paint){
         int currentColor = paint.getColor();
         paint.setColor(Color.BLACK);
         Rect r = new Rect(0,0, gameScreenWidth, gameScreenBottom);
@@ -223,8 +206,6 @@ class GameView {
 
 
     }
-
-
 
 
     void drawGameOver(Canvas canvas, Paint paint){
@@ -258,11 +239,11 @@ class GameView {
 
 
     private void drawBackground(Canvas canvas, Paint paint){
-
           for(Tile tile : backgroundTiles.getTiles()){
               canvas.drawBitmap(tile.getBitmap(),0, tile.getY(), paint);
           }
     }
+
 
     private void drawControls(Canvas canvas){
        dpadDrawable.draw(canvas);
@@ -270,10 +251,10 @@ class GameView {
     }
 
 
-
     private void drawTopPanel(Canvas canvas){
         canvas.drawRect(0,0,canvas.getWidth(),gameScreenTop, topPanelPaint);
     }
+
 
     private void drawBottomPanel(Canvas canvas){
         int panelHeight = canvas.getHeight() - gameScreenBottom;
@@ -284,9 +265,9 @@ class GameView {
     private void drawScore(Canvas canvas, Paint paint){
         paint.setColor(Color.LTGRAY);
         paint.setTextSize(40);
-        canvas.drawText(scoreLabel + score.get(), canvas.getWidth() - 350, gameScreenTop/2 + 12, paint);
-
+        canvas.drawText(scoreLabel + score.get(), canvas.getWidth() - 350, gameScreenTop/2f + 12, paint);
     }
+
 
     private void drawShipHealth(Canvas canvas, Paint paint){
         int healthChunkWidth = 15;

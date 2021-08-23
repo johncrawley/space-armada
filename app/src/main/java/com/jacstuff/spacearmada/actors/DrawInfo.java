@@ -1,8 +1,7 @@
 package com.jacstuff.spacearmada.actors;
 
 
-import android.support.annotation.NonNull;
-import android.util.Log;
+import androidx.annotation.NonNull;
 
 import com.jacstuff.spacearmada.actors.animation.AnimationDefinitionGroup;
 
