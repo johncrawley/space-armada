@@ -11,7 +11,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import com.jacstuff.spacearmada.music.BackgroundMusicPlayer;
 import com.jacstuff.spacearmada.music.MusicPlayer;
 import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.controls.TouchPoint;
@@ -40,27 +39,27 @@ import com.jacstuff.spacearmada.utils.ImageLoader;
 
 public class GameState implements State {
 
-    private StateManager stateManager;
+    private final StateManager stateManager;
     private EnemyShipManager enemyShipManager;
     private InputControlsManager inputControlsManager;
     private CollisionDetectionManager collisionDetectionManager;
     private ProjectileManager projectileManager;
-    private ImageLoader imageLoader;
+    private final ImageLoader imageLoader;
     private GameView gameView;
     private ExecutorService enemySpawningService = Executors.newCachedThreadPool();
-    private ScheduledExecutorService animationService = Executors.newScheduledThreadPool(4);
-    private BackgroundTiles backgroundTiles;
+    private final ScheduledExecutorService animationService = Executors.newScheduledThreadPool(4);
+    private final BackgroundTiles backgroundTiles;
     private int canvasWidth, canvasHeight;
     private PlayerShip playerShip;
-    private Context context;
+    private final Context context;
     private MusicPlayer musicPlayer;
     private Rect gameScreenBounds;
 
-    private TimedActionManager timedActionManager;
     private GameStateHandler currentGameStateHandler;
     private EnemyCreatorTask enemyCreatorTask;
-    private BitmapLoader bitmapLoader;
-    private BitmapManager bitmapManager;
+    private final BitmapManager bitmapManager;
+    private int currentLog = 0;
+
 
     public GameState(StateManager stateManager, Context context, int canvasWidth, int canvasHeight){
         this.stateManager = stateManager;
@@ -68,19 +67,19 @@ public class GameState implements State {
         this.context = context;
         imageLoader = new ImageLoader(context, canvasWidth, canvasHeight);
         bitmapManager = new SimpleBitmapManagerImpl();
-        bitmapLoader = new SimpleBitmapLoader(context, bitmapManager, gameScreenBounds.right, gameScreenBounds.bottom);
-        bitmapLoader.load();
-        timedActionManager = new TimedActionManager();
+        BitmapLoader bitmapLoader = new SimpleBitmapLoader(context, bitmapManager);
+        TimedActionManager timedActionManager = new TimedActionManager();
 
         initShipsControlsAndProjectiles(bitmapLoader);
         createEnemyThread();
         initAnimtionThread();
-        initBackgroundTiles();
+        backgroundTiles = new BackgroundTiles(context, 4,1, gameScreenBounds.top, gameScreenBounds.bottom);
         initView();
         initMusicPlayer(context);
        this.currentGameStateHandler = new GamePlay(context, this);
        enemyShipManager.createShip(400,100);
     }
+
 
     private void setupScreenBounds(int top, int width, int bottom){
         int gameScreenTop = 120;
@@ -91,13 +90,11 @@ public class GameState implements State {
 
     }
 
+
     public void update(){
         currentGameStateHandler.update();
     }
 
-
-
-    private int currentLog = 0;
 
     private void logDraw(){
         int logLimit = 30;
@@ -110,7 +107,6 @@ public class GameState implements State {
 
 
     public void draw(Canvas canvas, Paint paint){
-
         logDraw();
         currentGameStateHandler.draw(canvas, paint);
     }
@@ -122,11 +118,14 @@ public class GameState implements State {
         enemyCreatorTask.setInactive();
         enemySpawningService.shutdown();
     }
+
+
     public void onResume(){
         log("GameState onResume()");
         musicPlayer.resume();
         createEnemyThread();
     }
+
 
     @Override
     public void destroy(){
@@ -140,6 +139,7 @@ public class GameState implements State {
             log("Interrupted shutting down enemy spawning service: " + e.getMessage());
         }
     }
+
 
     private void createEnemyThread(){
         enemyCreatorTask = new EnemyCreatorTask(enemyShipManager, canvasWidth, 90);
@@ -158,6 +158,7 @@ public class GameState implements State {
         collisionDetectionManager = new CollisionDetectionManager(playerShip, enemyShipManager, projectileManager);
     }
 
+
     private void initControls(){
         int dpadRadius = 150;
         int dpadCentreY = gameScreenBounds.bottom + ( canvasHeight - gameScreenBounds.bottom ) /2;
@@ -166,45 +167,27 @@ public class GameState implements State {
         inputControlsManager.setDpadPosition(dpadCentreX, dpadCentreY, dpadRadius);
     }
 
-    private void initBackgroundTiles(){
-        Log.i("GameState", "Entered init background tiles");
-        backgroundTiles = new BackgroundTiles(context, 4,1, canvasWidth, gameScreenBounds.top, gameScreenBounds.bottom);
-
-        backgroundTiles.addTiles(
-                R.drawable.level1_bg_1,
-                R.drawable.level1_bg_2,
-                R.drawable.level1_bg_3,
-                R.drawable.level1_bg_4,
-                R.drawable.level1_bg_5,
-                R.drawable.level1_bg_6,
-                R.drawable.level1_bg_7,
-                R.drawable.level1_bg_8,
-                R.drawable.level1_bg_9,
-                R.drawable.level1_bg_10,
-                R.drawable.level1_bg_11,
-                R.drawable.level1_bg_12);
-
-    }
 
     private void initMusicPlayer(Context context){
         musicPlayer = new MusicPlayer(context);
         musicPlayer.playTrack(R.raw.bensound_straight);
     }
 
+
     private void log(String msg){
         Log.i("GameState", msg);
     }
 
+
     private void initView(){
         log("Entered initView()");
         gameView = new GameView(context, bitmapManager, gameScreenBounds.top, gameScreenBounds.bottom, gameScreenBounds.right);
-
         gameView.register(playerShip.getEnergy());
         gameView.register(playerShip.getScore());
         gameView.register(playerShip);
         gameView.register(inputControlsManager);
-       gameView.registerBitmapGroup(enemyShipManager);
-       gameView.registerBitmapGroup(projectileManager);
+        gameView.registerBitmapGroup(enemyShipManager);
+        gameView.registerBitmapGroup(projectileManager);
         gameView.setBackgroundTiles(backgroundTiles);
         log("background tiles assigned to view");
     }
@@ -216,6 +199,7 @@ public class GameState implements State {
         animationService.scheduleAtFixedRate(animatorTask, 0,100, TimeUnit.MILLISECONDS);
     }
 
+    /*
     public void finish(){
         this.stateManager = null;
         animationService.shutdown();
@@ -227,184 +211,66 @@ public class GameState implements State {
         this.currentGameStateHandler = null;
     }
 
+     */
+
+
     public void handleTouchPoints(List<TouchPoint> touchPoints){
         currentGameStateHandler.handleTouchPoints(touchPoints);
     }
+
 
     void setCurrentGameStateHandler(GameStateHandler gameStateHandler){
         this.currentGameStateHandler = gameStateHandler;
     }
 
+
     BackgroundTiles getBackgroundTiles() {
         return backgroundTiles;
     }
-    CollisionDetectionManager getCollisionDetectionManager() {
-        return collisionDetectionManager;
-
-    }
+    CollisionDetectionManager getCollisionDetectionManager() { return collisionDetectionManager; }
     EnemyShipManager getEnemyShipManager() {
         return enemyShipManager;
     }
+
+
     public ImageLoader getImageLoader() {
         return imageLoader;
     }
+
+
     GameView getGameView() {
         return gameView;
     }
+
+
     InputControlsManager getInputControlsManager() {
         return inputControlsManager;
     }
+
+
     ProjectileManager getProjectileManager() {
         return projectileManager;
     }
+
+
     StateManager getStateManager() {
         return stateManager;
     }
+
+
     public GameStateHandler getCurrentGameStateHandler() {
         return currentGameStateHandler;
     }
+
+
     PlayerShip getPlayerShip() {
         return playerShip;
     }
+
+
     MusicPlayer getMusicPlayer(){
         return this.musicPlayer;
     }
 }
 
 
-interface GameStateHandler{
-    void handleTouchPoints(List<TouchPoint> touchPoints);
-    void draw(Canvas canvas, Paint paint);
-    void update();
-}
-
-
-abstract class AbstractGameStateHandlerImpl implements GameStateHandler{
-
-    InputControlsManager inputControlsManager;
-    StateManager stateManager;
-    MusicPlayer musicPlayer;
-    GameView    gameView;
-    BackgroundTiles backgroundTiles;
-    EnemyShipManager enemyShipManager;
-    PlayerShip playerShip;
-    ProjectileManager projectileManager;
-    CollisionDetectionManager collisionDetectionManager;
-    Context context;
-    GameState gameState;
-
-
-    AbstractGameStateHandlerImpl(Context context, GameState gameState){
-        this.gameState = gameState;
-        this.context = context;
-        this.backgroundTiles = gameState.getBackgroundTiles();
-        this.gameView = gameState.getGameView();
-        this.enemyShipManager = gameState.getEnemyShipManager();
-        this.collisionDetectionManager = gameState.getCollisionDetectionManager();
-        this.projectileManager = gameState.getProjectileManager();
-        this.playerShip = gameState.getPlayerShip();
-        this.inputControlsManager = gameState.getInputControlsManager();
-        this.musicPlayer = gameState.getMusicPlayer();
-        this.stateManager = gameState.getStateManager();
-    }
-}
-
-
-class GamePlay extends AbstractGameStateHandlerImpl{
-
-    GamePlay(Context context, GameState gameState){
-        super(context, gameState);
-    }
-
-    public void handleTouchPoints(List<TouchPoint> touchPoints){
-        if(inputControlsManager == null){
-            return;
-        }
-        inputControlsManager.process(touchPoints);
-    }
-
-    @Override
-    public void draw(Canvas canvas, Paint paint) {
-        gameView.draw(canvas,paint);
-    }
-
-    private int gameOverTimer = 150;
-
-    @Override
-    public void update() {
-
-        enemyShipManager.update();
-        playerShip.update();
-        projectileManager.update();
-        collisionDetectionManager.detect();
-        playerShip.updateAnimation();
-        updateBackgroundTiles();
-
-        if(gameOverTimer <= 0){
-            gameState.setCurrentGameStateHandler( new GameEnding(context, gameState));
-        }
-    }
-
-
-    private void updateBackgroundTiles(){
-
-        if(playerShip.isDead()){
-            gameOverTimer--;
-        }
-        else{
-            backgroundTiles.update();
-        }
-
-    }
-
-}
-/*
-
-    player ship has been destroyed
-        controls are locked
-        control panel disappears
-        main music stops
-        game-over music plays
-        game-over message appears x seconds after ship has been destroyed
- */
-class GameEnding extends AbstractGameStateHandlerImpl{
-
-    GameEnding(Context context, GameState gameState){
-        super(context, gameState);
-        init();
-    }
-
-    private void init(){
-
-        musicPlayer.release();
-        musicPlayer.playTrack(R.raw.game_over_1, false);
-    }
-
-    @Override
-    public void handleTouchPoints(List<TouchPoint> touchPoints) {
-        if(nextStateCountdown <= 0){
-            musicPlayer.release();
-            gameState.destroy();
-            Log.i("GameEnding", "gameState.destroy() called.");
-            stateManager.setState(StateManager.StateCode.TITLE);
-
-        }
-    }
-
-    private int nextStateCountdown = 20;
-
-    @Override
-    public void update() {
-        nextStateCountdown--;
-        enemyShipManager.update();
-        projectileManager.update();
-        //if(nextStateCountdown <= 0){
-           // gameState.setCurrentGameStateHandler(new GameOverScreen(context, gameState));
-        //}
-    }
-
-    @Override
-    public void draw(Canvas canvas, Paint paint) {
-        gameView.drawGameOver(canvas, paint);
-    }
-}

@@ -7,31 +7,32 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
+import com.jacstuff.spacearmada.R;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class BackgroundTiles {
 
-    private List<Tile> tiles;
+    private final List<Tile> tiles;
 
-    private int scrollSpeed, screenWidth;
-    private int tileHeight;
-    private Context context;
-    private int gameScreenTop;
-    private int gameScreenBottom;
-    private int tilesToDraw;
-    private int bottomDrawnTileIndex; // this is all assuming that we are vertical scrolling, with the drawables moving downwards
-    private int initialTileTopY;
+    private final int scrollSpeed;
+    private final int tileHeight;
+    private final Context context;
+    private final int gameScreenTop;
+    private final int gameScreenBottom;
+    private final int tilesToDraw;
+    private final int bottomDrawnTileIndex; // this is all assuming that we are vertical scrolling, with the drawables moving downwards
+    private final int initialTileTopY;
     private int nextInitialY;
-    private int updateCounterMax = 3;
+    private final int updateCounterMax = 3;
     private int updateCounter;
 
-    public BackgroundTiles(Context context, int tilesToDraw, int scrollSpeed, int screenWidth, int gameScreenTop, int gameScreenBottom){
+    public BackgroundTiles(Context context, int tilesToDraw, int scrollSpeed, int gameScreenTop, int gameScreenBottom){
         tiles = new ArrayList<>();
         this.context = context;
         this.scrollSpeed = scrollSpeed;
-        this.screenWidth = screenWidth;
         this.gameScreenBottom = gameScreenBottom;
         this.gameScreenTop = gameScreenTop;
         this.tilesToDraw = tilesToDraw;
@@ -41,6 +42,7 @@ public class BackgroundTiles {
 
         initialTileTopY = gameScreenTop - tileHeight;
         nextInitialY = initialTileTopY;
+        addBackgroundTiles();
     }
 
 
@@ -49,6 +51,23 @@ public class BackgroundTiles {
             tiles.add(new Tile(BitmapFactory.decodeResource(context.getResources(), resId), nextInitialY, initialTileTopY));
             nextInitialY += tileHeight;
         }
+    }
+
+
+    public void addBackgroundTiles(){
+        addTiles(
+                R.drawable.level1_bg_1,
+                R.drawable.level1_bg_2,
+                R.drawable.level1_bg_3,
+                R.drawable.level1_bg_4,
+                R.drawable.level1_bg_5,
+                R.drawable.level1_bg_6,
+                R.drawable.level1_bg_7,
+                R.drawable.level1_bg_8,
+                R.drawable.level1_bg_9,
+                R.drawable.level1_bg_10,
+                R.drawable.level1_bg_11,
+                R.drawable.level1_bg_12);
     }
 
     public List<Tile> getTiles(){

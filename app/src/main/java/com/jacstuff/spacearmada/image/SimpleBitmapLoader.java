@@ -17,37 +17,31 @@ import java.util.Map;
 
 public class SimpleBitmapLoader implements BitmapLoader {
 
-    private Context context;
-    private BitmapManager bitmapManager;
-    private int screenWidth, screenHeight;
-    private Map<String, AnimationDefinitionGroup> animationDefinitionGroups;
-    private int scale;
+    private final Context context;
+    private final BitmapManager bitmapManager;
+    private final Map<String, AnimationDefinitionGroup> animationDefinitionGroups;
+    private final int scale;
 
 
-    public SimpleBitmapLoader(Context context, BitmapManager bitmapManager, int screenWidth, int screenHeight){
+    public SimpleBitmapLoader(Context context, BitmapManager bitmapManager){
         this.context = context;
         this.bitmapManager = bitmapManager;
-        this.screenWidth = screenWidth;
-        this.screenHeight = screenHeight;
         this.scale = 2;
         animationDefinitionGroups = new HashMap<>();
+        load();
     }
-
 
 
     @Override
     public void load(){
-        //TODO: loads lots of other actor bitmaps as well
-        Log.i("SimpleBitmapLoader", "Entered load()");
         loadPlayerShipBitmaps();
         loadBulletBitmaps();
         loadEnemyShipBitmaps();
     }
 
+
     public AnimationDefinitionGroup getAnimationDefinitionGroup(String family){
-
         return animationDefinitionGroups.get(family);
-
     }
 
 
@@ -55,7 +49,6 @@ public class SimpleBitmapLoader implements BitmapLoader {
     private void loadEnemyShipBitmaps(){
         String groupName = "ENEMY_SHIPS";
         AnimationDefinitionGroup animationDefinitionGroup = new AnimationDefinitionGroup(groupName);
-
         registerGroup(ActorState.DEFAULT, animationDefinitionGroup, R.drawable.ship2);
         registerGroup(ActorState.DESTROYING, ActorState.DESTROYED, animationDefinitionGroup,
                     R.drawable.ship2e1,
@@ -63,24 +56,20 @@ public class SimpleBitmapLoader implements BitmapLoader {
                     R.drawable.ship2e3,
                     R.drawable.ship2e4);
         registerGroup(ActorState.DESTROYED, animationDefinitionGroup, R.drawable.ship2e5);
-
         animationDefinitionGroups.put(groupName, animationDefinitionGroup);
     }
+
 
     private void loadPlayerShipBitmaps() {
         String groupName = "PLAYER_SHIP";
         AnimationDefinitionGroup animationDefinitionGroup = new AnimationDefinitionGroup(groupName);
-
         registerGroup(ActorState.DEFAULT, animationDefinitionGroup, R.drawable.ship1);
-
         registerGroup(ActorState.DESTROYING, ActorState.DESTROYED, animationDefinitionGroup,
                 R.drawable.ship1e1,
                 R.drawable.ship1e2,
                 R.drawable.ship1e3,
                 R.drawable.ship1e4);
-
         registerGroup(ActorState.DESTROYED, animationDefinitionGroup, R.drawable.ship1e5);
-
         animationDefinitionGroups.put(groupName, animationDefinitionGroup);
     }
 
@@ -95,18 +84,15 @@ public class SimpleBitmapLoader implements BitmapLoader {
 
     private void registerGroup(ActorState state, AnimationDefinitionGroup animationDefinitionGroup, Integer... ids) {
         registerGroup(state, false, null, animationDefinitionGroup, ids);
-
-
     }
+
+
     private void registerGroup(ActorState state, ActorState nextState, AnimationDefinitionGroup animationDefinitionGroup, Integer... ids) {
         registerGroup(state, false, nextState, animationDefinitionGroup, ids);
-
-
     }
 
 
     private void registerGroup(ActorState state, boolean doesLoop, ActorState nextState, AnimationDefinitionGroup animationDefinitionGroup, Integer... ids){
-
         List<Bitmap> bitmaps = getBitmaps(ids);
         bitmapManager.register(animationDefinitionGroup.getGroupName(), state, bitmaps);
 
@@ -122,7 +108,6 @@ public class SimpleBitmapLoader implements BitmapLoader {
     }
 
 
-
     private List<Bitmap> getBitmaps(Integer...resIds){
         List<Bitmap> bitmaps = new ArrayList<>(resIds.length);
         for(int id : resIds){
@@ -131,14 +116,11 @@ public class SimpleBitmapLoader implements BitmapLoader {
         return bitmaps;
     }
 
-    private Bitmap getBitmap(int resId) {
 
+    private Bitmap getBitmap(int resId) {
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inSampleSize = scale;
         return BitmapFactory.decodeResource(context.getResources(), resId, opts);
     }
-
-
-
 
 }
