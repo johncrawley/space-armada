@@ -2,15 +2,15 @@ package com.jacstuff.spacearmada.actors.background;
 
 import android.graphics.Bitmap;
 
-public class Tile {
+import com.jacstuff.spacearmada.view.DrawItem;
 
-    private Bitmap bitmap;
+public class Tile implements DrawItem {
+
+    private final Bitmap bitmap;
     private int y;
-    private int initialY;
-    private int resetY;
+    private final int resetY;
 
     Tile(Bitmap bitmap, int initialY, int resetY){
-        this.initialY = initialY;
         this.y = initialY;
         this.resetY = resetY;
         this.bitmap = bitmap;
@@ -28,8 +28,12 @@ public class Tile {
         this.y = resetY;
     }
 
+    public int getX(){ return 0; }
+
     public int getY(){
         return this.y;
     }
+
+    public boolean isVisible(){ return true;}
 
 }

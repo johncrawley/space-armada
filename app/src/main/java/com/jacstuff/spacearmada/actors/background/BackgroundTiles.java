@@ -1,13 +1,11 @@
 package com.jacstuff.spacearmada.actors.background;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 import com.jacstuff.spacearmada.R;
+import com.jacstuff.spacearmada.view.DrawItem;
+import com.jacstuff.spacearmada.view.TransparentView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +13,7 @@ import java.util.List;
 
 public class BackgroundTiles {
 
-    private final List<Tile> tiles;
+    private final List<DrawItem> tiles;
 
     private final int scrollSpeed;
     private final int tileHeight;
@@ -28,20 +26,21 @@ public class BackgroundTiles {
     private int nextInitialY;
     private final int updateCounterMax = 3;
     private int updateCounter;
+    private TransparentView view;
 
-    public BackgroundTiles(Context context, int tilesToDraw, int scrollSpeed, int gameScreenTop, int gameScreenBottom){
+
+    public BackgroundTiles(Context context, TransparentView view, int gameScreenTop, int gameScreenBottom){
         tiles = new ArrayList<>();
         this.context = context;
-        this.scrollSpeed = scrollSpeed;
+        this.scrollSpeed = context.getResources().getInteger(R.integer.backgroundScrollSpeed);
         this.gameScreenBottom = gameScreenBottom;
         this.gameScreenTop = gameScreenTop;
-        this.tilesToDraw = tilesToDraw;
+        this.tilesToDraw = context.getResources().getInteger(R.integer.backgroundScrollSpeed);;
         this.bottomDrawnTileIndex = tilesToDraw - 1;
-
         tileHeight = (gameScreenBottom - gameScreenTop) / (tilesToDraw - 1);
-
         initialTileTopY = gameScreenTop - tileHeight;
         nextInitialY = initialTileTopY;
+        this.view = view;
         addBackgroundTiles();
     }
 
@@ -68,11 +67,9 @@ public class BackgroundTiles {
                 R.drawable.level1_bg_10,
                 R.drawable.level1_bg_11,
                 R.drawable.level1_bg_12);
+        view.setDrawItems(tiles);
     }
 
-    public List<Tile> getTiles(){
-        return this.tiles;
-    }
 
     public void update() {
         offsetDrawnTiles();
@@ -83,9 +80,11 @@ public class BackgroundTiles {
     private void rotateTilesIfBottomTileOutOfBounds(){
         if(tiles.get(bottomDrawnTileIndex).getY() > gameScreenBottom) {
             Collections.rotate(tiles,1);
-            tiles.get(0).resetY();
+            Tile tile = (Tile)tiles.get(0);
+            tile.resetY();
         }
     }
+
 
     private void offsetDrawnTiles(){
         if(shouldUpdate()) {
@@ -97,8 +96,10 @@ public class BackgroundTiles {
 
 
     private void offsetTile(int index){
-        tiles.get(index).offsetY(scrollSpeed);
+        Tile tile = (Tile)tiles.get(index);
+        tile.offsetY(scrollSpeed);
     }
+
 
     private boolean shouldUpdate(){
         updateCounter++;

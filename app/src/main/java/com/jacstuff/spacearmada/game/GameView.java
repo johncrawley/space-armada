@@ -178,7 +178,7 @@ class GameView {
     void draw(Canvas canvas, Paint paint){
         //logDraw();
         drawPlainBackground(canvas, paint);
-        drawBackground(canvas, paint);
+        //drawBackground(canvas, paint);
         drawBitmaps(canvas, paint);
         drawTopPanel(canvas);
         drawScore(canvas, paint);
@@ -239,9 +239,7 @@ class GameView {
 
 
     private void drawBackground(Canvas canvas, Paint paint){
-          for(Tile tile : backgroundTiles.getTiles()){
-              canvas.drawBitmap(tile.getBitmap(),0, tile.getY(), paint);
-          }
+
     }
 
 

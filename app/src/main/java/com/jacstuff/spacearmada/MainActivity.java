@@ -56,35 +56,4 @@ public class MainActivity extends Activity {
     }
 
 
-
-
-
-
-
-    class CanvasThread extends Thread{
-        private SurfaceHolder surfaceHolder;
-        boolean isRunning = false;
-        // private Panel panel;
-        SurfaceView panel; //= (SurfaceView)findViewById(R.id.surfaceView);
-        public CanvasThread(SurfaceHolder surfaceHolder, SurfaceView surfaceView){
-            this.surfaceHolder = surfaceHolder;
-            this.panel = surfaceView;
-
-        }
-        public void run(){
-            Canvas canvas;
-            while(isRunning){
-
-                canvas = null;
-                // try{
-                canvas = surfaceHolder.lockCanvas(null);
-                synchronized(surfaceHolder){
-                    // panel.onDraw(canvas);
-                }
-                // }catch()
-
-            }
-
-        }
-    }
 }

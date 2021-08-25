@@ -1,5 +1,6 @@
 package com.jacstuff.spacearmada.game;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -31,6 +32,7 @@ import com.jacstuff.spacearmada.state.timed.TimedActionManager;
 import com.jacstuff.spacearmada.tasks.AnimatorTask;
 import com.jacstuff.spacearmada.tasks.EnemyCreatorTask;
 import com.jacstuff.spacearmada.utils.ImageLoader;
+import com.jacstuff.spacearmada.view.TransparentView;
 
 /**
  * Created by John on 29/08/2017.
@@ -48,10 +50,10 @@ public class GameState implements State {
     private GameView gameView;
     private ExecutorService enemySpawningService = Executors.newCachedThreadPool();
     private final ScheduledExecutorService animationService = Executors.newScheduledThreadPool(4);
-    private final BackgroundTiles backgroundTiles;
+    private BackgroundTiles backgroundTiles;
     private int canvasWidth, canvasHeight;
     private PlayerShip playerShip;
-    private final Context context;
+    private final Activity activity;
     private MusicPlayer musicPlayer;
     private Rect gameScreenBounds;
 
@@ -61,23 +63,33 @@ public class GameState implements State {
     private int currentLog = 0;
 
 
-    public GameState(StateManager stateManager, Context context, int canvasWidth, int canvasHeight){
+    public GameState(StateManager stateManager, Activity activity, int canvasWidth, int canvasHeight){
         this.stateManager = stateManager;
         setupScreenBounds(0, canvasWidth, canvasHeight);
-        this.context = context;
-        imageLoader = new ImageLoader(context, canvasWidth, canvasHeight);
+        this.activity = activity;
+        imageLoader = new ImageLoader(activity, canvasWidth, canvasHeight);
         bitmapManager = new SimpleBitmapManagerImpl();
-        BitmapLoader bitmapLoader = new SimpleBitmapLoader(context, bitmapManager);
+        BitmapLoader bitmapLoader = new SimpleBitmapLoader(activity, bitmapManager);
         TimedActionManager timedActionManager = new TimedActionManager();
 
         initShipsControlsAndProjectiles(bitmapLoader);
         createEnemyThread();
         initAnimtionThread();
-        backgroundTiles = new BackgroundTiles(context, 4,1, gameScreenBounds.top, gameScreenBounds.bottom);
+        initBackgroundView();
         initView();
-        initMusicPlayer(context);
-       this.currentGameStateHandler = new GamePlay(context, this);
+        initMusicPlayer(activity);
+       this.currentGameStateHandler = new GamePlay(activity, this);
        enemyShipManager.createShip(400,100);
+
+       initBackgroundView();
+    }
+
+
+
+    private void initBackgroundView(){
+        TransparentView backgroundView = activity.findViewById(R.id.backgroundView);
+
+        backgroundTiles = new BackgroundTiles(activity, backgroundView, gameScreenBounds.top, gameScreenBounds.bottom);
     }
 
 
@@ -152,7 +164,7 @@ public class GameState implements State {
 
     private void initShipsControlsAndProjectiles(BitmapLoader bitmapLoader){
         projectileManager = new ProjectileManager(gameScreenBounds, bitmapLoader);
-        playerShip = PlayerShipFactory.createPlayerShip(context, gameScreenBounds, projectileManager, bitmapLoader);
+        playerShip = PlayerShipFactory.createPlayerShip(activity, gameScreenBounds, projectileManager, bitmapLoader);
         initControls();
         enemyShipManager = new EnemyShipManager(projectileManager, bitmapLoader, canvasHeight);
         collisionDetectionManager = new CollisionDetectionManager(playerShip, enemyShipManager, projectileManager);
@@ -163,7 +175,7 @@ public class GameState implements State {
         int dpadRadius = 150;
         int dpadCentreY = gameScreenBounds.bottom + ( canvasHeight - gameScreenBounds.bottom ) /2;
         int dpadCentreX = canvasWidth / 2;
-        inputControlsManager = new InputControlsManager(context, canvasWidth, canvasHeight, playerShip);
+        inputControlsManager = new InputControlsManager(activity, canvasWidth, canvasHeight, playerShip);
         inputControlsManager.setDpadPosition(dpadCentreX, dpadCentreY, dpadRadius);
     }
 
@@ -181,7 +193,7 @@ public class GameState implements State {
 
     private void initView(){
         log("Entered initView()");
-        gameView = new GameView(context, bitmapManager, gameScreenBounds.top, gameScreenBounds.bottom, gameScreenBounds.right);
+        gameView = new GameView(activity, bitmapManager, gameScreenBounds.top, gameScreenBounds.bottom, gameScreenBounds.right);
         gameView.register(playerShip.getEnergy());
         gameView.register(playerShip.getScore());
         gameView.register(playerShip);

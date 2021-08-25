@@ -1,5 +1,6 @@
 package com.jacstuff.spacearmada.state;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -16,30 +17,24 @@ import com.jacstuff.spacearmada.game.GameState;
 
 public class StateManager {
 
-
-
-    private Context context;
-    private int width, height;
-
+    private final Activity context;
+    private final int width, height;
     private State currentState;
     public enum StateCode {GAME, TITLE, HIGH_SCORE, CREDITS, OPTIONS}
 
 
-    public StateManager(Context context, int width, int height){
+    public StateManager(Activity context, int width, int height){
         this.context = context;
         this.width = width;
         this.height = height;
-
-      //  gameState = new GameState(context, width, height);
-        //titleState = new TitleState(context, width, height, this);
-
         currentState = new TitleState(context, width, height, this);
-
     }
+
 
     public void destroy(){
         currentState.destroy();
     }
+
 
     public void onPause(){
         if(currentState == null){
@@ -48,29 +43,31 @@ public class StateManager {
         currentState.onPause();
     }
 
+
     public void onResume(){
         if(currentState == null){
             return;
         }
         currentState.onResume();
-
     }
+
 
     public  void handleTouchPoints(List<TouchPoint> touchPoints){
         currentState.handleTouchPoints(touchPoints);
-
     }
 
 
     public void update(){
         currentState.update();
     }
+
+
     public void draw(Canvas canvas, Paint paint){
         currentState.draw(canvas,paint);
     }
 
-    public void setState(StateCode stateCode){
 
+    public void setState(StateCode stateCode){
         switch(stateCode){
             case GAME:
                 currentState = new GameState(this, context, width, height);
@@ -80,6 +77,5 @@ public class StateManager {
                 break;
         }
     }
-
 
 }
