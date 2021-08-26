@@ -14,18 +14,18 @@ import com.jacstuff.spacearmada.state.StateManager;
 public class MainActivity extends Activity {
 
 
-    private DrawSurface drawSurface;
+  //  private DrawSurface drawSurface;
     private StateManager stateManager;
     private int width,height;
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         deriveScreenDimensions();
         stateManager = new StateManager(this, width, height);
-        drawSurface = new DrawSurface(this, stateManager, width, height);
+       // drawSurface = new DrawSurface(this, stateManager, width, height);
 
-        setContentView(drawSurface);
     }
 
     protected void onDestroy(){

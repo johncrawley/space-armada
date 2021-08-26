@@ -33,9 +33,11 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback {
     private StateManager stateManager;
     private int width, height;
 
+
     public DrawSurface(Context context){
         super(context);
     }
+
 
     public DrawSurface(Context context, StateManager stateManager, int width, int height) {
         super(context);
