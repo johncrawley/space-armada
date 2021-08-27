@@ -1,6 +1,7 @@
 package com.jacstuff.spacearmada.state;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -25,6 +26,8 @@ public class TitleState implements  State {
     private Drawable title, background;
     private int noClickCounter = 0;
     private TransparentView backgroundView, animatedView;
+    private DrawableLoader imageLoader;
+    private int width, height;
 
     private Paint musicCreditsPaint;
     private String musicCredits, tapToPlayText;
@@ -36,32 +39,37 @@ public class TitleState implements  State {
         this.activity = activity;
         this.stateManager = stateManager;
         initMusic();
-        initTitleGraphics(canvasWidth, canvasHeight);
+        this.width = canvasWidth;
+        this.height = canvasHeight;
+        initTitleGraphics();
     }
 
 
-
-
-    private void initTitleGraphics(int canvasWidth, int canvasHeight){
+    private void initTitleGraphics(){
 
         backgroundView = activity.findViewById(R.id.titleBackgroundView);
         animatedView = activity.findViewById(R.id.titleAnimationsView);
 
-
         DrawableLoader imageLoader = new DefaultDrawableLoader(activity);
         backgroundView.addDrawableItem(imageLoader.getDrawableBitmap(R.drawable.title_bg,0,0));
-        backgroundView.addDrawableItem(imageLoader.getDrawableBitmap(R.drawable.title_bg,0,0));
 
-        Rect bounds = new Rect(0,0,canvasWidth, canvasHeight);
-        title = imageLoader.getDrawable(R.drawable.title);
-        int border = 50;
-        int topBorder = 150;
-        title.setBounds(border, topBorder, bounds.right - border, 600);
+
+        Rect bounds = new Rect(0,0, width, height);
         background = imageLoader.getDrawable(R.drawable.title_bg);
-        background.setBounds(0, 0, canvasWidth, canvasHeight);
+        background.setBounds(0, 0, width, height);
         musicCredits = activity.getString(R.string.music_credit);
         tapToPlayText = activity.getString(R.string.tap_to_start);
         initMusicCreditsPaint();
+    }
+
+
+    private void setupTitleGraphic(){
+        backgroundView.addDrawableItem(imageLoader.getDrawableBitmap(R.drawable.title,0,0));
+
+        //Bitmap bitmap = imageLoader.getDrawableBitmap(R.drawable.title,0,0);
+       // title.setBounds(border, topBorder, bounds.right - border, 600);
+        int border = width / 5;
+        int topBorder = height /10;
     }
 
 
@@ -139,7 +147,6 @@ public class TitleState implements  State {
 
 
     private void stopMusicAndGoToNextStateOnTouch(List<TouchPoint> touchPoints){
-
         for (TouchPoint touchPoint : touchPoints) {
             if (!touchPoint.isRelease()) {
                 musicPlayer.release();

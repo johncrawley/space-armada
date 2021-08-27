@@ -11,6 +11,7 @@ import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
 import android.view.View;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,15 +37,14 @@ public class TransparentView extends View {
     public TransparentView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initPaint();
-        textItems = Collections.emptyList();
+        drawableItems = new ArrayList<>();
     }
 
 
     public TransparentView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initPaint();
-        textItems = Collections.emptyList();
-        drawableItems = Collections.emptyList();
+        drawableItems = new ArrayList<>();
     }
 
 
@@ -140,29 +140,9 @@ public class TransparentView extends View {
 
 
     private void drawItems(){
-        drawDrawItems();
-        drawTextItems();
+        redraw();
     }
 
-
-    private void drawDrawItems(){
-        if(items == null){
-            return;
-        }
-        for(DrawItem item : items){
-            if(!item.isVisible()) {
-                continue;
-            }
-            canvasBitmap.drawBitmap(item.getBitmap(), item.getX(), item.getY(), paint);
-        }
-    }
-
-
-    private void drawTextItems(){
-        for(TextItem item: textItems){
-            canvasBitmap.drawText(item.getText(), item.getX(), item.getY(), paint);
-        }
-    }
 
     private void redraw(){
         for(DrawableItem item : drawableItems){
