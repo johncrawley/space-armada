@@ -3,7 +3,6 @@ package com.jacstuff.spacearmada.image;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.actors.ActorState;
@@ -15,16 +14,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SimpleBitmapLoader implements BitmapLoader {
+public class ScaledBitmapLoader implements BitmapLoader {
 
     private final Context context;
     private final BitmapManager bitmapManager;
     private final Map<String, AnimationDefinitionGroup> animationDefinitionGroups;
     private final int scale;
+    private final int width, height;
 
 
-    public SimpleBitmapLoader(Context context, BitmapManager bitmapManager){
+    public ScaledBitmapLoader(Context context, BitmapManager bitmapManager, int width, int height){
         this.context = context;
+        this.width = width;
+        this.height = height;
         this.bitmapManager = bitmapManager;
         this.scale = 2;
         animationDefinitionGroups = new HashMap<>();
@@ -51,10 +53,10 @@ public class SimpleBitmapLoader implements BitmapLoader {
         AnimationDefinitionGroup animationDefinitionGroup = new AnimationDefinitionGroup(groupName);
         registerGroup(ActorState.DEFAULT, animationDefinitionGroup, R.drawable.ship2);
         registerGroup(ActorState.DESTROYING, ActorState.DESTROYED, animationDefinitionGroup,
-                    R.drawable.ship2e1,
-                    R.drawable.ship2e2,
-                    R.drawable.ship2e3,
-                    R.drawable.ship2e4);
+                R.drawable.ship2e1,
+                R.drawable.ship2e2,
+                R.drawable.ship2e3,
+                R.drawable.ship2e4);
         registerGroup(ActorState.DESTROYED, animationDefinitionGroup, R.drawable.ship2e5);
         animationDefinitionGroups.put(groupName, animationDefinitionGroup);
     }
@@ -122,6 +124,18 @@ public class SimpleBitmapLoader implements BitmapLoader {
         opts.inSampleSize = scale;
         return BitmapFactory.decodeResource(context.getResources(), resId, opts);
     }
+
+
+    private Bitmap getBitmap(int resId, int percentageOfCanvasShortSide){
+
+        int shortSide = Math.min(width, height);
+        int bmWidth = (shortSide / 100) * percentageOfCanvasShortSide;
+
+        Bitmap bm = BitmapFactory.decodeResource(context.getResources(), resId);
+        int bmHeight = bm.getHeight() * ( bmWidth / bm.getWidth());
+        return Bitmap.createScaledBitmap(bm, bmWidth, bmHeight, true);
+    }
+
 
 
 }

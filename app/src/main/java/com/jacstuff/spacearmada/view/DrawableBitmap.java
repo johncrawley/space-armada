@@ -3,6 +3,7 @@ package com.jacstuff.spacearmada.view;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 
 public class DrawableBitmap implements DrawableItem{
 
@@ -39,7 +40,18 @@ public class DrawableBitmap implements DrawableItem{
 
     public void draw(Canvas canvas, Paint paint){
         if(isVisible) {
+
+
+
             canvas.drawBitmap(bitmap, x, y, paint);
         }
     }
+
+
+    void drawBitmapToScale(Canvas canvas, Paint paint){
+      //  Rect src = new Rect(0,0, item.getWidth(), item.getHeight());
+      //  Rect dest = new Rect(0,0, getWidth(), getHeight());
+      //  canvas.drawBitmap(bitmap, src, dest, paint);
+    }
+
 }

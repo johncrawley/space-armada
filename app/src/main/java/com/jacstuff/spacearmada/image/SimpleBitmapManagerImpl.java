@@ -20,11 +20,13 @@ import java.util.Map;
 public class SimpleBitmapManagerImpl implements BitmapManager {
 
 
-    private Map<String, Bitmap> bitmapMap;
+    private final Map<String, Bitmap> bitmapMap;
+    private int currentLog = 0;
 
     public SimpleBitmapManagerImpl(){
         bitmapMap = new HashMap<>();
     }
+
 
     public Bitmap getBitmap(DrawInfo drawInfo){
         String key = getKey(drawInfo);
@@ -35,6 +37,7 @@ public class SimpleBitmapManagerImpl implements BitmapManager {
         return bitmap;
     }
 
+
     public void register(String family, ActorState state, List<Bitmap> bitmaps){
 
         for(int i=0; i< bitmaps.size(); i++){
@@ -44,11 +47,12 @@ public class SimpleBitmapManagerImpl implements BitmapManager {
         }
     }
 
+
     private void log(String msg){
         Log.i("SimpleBitmapMngr", msg);
     }
 
-    private int currentLog = 0;
+
     void logInter(String msg){
         int limit = 100;
         currentLog += 1;
@@ -56,12 +60,13 @@ public class SimpleBitmapManagerImpl implements BitmapManager {
             log(msg);
             currentLog = 0;
         }
-
     }
+
 
     private String getKey(String family, ActorState state, int frame){
         return family + "_" + state + "_" + frame;
     }
+
 
     private String getKey(DrawInfo drawInfo){
         return getKey(drawInfo.getFamily(), drawInfo.getState(), drawInfo.getFrame());
