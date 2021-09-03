@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
+import com.jacstuff.spacearmada.image.ScaledBitmapLoader;
 import com.jacstuff.spacearmada.music.MusicPlayer;
 import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.controls.TouchPoint;
@@ -51,7 +52,9 @@ public class TitleState implements  State {
         animatedView = activity.findViewById(R.id.titleAnimationsView);
 
         DrawableLoader imageLoader = new DefaultDrawableLoader(activity);
-        backgroundView.addDrawableItem(imageLoader.getDrawableBitmap(R.drawable.title_bg,0,0));
+        ScaledBitmapLoader scaledBitmapLoader = new ScaledBitmapLoader(activity, width, height);
+
+        backgroundView.addDrawableItem(scaledBitmapLoader.getStretchedDrawableBitmap(R.drawable.title_bg, 0,0));
 
 
         Rect bounds = new Rect(0,0, width, height);

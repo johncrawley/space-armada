@@ -1,7 +1,6 @@
 package com.jacstuff.spacearmada.state;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 

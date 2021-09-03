@@ -8,6 +8,7 @@ import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.actors.ActorState;
 import com.jacstuff.spacearmada.actors.animation.AnimationDefinition;
 import com.jacstuff.spacearmada.actors.animation.AnimationDefinitionGroup;
+import com.jacstuff.spacearmada.view.DrawableBitmap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +32,16 @@ public class ScaledBitmapLoader implements BitmapLoader {
         this.scale = 2;
         animationDefinitionGroups = new HashMap<>();
         load();
+    }
+
+
+    public ScaledBitmapLoader(Context context, int width, int height){
+        this.context = context;
+        this.width = width;
+        this.height = height;
+        this.bitmapManager = null;
+        this.scale = 2;
+        animationDefinitionGroups = new HashMap<>();
     }
 
 
@@ -126,15 +137,45 @@ public class ScaledBitmapLoader implements BitmapLoader {
     }
 
 
-    private Bitmap getBitmap(int resId, int percentageOfCanvasShortSide){
+    public DrawableBitmap getBitmap(int resId, int percentageOfCanvasShortSide, int x, int y){
 
         int shortSide = Math.min(width, height);
-        int bmWidth = (shortSide / 100) * percentageOfCanvasShortSide;
+        System.out.println("width height of parent view: " + width + ","  + height);
+        float bmWidth = ((float)shortSide / 100) * percentageOfCanvasShortSide;
 
         Bitmap bm = BitmapFactory.decodeResource(context.getResources(), resId);
-        int bmHeight = bm.getHeight() * ( bmWidth / bm.getWidth());
-        return Bitmap.createScaledBitmap(bm, bmWidth, bmHeight, true);
+        float bmHeight = bm.getHeight() * ( (float)bmWidth / bm.getWidth());
+        System.out.println("width, height of scaled bitmap: " + bmWidth + "," + bmHeight);
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bm, (int)bmWidth, (int)bmHeight, true);
+        DrawableBitmap drawableBitmap = new DrawableBitmap(scaledBitmap);
+        drawableBitmap.setX(x);
+        drawableBitmap.setY(y);
+        return  drawableBitmap;
     }
+
+
+    public DrawableBitmap getStretchedDrawableBitmap(int resId, int x, int y){
+
+        int shortSide = Math.min(width, height);
+        int longSide = Math.max(width, height);
+
+        float bmWidth = (float)shortSide;
+
+        Bitmap bm = BitmapFactory.decodeResource(context.getResources(), resId);
+        float bmHeight = bm.getHeight() * ( (float)bmWidth / bm.getWidth());
+        if(bmHeight < longSide){
+            bmWidth =  ((float)longSide / bmHeight) * bmWidth;
+            bmHeight = longSide;
+        }
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bm, (int)bmWidth, (int)bmHeight, true);
+        DrawableBitmap drawableBitmap = new DrawableBitmap(scaledBitmap);
+        drawableBitmap.setX(x);
+        drawableBitmap.setY(y);
+        drawableBitmap.setRotatedForLandscape(true);
+        return  drawableBitmap;
+    }
+
+
 
 
 

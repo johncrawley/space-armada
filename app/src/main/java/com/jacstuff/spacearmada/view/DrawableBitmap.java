@@ -3,17 +3,18 @@ package com.jacstuff.spacearmada.view;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 
 public class DrawableBitmap implements DrawableItem{
 
-    private Bitmap bitmap;
+    private final Bitmap bitmap;
     private int x,y;
     private boolean isVisible;
+    private boolean isRotatedForLandscape;
 
     public DrawableBitmap(Bitmap bitmap){
         this.bitmap = bitmap;
         this.isVisible = true;
+        isRotatedForLandscape = false;
     }
 
 
@@ -21,6 +22,14 @@ public class DrawableBitmap implements DrawableItem{
         this(bitmap);
         this.x = x;
         this.y = y;
+    }
+
+    public void setRotatedForLandscape(boolean rotatedForLandscape){
+        this.isRotatedForLandscape = rotatedForLandscape;
+    }
+
+    public boolean isRotatedForLandscape(){
+        return isRotatedForLandscape;
     }
 
 
@@ -40,10 +49,10 @@ public class DrawableBitmap implements DrawableItem{
 
     public void draw(Canvas canvas, Paint paint){
         if(isVisible) {
-
-
-
-            canvas.drawBitmap(bitmap, x, y, paint);
+            canvas.save();
+            canvas.translate(x,y);
+            canvas.drawBitmap(bitmap, 0,0, paint);
+            canvas.restore();
         }
     }
 
