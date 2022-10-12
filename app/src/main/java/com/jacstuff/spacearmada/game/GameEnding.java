@@ -22,6 +22,9 @@ import java.util.List;
 
 class GameEnding extends AbstractGameStateHandlerImpl{
 
+
+    private int nextStateCountdown = 20;
+
     GameEnding(Context context, GameState gameState){
         super(context, gameState);
         init();
@@ -40,11 +43,9 @@ class GameEnding extends AbstractGameStateHandlerImpl{
             gameState.destroy();
             Log.i("GameEnding", "gameState.destroy() called.");
             stateManager.setState(StateManager.StateCode.TITLE);
-
         }
     }
 
-    private int nextStateCountdown = 20;
 
     @Override
     public void update() {
@@ -55,6 +56,7 @@ class GameEnding extends AbstractGameStateHandlerImpl{
         // gameState.setCurrentGameStateHandler(new GameOverScreen(context, gameState));
         //}
     }
+
 
     @Override
     public void draw(Canvas canvas, Paint paint) {

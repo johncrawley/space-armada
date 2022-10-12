@@ -6,15 +6,19 @@ import android.media.MediaPlayer;
 public class MusicPlayer {
 
     private MediaPlayer mediaPlayer;
-    private Context context;
+    private final Context context;
     private boolean isReleased = true;
     private int trackPosition = 0;
+    private boolean isMusicMuted = true;
 
     public MusicPlayer(Context context){
         this.context = context;
     }
 
     public void release(){
+        if(isMusicMuted){
+            return;
+        }
         if(mediaPlayer == null || isReleased){
             return;
         }
@@ -26,6 +30,9 @@ public class MusicPlayer {
     }
 
     public void pause(){
+        if(isMusicMuted){
+            return;
+        }
         if(isReleased){
             return;
         }
@@ -36,6 +43,9 @@ public class MusicPlayer {
     }
 
     public void resume(){
+        if(isMusicMuted){
+            return;
+        }
         if(isReleased){
             return;
         }
@@ -52,7 +62,9 @@ public class MusicPlayer {
         playTrack(trackResourceId, true);
     }
     public void playTrack(int trackResourceId, boolean loopTrack){
-
+        if(isMusicMuted){
+            return;
+        }
         mediaPlayer = MediaPlayer.create(context, trackResourceId);
         mediaPlayer.setLooping(loopTrack);
         mediaPlayer.start();
@@ -66,7 +78,9 @@ public class MusicPlayer {
 
 
     public void playLoopingSound(int trackResourceId){
-
+        if(isMusicMuted){
+            return;
+        }
         if(isAlreadyPlaying()){
             return;
         }
@@ -87,7 +101,9 @@ public class MusicPlayer {
 
 
     public void stopLoopingSound(){
-
+        if(isMusicMuted){
+            return;
+        }
         if(mediaPlayer == null || isReleased) {
             return;
         }

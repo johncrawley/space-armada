@@ -45,14 +45,12 @@ class GamePlay extends AbstractGameStateHandlerImpl{
 
 
     private void updateBackgroundTiles(){
-
         if(playerShip.isDead()){
             gameOverTimer--;
         }
         else{
             backgroundTiles.update();
         }
-
     }
 
 }

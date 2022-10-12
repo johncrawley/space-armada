@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -32,6 +34,7 @@ import com.jacstuff.spacearmada.state.timed.TimedActionManager;
 import com.jacstuff.spacearmada.tasks.AnimatorTask;
 import com.jacstuff.spacearmada.tasks.EnemyCreatorTask;
 import com.jacstuff.spacearmada.utils.ImageLoader;
+import com.jacstuff.spacearmada.view.DrawableBitmap;
 import com.jacstuff.spacearmada.view.TransparentView;
 
 /**
@@ -58,7 +61,7 @@ public class GameState implements State {
     private Rect gameScreenBounds;
 
     private GameStateHandler currentGameStateHandler;
-    private EnemyCreatorTask enemyCreatorTask;
+   // private EnemyCreatorTask enemyCreatorTask;
     private final BitmapManager bitmapManager;
     private int currentLog = 0;
 
@@ -72,23 +75,25 @@ public class GameState implements State {
         BitmapLoader bitmapLoader = new SimpleBitmapLoader(activity, bitmapManager);
         TimedActionManager timedActionManager = new TimedActionManager();
 
-        initShipsControlsAndProjectiles(bitmapLoader);
-        createEnemyThread();
-        initAnimtionThread();
-        initBackgroundView();
-        initView();
+       // initShipsControlsAndProjectiles(bitmapLoader);
+       // createEnemyThread();
+       // initAnimtionThread();
+       // initBackgroundView();
+       // initView();
         initMusicPlayer(activity);
-       this.currentGameStateHandler = new GamePlay(activity, this);
-       enemyShipManager.createShip(400,100);
+       //this.currentGameStateHandler = new GamePlay(activity, this);
+       //enemyShipManager.createShip(400,100);
 
-       initBackgroundView();
+       Drawable bgDrawable = imageLoader.loadDrawable(R.drawable.level1_bg_2);
+       TransparentView backgroundView = activity.findViewById(R.id.backgroundView);
+       backgroundView.addDrawableItem(new DrawableBitmap(((BitmapDrawable)bgDrawable).getBitmap()));
+       backgroundView.invalidate();
     }
 
 
 
     private void initBackgroundView(){
         TransparentView backgroundView = activity.findViewById(R.id.backgroundView);
-
         backgroundTiles = new BackgroundTiles(activity, backgroundView, gameScreenBounds.top, gameScreenBounds.bottom);
     }
 
@@ -127,7 +132,7 @@ public class GameState implements State {
     public void onPause(){
         log("GameState onPause()");
         musicPlayer.pause();
-        enemyCreatorTask.setInactive();
+        //enemyCreatorTask.setInactive();
         enemySpawningService.shutdown();
     }
 
@@ -135,14 +140,14 @@ public class GameState implements State {
     public void onResume(){
         log("GameState onResume()");
         musicPlayer.resume();
-        createEnemyThread();
+       // createEnemyThread();
     }
 
 
     @Override
     public void destroy(){
         Log.i("GameState", "Entered destroy() - shutting down threads");
-        enemyCreatorTask.setInactive();
+        //enemyCreatorTask.setInactive();
         enemySpawningService.shutdownNow();
         try {
             animationService.shutdownNow();
@@ -153,6 +158,8 @@ public class GameState implements State {
     }
 
 
+    /*
+
     private void createEnemyThread(){
         enemyCreatorTask = new EnemyCreatorTask(enemyShipManager, canvasWidth, 90);
         enemyCreatorTask.setMinPauseBetweenEnemies(2);
@@ -160,6 +167,7 @@ public class GameState implements State {
         enemySpawningService = Executors.newCachedThreadPool();
         enemySpawningService.execute(enemyCreatorTask);
     }
+     */
 
 
     private void initShipsControlsAndProjectiles(BitmapLoader bitmapLoader){

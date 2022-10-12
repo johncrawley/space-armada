@@ -3,9 +3,11 @@ package com.jacstuff.spacearmada.state;
 import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.view.View;
 
 import java.util.List;
 
+import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.controls.TouchPoint;
 import com.jacstuff.spacearmada.game.GameState;
 
@@ -26,7 +28,10 @@ public class StateManager {
         this.context = context;
         this.width = width;
         this.height = height;
-        currentState = new TitleState(context, width, height, this);
+        //currentState = new TitleState(context, width, height, this);
+        currentState = new GameState(this, context, width, height);
+        context.findViewById(R.id.titleLayout).setVisibility(View.GONE);
+        context.findViewById(R.id.gameLayout).setVisibility(View.VISIBLE);
     }
 
 

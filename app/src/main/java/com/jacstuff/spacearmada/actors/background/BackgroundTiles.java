@@ -18,15 +18,13 @@ public class BackgroundTiles {
     private final int scrollSpeed;
     private final int tileHeight;
     private final Context context;
-    private final int gameScreenTop;
     private final int gameScreenBottom;
     private final int tilesToDraw;
     private final int bottomDrawnTileIndex; // this is all assuming that we are vertical scrolling, with the drawables moving downwards
     private final int initialTileTopY;
     private int nextInitialY;
-    private final int updateCounterMax = 3;
     private int updateCounter;
-    private TransparentView view;
+    private final TransparentView view;
 
 
     public BackgroundTiles(Context context, TransparentView view, int gameScreenTop, int gameScreenBottom){
@@ -34,14 +32,21 @@ public class BackgroundTiles {
         this.context = context;
         this.scrollSpeed = context.getResources().getInteger(R.integer.backgroundScrollSpeed);
         this.gameScreenBottom = gameScreenBottom;
-        this.gameScreenTop = gameScreenTop;
-        this.tilesToDraw = context.getResources().getInteger(R.integer.backgroundScrollSpeed);;
+        this.tilesToDraw = context.getResources().getInteger(R.integer.backgroundScrollSpeed);
         this.bottomDrawnTileIndex = tilesToDraw - 1;
-        tileHeight = (gameScreenBottom - gameScreenTop) / (tilesToDraw - 1);
+        tileHeight = calculateTileHeight(gameScreenBottom, gameScreenTop);
         initialTileTopY = gameScreenTop - tileHeight;
         nextInitialY = initialTileTopY;
         this.view = view;
         addBackgroundTiles();
+        update();
+
+    }
+
+
+    private int calculateTileHeight(int gameScreenBottom, int gameScreenTop){
+        int divisor = tilesToDraw <=1 ? 1 : tilesToDraw -1;
+        return (gameScreenBottom - gameScreenTop) / divisor;
     }
 
 
@@ -74,6 +79,7 @@ public class BackgroundTiles {
     public void update() {
         offsetDrawnTiles();
         rotateTilesIfBottomTileOutOfBounds();
+        view.invalidate();
     }
 
 
@@ -103,6 +109,7 @@ public class BackgroundTiles {
 
     private boolean shouldUpdate(){
         updateCounter++;
+        int updateCounterMax = 3;
         if(updateCounter > updateCounterMax){
             updateCounter = 0;
             return true;
