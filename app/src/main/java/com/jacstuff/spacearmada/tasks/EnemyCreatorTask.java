@@ -15,20 +15,15 @@ import com.jacstuff.spacearmada.actors.ships.enemies.EnemyShipManager;
 
 public class EnemyCreatorTask implements Runnable{
 
-
-    private Random randomEnemyStartingX;
-    private Random randomNumberOfEnemiesToSpawn;
-    private Random randomEnemyStartingYOffset;
+    private final Random randomEnemyStartingX;
+    private final Random randomNumberOfEnemiesToSpawn;
+    private final Random randomEnemyStartingYOffset;
     private int gameWindowBeginX;
     private int gameWindowEndX;
     private int maxPauseBetweenEnemies;
-    private EnemyShipManager enemyShipManager;
-    private int maxEnemiesPerSpawn = 5;
+    private final EnemyShipManager enemyShipManager;
     private int currentMaxNumberOfEnemies;
-    private int currentStartingX;
-    private int minSpaceBetweenEnemies = 20;
-    private int minWidthBetweenEnemies = 50;
-    private int minPauseBetweenEnemies = 2000;
+    private final int minWidthBetweenEnemies = 50;
     private boolean isGameStillActive = true;
 
     public EnemyCreatorTask(EnemyShipManager enemyShipManager, int gameWindowWidth, int borderWidth){
@@ -41,7 +36,7 @@ public class EnemyCreatorTask implements Runnable{
     }
 
     public void setMinPauseBetweenEnemies(int seconds){
-        this.minSpaceBetweenEnemies = seconds * 1000;
+        int minSpaceBetweenEnemies = seconds * 1000;
     }
 
     public void setMaxPauseBetweenEnemies(int seconds){
@@ -86,6 +81,7 @@ public class EnemyCreatorTask implements Runnable{
         return randomEnemyStartingYOffset.nextInt(10) * 10;
     }
     private int getNextRandomNumberOfEnemies(){
+        int maxEnemiesPerSpawn = 5;
         currentMaxNumberOfEnemies = 1 + randomNumberOfEnemiesToSpawn.nextInt(maxEnemiesPerSpawn);
         return currentMaxNumberOfEnemies;
     }
@@ -123,11 +119,11 @@ public class EnemyCreatorTask implements Runnable{
        // int maxEnemiesPerSpawn
         currentMaxNumberOfEnemies = currentNumEnemies;
         int maximumX = (gameWindowEndX/currentMaxNumberOfEnemies) + minWidthBetweenEnemies;
-        currentStartingX = gameWindowBeginX + randomEnemyStartingX.nextInt(maximumX);
-        return currentStartingX;
+        return gameWindowBeginX + randomEnemyStartingX.nextInt(maximumX);
     }
 
     private int getNextRandomSleepTime(){
+        int minPauseBetweenEnemies = 2000;
         return  ThreadLocalRandom.current().nextInt(minPauseBetweenEnemies, maxPauseBetweenEnemies);
     }
 

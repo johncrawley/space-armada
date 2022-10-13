@@ -51,7 +51,6 @@ public class GameState implements State {
     private ProjectileManager projectileManager;
     private final ImageLoader imageLoader;
     private GameView gameView;
-    private ExecutorService enemySpawningService = Executors.newCachedThreadPool();
     private final ScheduledExecutorService animationService = Executors.newScheduledThreadPool(4);
     private BackgroundTiles backgroundTiles;
     private int canvasWidth, canvasHeight;
@@ -59,6 +58,8 @@ public class GameState implements State {
     private final Activity activity;
     private MusicPlayer musicPlayer;
     private Rect gameScreenBounds;
+    private EnemySpawner enemySpawner;
+
 
     private GameStateHandler currentGameStateHandler;
    // private EnemyCreatorTask enemyCreatorTask;
@@ -74,6 +75,8 @@ public class GameState implements State {
         bitmapManager = new SimpleBitmapManagerImpl();
         BitmapLoader bitmapLoader = new SimpleBitmapLoader(activity, bitmapManager);
         TimedActionManager timedActionManager = new TimedActionManager();
+        int borderWidth = 90;
+        enemySpawner = new EnemySpawner(enemyShipManager, canvasWidth, borderWidth);
 
        // initShipsControlsAndProjectiles(bitmapLoader);
        // createEnemyThread();
@@ -133,40 +136,26 @@ public class GameState implements State {
         log("GameState onPause()");
         musicPlayer.pause();
         //enemyCreatorTask.setInactive();
-        enemySpawningService.shutdown();
+
     }
 
 
     public void onResume(){
         log("GameState onResume()");
         musicPlayer.resume();
-       // createEnemyThread();
+        enemySpawner.onResume();
     }
-
 
     @Override
     public void destroy(){
-        Log.i("GameState", "Entered destroy() - shutting down threads");
-        //enemyCreatorTask.setInactive();
-        enemySpawningService.shutdownNow();
-        try {
-            animationService.shutdownNow();
-            enemySpawningService.awaitTermination(200L, TimeUnit.MILLISECONDS);
-        }catch (InterruptedException e){
-            log("Interrupted shutting down enemy spawning service: " + e.getMessage());
-        }
+        animationService.shutdownNow();
+        enemySpawner.onDestroy();
     }
 
 
     /*
 
-    private void createEnemyThread(){
-        enemyCreatorTask = new EnemyCreatorTask(enemyShipManager, canvasWidth, 90);
-        enemyCreatorTask.setMinPauseBetweenEnemies(2);
-        enemyCreatorTask.setMaxPauseBetweenEnemies(4);
-        enemySpawningService = Executors.newCachedThreadPool();
-        enemySpawningService.execute(enemyCreatorTask);
-    }
+
      */
 
 
