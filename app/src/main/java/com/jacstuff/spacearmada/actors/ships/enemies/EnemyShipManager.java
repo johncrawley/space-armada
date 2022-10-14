@@ -11,7 +11,6 @@ import com.jacstuff.spacearmada.DrawableItemGroup;
 import com.jacstuff.spacearmada.actors.ActorState;
 import com.jacstuff.spacearmada.actors.projectiles.ProjectileManager;
 import com.jacstuff.spacearmada.image.BitmapLoader;
-import com.jacstuff.spacearmada.utils.ImageLoader;
 
 /**
  * Created by John on 30/08/2017.
@@ -20,14 +19,13 @@ import com.jacstuff.spacearmada.utils.ImageLoader;
 
 public class EnemyShipManager implements DrawableItemGroup {
 
-    private List<EnemyShip> enemyShips;
-    private EnemyShipFactory enemyShipFactory;
+    private final List<EnemyShip> enemyShips;
+    private final EnemyShipFactory enemyShipFactory;
     private int gameScreenBottom;
 
     public EnemyShipManager(ProjectileManager projectileManager, BitmapLoader bitmapLoader, int gameScreenBottom) {
         enemyShips = new ArrayList<>();
         enemyShipFactory = new EnemyShipFactory(bitmapLoader, projectileManager);
-
         this.gameScreenBottom = gameScreenBottom;
     }
 
@@ -59,10 +57,12 @@ public class EnemyShipManager implements DrawableItemGroup {
         }
     }
 
+
     //we want to change this at the end of the game, when the control panel is removed.
     public void setGameScreenBottom(int newGameScreenBottom){
         gameScreenBottom = newGameScreenBottom;
     }
+
 
     public int updateAnimations(int x){
         List<EnemyShip> tempShips = new ArrayList<>(enemyShips);
@@ -75,18 +75,8 @@ public class EnemyShipManager implements DrawableItemGroup {
 
     public void createShip(int initialX, int initialY){
         enemyShips.add(enemyShipFactory.createShip(initialX,initialY));
-
-        //logShipXs();
-        //Log.i("EnemyShipMngr", "enemy ship created! - current enemyShips: " + this.enemyShips.size());
     }
 
-    public EnemyShip createTestShip(){
-        EnemyShip ship = enemyShipFactory.createShip(0,0);
-        enemyShips.add(ship);
-        //logShipXs();
-        //Log.i("EnemyShipMngr", "enemy ship created! - current enemyShips: " + this.enemyShips.size());
-        return ship;
-    }
 
     public List<EnemyShip> getEnemyShips(){
         return new ArrayList<>(enemyShips);

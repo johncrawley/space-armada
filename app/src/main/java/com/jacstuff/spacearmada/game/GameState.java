@@ -9,7 +9,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -73,12 +72,11 @@ public class GameState implements State {
         this.activity = activity;
         imageLoader = new ImageLoader(activity, canvasWidth, canvasHeight);
         bitmapManager = new SimpleBitmapManagerImpl();
-        BitmapLoader bitmapLoader = new SimpleBitmapLoader(activity, bitmapManager);
         TimedActionManager timedActionManager = new TimedActionManager();
         int borderWidth = 90;
         enemySpawner = new EnemySpawner(enemyShipManager, canvasWidth, borderWidth);
 
-       // initShipsControlsAndProjectiles(bitmapLoader);
+       // initShipsControlsAndProjectiles();
        // createEnemyThread();
        // initAnimtionThread();
        // initBackgroundView();
@@ -159,7 +157,8 @@ public class GameState implements State {
      */
 
 
-    private void initShipsControlsAndProjectiles(BitmapLoader bitmapLoader){
+    private void initShipsControlsAndProjectiles(){
+        BitmapLoader bitmapLoader = new SimpleBitmapLoader(activity, bitmapManager);
         projectileManager = new ProjectileManager(gameScreenBounds, bitmapLoader);
         playerShip = PlayerShipFactory.createPlayerShip(activity, gameScreenBounds, projectileManager, bitmapLoader);
         initControls();

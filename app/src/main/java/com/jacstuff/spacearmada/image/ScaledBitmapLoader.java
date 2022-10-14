@@ -138,7 +138,6 @@ public class ScaledBitmapLoader implements BitmapLoader {
 
 
     public DrawableBitmap getBitmap(int resId, int percentageOfCanvasShortSide, int x, int y){
-
         int shortSide = Math.min(width, height);
         System.out.println("width height of parent view: " + width + ","  + height);
         float bmWidth = ((float)shortSide / 100) * percentageOfCanvasShortSide;

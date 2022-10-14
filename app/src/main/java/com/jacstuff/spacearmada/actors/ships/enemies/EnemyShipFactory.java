@@ -13,12 +13,11 @@ import java.util.Map;
 
 class EnemyShipFactory {
 
-    private BitmapLoader bitmapLoader;
-    private ProjectileManager projectileManager;
-    private int speed;
+    private final BitmapLoader bitmapLoader;
+    private final ProjectileManager projectileManager;
+    private final int speed;
 
     EnemyShipFactory(BitmapLoader bitmapLoader, ProjectileManager projectileManager){
-
         this.bitmapLoader = bitmapLoader;
         this.projectileManager = projectileManager;
         speed = 5;
@@ -28,7 +27,6 @@ class EnemyShipFactory {
     EnemyShip createShip(int initialX, int initialY){
         int initialWidth = 20;
         int initialHeight = 35;
-
        return new EnemyShip(initialX, initialY, speed, projectileManager, bitmapLoader.getAnimationDefinitionGroup("ENEMY_SHIPS"));
 
     }

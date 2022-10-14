@@ -8,12 +8,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -103,10 +101,11 @@ public class TransparentView extends View {
     //@Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (!isViewDrawn)
+        if (!isViewDrawn) {
             defaultAttributes();
+        }
         isViewDrawn = true;
-        Bitmap bitmap = bitmapDraw();
+        Bitmap bitmap = createViewBitmap();
         float bitmapX = 0;
         int bitmapY = 0;
         canvas.drawBitmap(bitmap, bitmapX, bitmapY, null);
@@ -124,33 +123,30 @@ public class TransparentView extends View {
     }
 
 
-    private Bitmap bitmapDraw() {
+    private Bitmap createViewBitmap() {
         Bitmap bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         bitmap.eraseColor(Color.TRANSPARENT);
         canvasBitmap = new Canvas(bitmap);
         canvasBitmap.save();
         canvasBitmap.translate(canvasTranslateX, canvasTranslateY);
-
-        if(angle != 0){
-            canvasBitmap.rotate(angle);
-        }
+        rotateCanvasBitmap();
         drawItems();
         canvasBitmap.restore();
         return bitmap;
     }
 
 
-    private void drawItems(){
-        redraw();
-    }
-
-
-    private void redraw(){
-        for(DrawableItem item : drawableItems){
-            item.draw(canvasBitmap, paint);
+    private void rotateCanvasBitmap(){
+        if(angle != 0){
+            canvasBitmap.rotate(angle);
         }
     }
 
 
+    private void drawItems(){
+        for(DrawableItem item : drawableItems){
+            item.draw(canvasBitmap, paint);
+        }
+    }
 
 }
