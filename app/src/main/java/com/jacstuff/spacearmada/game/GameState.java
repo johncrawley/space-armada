@@ -57,7 +57,7 @@ public class GameState implements State {
     private final Activity activity;
     private MusicPlayer musicPlayer;
     private Rect gameScreenBounds;
-    private EnemySpawner enemySpawner;
+    private final EnemySpawner enemySpawner;
 
 
     private GameStateHandler currentGameStateHandler;

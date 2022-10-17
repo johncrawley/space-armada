@@ -47,6 +47,11 @@ public class TransparentView extends View {
     }
 
 
+    public void clearDrawableItems(){
+        this.drawableItems.clear();
+    }
+
+
     public void setTextSize(float size){
         paint.setTextSize(size);
 

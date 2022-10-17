@@ -39,7 +39,6 @@ public class SimpleBitmapManagerImpl implements BitmapManager {
 
 
     public void register(String family, ActorState state, List<Bitmap> bitmaps){
-
         for(int i=0; i< bitmaps.size(); i++){
             String key = getKey(family, state, i);
             bitmapMap.put(key, bitmaps.get(i));

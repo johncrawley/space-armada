@@ -29,18 +29,16 @@ public class AbstractActor implements DrawableItem {
 
 
     private void createInitialBoundingBox(AnimationDefinitionGroup animationDefinitionGroup, int x, int y){
-
         int width = animationDefinitionGroup.getBitmapWidth(ActorState.DEFAULT);
         int height = animationDefinitionGroup.getBitmapHeight(ActorState.DEFAULT);
-
         this.boundingBox = new Rect(x,y, x + width, y + height);
-
     }
 
 
     private void log(String msg){
         Log.i("AbstractActor", msg);
     }
+
 
     protected void offsetBounds(int dx, int dy){
         this.boundingBox.offset(dx,dy);
@@ -52,18 +50,21 @@ public class AbstractActor implements DrawableItem {
         return new Rect(boundingBox).intersect(otherBoundingBox);
     }
 
+
     public DrawInfo getDrawInfo(){
         return this.drawInfo;
     }
+
 
     public ActorState getState(){
         return drawInfo.getState();
     }
 
-    public void setState(ActorState actorState){
 
+    public void setState(ActorState actorState){
         drawInfo.setState(actorState);
     }
+
 
     public Rect getBounds(){
         return new Rect(boundingBox);

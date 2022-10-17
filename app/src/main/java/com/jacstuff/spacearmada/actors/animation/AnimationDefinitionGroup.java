@@ -11,20 +11,21 @@ import java.util.Map;
 // contains a name and the number of frames in the animation
 public class AnimationDefinitionGroup {
 
-    private Map<ActorState, AnimationDefinition> animationInfoMap;
-    private String groupName;
+    private final Map<ActorState, AnimationDefinition> animationInfoMap;
+    private final String groupName;
 
     public AnimationDefinitionGroup(String groupName){
         this.groupName = groupName;
         animationInfoMap = new HashMap<>();
     }
 
+
     public void registerState(ActorState actorState, int frameLimit){
         animationInfoMap.put(actorState, new AnimationDefinition(frameLimit, false));
     }
 
-    public void register(ActorState actorState, AnimationDefinition animationDefinition){
 
+    public void register(ActorState actorState, AnimationDefinition animationDefinition){
         animationInfoMap.put(actorState, animationDefinition);
     }
 
@@ -37,11 +38,10 @@ public class AnimationDefinitionGroup {
     public int getBitmapWidth(ActorState actorState){
         AnimationDefinition animationDefinition = animationInfoMap.get(actorState);
         return animationDefinition != null ? animationDefinition.getWidth() : -10;
-
     }
 
-    public int getBitmapHeight(ActorState actorState){
 
+    public int getBitmapHeight(ActorState actorState){
         AnimationDefinition animationDefinition = animationInfoMap.get(actorState);
         return animationDefinition != null ? animationDefinition.getHeight() : 0;
     }
@@ -53,8 +53,9 @@ public class AnimationDefinitionGroup {
             return null;
         }
         return animationDefinition.getNextState();
-
     }
+
+
     public int getFrameLimit(ActorState actorState){
         AnimationDefinition animationInfo = animationInfoMap.get(actorState);
         if(animationInfo == null){
@@ -63,9 +64,11 @@ public class AnimationDefinitionGroup {
         return animationInfo.getFrame();
     }
 
+
     public String getGroupName(){
         return this.groupName;
     }
+
 
     public boolean doesLoop(ActorState actorState){
         AnimationDefinition animationInfo = animationInfoMap.get(actorState);
@@ -74,6 +77,5 @@ public class AnimationDefinitionGroup {
         }
         return animationInfo.doesLoop();
     }
-
 
 }

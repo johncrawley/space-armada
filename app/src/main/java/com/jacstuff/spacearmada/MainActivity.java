@@ -25,13 +25,12 @@ public class MainActivity extends Activity {
         deriveScreenDimensions();
         stateManager = new StateManager(this, width, height);
        // drawSurface = new DrawSurface(this, stateManager, width, height);
-
     }
+
 
     protected void onDestroy(){
         stateManager.destroy();
         super.onDestroy();
-
     }
 
 
@@ -40,19 +39,18 @@ public class MainActivity extends Activity {
         stateManager.onPause();
     }
 
+
     protected void onResume(){
         super.onResume();
         stateManager.onResume();
     }
 
-    private void deriveScreenDimensions(){
 
+    private void deriveScreenDimensions(){
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         height = displayMetrics.heightPixels;
         width = displayMetrics.widthPixels;
-
-        Log.i("MainActivity", "derived dimensions : width : " + width + " height: " + height);
     }
 
 
