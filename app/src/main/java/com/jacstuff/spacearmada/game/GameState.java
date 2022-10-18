@@ -76,6 +76,7 @@ public class GameState implements State {
         int borderWidth = 90;
         enemySpawner = new EnemySpawner(enemyShipManager, canvasWidth, borderWidth);
 
+
        // initShipsControlsAndProjectiles();
        // createEnemyThread();
        // initAnimtionThread();

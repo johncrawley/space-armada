@@ -3,6 +3,7 @@ package com.jacstuff.spacearmada.game;
 import android.graphics.Bitmap;
 import android.view.View;
 
+import com.jacstuff.spacearmada.actors.ships.enemies.EnemyShipManager;
 import com.jacstuff.spacearmada.image.BitmapLoader;
 import com.jacstuff.spacearmada.view.TransparentView;
 
@@ -16,19 +17,20 @@ public class EnemyLayer {
 
     private final TransparentView transparentView;
     private final BitmapLoader bitmapLoader;
+    private final EnemyShipManager enemyShipManager;
 
 
-    public EnemyLayer(View view, BitmapLoader bitmapLoader, float gemWidth){
+    public EnemyLayer(View view, BitmapLoader bitmapLoader, EnemyShipManager enemyShipManager){
         transparentView = (TransparentView)view;
         this.bitmapLoader = bitmapLoader;
+        this.enemyShipManager = enemyShipManager;
         //linkBitmapsToColorsAndAssignWidths();
     }
 
 
-
-
     public void setDrawItems(){
         transparentView.clearDrawableItems();
+       // transparentView.addDrawableItems(enemyShipManager.getEnemyShips());
         //List<DrawableItem> gems = new ArrayList<>(gemGroup.getGems());
        // transparentView.addDrawableItems(gems);
         //transparentView.setTranslateY((int)gemGroup.getY());

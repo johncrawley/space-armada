@@ -5,7 +5,6 @@ import android.graphics.Paint;
 
 public interface DrawableItem {
 
-
     void draw(Canvas canvas, Paint paint);
 
 }
