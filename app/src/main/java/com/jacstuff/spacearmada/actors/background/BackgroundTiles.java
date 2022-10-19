@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 
 import com.jacstuff.spacearmada.R;
-import com.jacstuff.spacearmada.view.DrawItem;
+import com.jacstuff.spacearmada.view.SimpleDrawItem;
 import com.jacstuff.spacearmada.view.TransparentView;
 
 import java.util.ArrayList;
@@ -13,8 +13,7 @@ import java.util.List;
 
 public class BackgroundTiles {
 
-    private final List<DrawItem> tiles;
-
+    private final List<SimpleDrawItem> tiles;
     private final int scrollSpeed;
     private final int tileHeight;
     private final Context context;
@@ -50,14 +49,6 @@ public class BackgroundTiles {
     }
 
 
-    public void addTiles(int ... resIds){
-        for(int resId : resIds) {
-            tiles.add(new Tile(BitmapFactory.decodeResource(context.getResources(), resId), nextInitialY, initialTileTopY));
-            nextInitialY += tileHeight;
-        }
-    }
-
-
     public void addBackgroundTiles(){
         addTiles(
                 R.drawable.level1_bg_1,
@@ -73,6 +64,14 @@ public class BackgroundTiles {
                 R.drawable.level1_bg_11,
                 R.drawable.level1_bg_12);
         view.setDrawItems(tiles);
+    }
+
+
+    public void addTiles(int ... resIds){
+        for(int resId : resIds) {
+            tiles.add(new Tile(BitmapFactory.decodeResource(context.getResources(), resId), nextInitialY, initialTileTopY));
+            nextInitialY += tileHeight;
+        }
     }
 
 

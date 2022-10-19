@@ -1,15 +1,8 @@
 package com.jacstuff.spacearmada.actors.ships.enemies;
 
 
-import com.jacstuff.spacearmada.actors.ActorState;
-import com.jacstuff.spacearmada.actors.animation.AnimationDefinitionGroup;
 import com.jacstuff.spacearmada.actors.projectiles.ProjectileManager;
 import com.jacstuff.spacearmada.image.BitmapLoader;
-
-
-import java.util.HashMap;
-
-import java.util.Map;
 
 class EnemyShipFactory {
 

@@ -3,7 +3,6 @@ package com.jacstuff.spacearmada.image;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.actors.ActorState;

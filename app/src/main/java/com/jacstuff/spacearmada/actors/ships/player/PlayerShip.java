@@ -2,7 +2,6 @@ package com.jacstuff.spacearmada.actors.ships.player;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.jacstuff.spacearmada.Direction;

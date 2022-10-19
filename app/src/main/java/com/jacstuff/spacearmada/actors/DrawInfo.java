@@ -32,7 +32,7 @@ public class DrawInfo {
     }
 
 
-    public void setAnimationInfoService(AnimationDefinitionGroup animationInfoService){
+    public void setAnimationInfo(AnimationDefinitionGroup animationInfoService){
         this.animationDefinitionGroup = animationInfoService;
     }
 

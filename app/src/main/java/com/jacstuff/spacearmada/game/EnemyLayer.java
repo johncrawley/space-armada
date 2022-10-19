@@ -7,10 +7,6 @@ import com.jacstuff.spacearmada.actors.ships.enemies.EnemyShipManager;
 import com.jacstuff.spacearmada.image.BitmapLoader;
 import com.jacstuff.spacearmada.view.TransparentView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class EnemyLayer {
 

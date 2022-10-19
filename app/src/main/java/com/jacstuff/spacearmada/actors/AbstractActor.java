@@ -12,15 +12,12 @@ import com.jacstuff.spacearmada.actors.animation.AnimationDefinitionGroup;
  *
  */
 
-public class AbstractActor implements DrawableItem {
+public abstract class AbstractActor implements DrawableItem {
 
     private Rect boundingBox;
-    private DrawInfo drawInfo;
+    private final DrawInfo drawInfo;
     protected int speed = 2;
 
-    public AbstractActor(){
-
-    }
 
     AbstractActor(AnimationDefinitionGroup animationDefinitionGroup, int x, int y){
         createInitialBoundingBox(animationDefinitionGroup, x, y);

@@ -82,7 +82,7 @@ public class DrawInfoTest {
 
         AnimationDefinitionGroup animationInfoService = new AnimationDefinitionGroup("test");
         animationInfoService.registerState(ActorState.DEFAULT, 10);
-        drawInfo.setAnimationInfoService(animationInfoService);
+        drawInfo.setAnimationInfo(animationInfoService);
         final int newFrame = 5;
         drawInfo.setFrame(newFrame);
         assertEquals("Frame is not what was set", newFrame, drawInfo.getFrame());
@@ -129,7 +129,7 @@ public class DrawInfoTest {
         AnimationDefinitionGroup animationInfoService = new AnimationDefinitionGroup("NOT_IMPORTANT");
         animationInfoService.registerState(ActorState.DESTROYING, frameLimit, false);
         animationInfoService.registerState(ActorState.FIRING, frameLimit, true);
-        drawInfo.setAnimationInfoService(animationInfoService);
+        drawInfo.setAnimationInfo(animationInfoService);
         drawInfo.setState(ActorState.DESTROYING);
 
 

@@ -2,9 +2,9 @@ package com.jacstuff.spacearmada.actors.background;
 
 import android.graphics.Bitmap;
 
-import com.jacstuff.spacearmada.view.DrawItem;
+import com.jacstuff.spacearmada.view.SimpleDrawItem;
 
-public class Tile implements DrawItem {
+public class Tile implements SimpleDrawItem {
 
     private final Bitmap bitmap;
     private int y;

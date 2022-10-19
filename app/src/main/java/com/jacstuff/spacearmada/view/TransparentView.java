@@ -11,6 +11,9 @@ import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.jacstuff.spacearmada.actors.DrawInfo;
+import com.jacstuff.spacearmada.image.BitmapManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,11 +23,12 @@ public class TransparentView extends View {
 
     private int canvasTranslateX,canvasTranslateY;
     private int angle = 0;
-    private List<DrawItem> items;
+    private List<SimpleDrawItem> items;
     private List<TextItem> textItems;
     private Paint paint;
     private Canvas canvasBitmap;
     private boolean isViewDrawn = false;
+    private BitmapManager bitmapManager;
 
     private List<DrawableItem> drawableItems;
 
@@ -37,6 +41,11 @@ public class TransparentView extends View {
         super(context, attrs);
         initPaint();
         drawableItems = new ArrayList<>();
+    }
+
+
+    public void setBitmapManager(BitmapManager bitmapManager){
+        this.bitmapManager = bitmapManager;
     }
 
 
@@ -80,7 +89,7 @@ public class TransparentView extends View {
     }
 
 
-    public void setDrawItems(List<DrawItem> items){
+    public void setDrawItems(List<SimpleDrawItem> items){
         this.items = items;
     }
 
@@ -153,5 +162,30 @@ public class TransparentView extends View {
             item.draw(canvasBitmap, paint);
         }
     }
+
+
+    private void drawItemsInList(Canvas canvas, Paint paint, List<? extends com.jacstuff.spacearmada.DrawableItem> drawableItems){
+        DrawInfo drawInfo;
+        for(com.jacstuff.spacearmada.DrawableItem item : drawableItems) {
+            if (item == null) {
+                continue;
+            }
+            drawInfo = item.getDrawInfo();
+            if (drawInfo == null) {
+                continue;
+            }
+            drawBitmap(canvas, paint, drawInfo);
+        }
+    }
+
+
+    private void drawBitmap(Canvas canvas, Paint paint, DrawInfo drawInfo){
+        Bitmap bitmap = bitmapManager.getBitmap(drawInfo);
+        if(bitmap == null || canvas == null || paint == null){
+            return;
+        }
+        canvas.drawBitmap(bitmap , drawInfo.getX(), drawInfo.getY(), paint);
+    }
+
 
 }

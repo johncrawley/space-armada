@@ -9,7 +9,6 @@ import java.util.List;
 import com.jacstuff.spacearmada.Direction;
 import com.jacstuff.spacearmada.DrawableItem;
 import com.jacstuff.spacearmada.DrawableItemGroup;
-import com.jacstuff.spacearmada.actors.ActorState;
 import com.jacstuff.spacearmada.actors.animation.AnimationDefinitionGroup;
 import com.jacstuff.spacearmada.actors.ships.ArmedShip;
 import com.jacstuff.spacearmada.image.BitmapLoader;

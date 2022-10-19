@@ -145,17 +145,12 @@ public class GameState implements State {
         enemySpawner.onResume();
     }
 
+
     @Override
     public void destroy(){
         animationService.shutdownNow();
         enemySpawner.onDestroy();
     }
-
-
-    /*
-
-
-     */
 
 
     private void initShipsControlsAndProjectiles(){
@@ -236,7 +231,11 @@ public class GameState implements State {
     BackgroundTiles getBackgroundTiles() {
         return backgroundTiles;
     }
+
+
     CollisionDetectionManager getCollisionDetectionManager() { return collisionDetectionManager; }
+
+
     EnemyShipManager getEnemyShipManager() {
         return enemyShipManager;
     }
