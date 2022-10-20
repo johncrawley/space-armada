@@ -9,10 +9,12 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import java.util.List;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.jacstuff.spacearmada.actors.ships.enemies.EnemyShip;
 import com.jacstuff.spacearmada.music.MusicPlayer;
 import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.controls.TouchPoint;
@@ -92,7 +94,27 @@ public class GameState implements State {
        backgroundView.invalidate();
     }
 
+    private EnemyShip testEnemyShip;
+    private TransparentView testEnemyTransparentView;
 
+
+    private void testShipMove(){
+        enemyShipManager.createShip(300, -10);
+
+        testEnemyTransparentView = activity.findViewById(R.id.itemsView);
+        testEnemyShip = (EnemyShip) enemyShipManager.getDrawableItems().get(0);
+        testEnemyTransparentView.addDrawableItem(enemyShipManager.getDrawableItems().get(0));
+        Executor testShipMoveExecutor = Executors.newSingleThreadScheduledExecutor();
+        //testShipMoveExecutor.execute(this::testMoveEnemyShip, 100, 100, TimeUnit.MILLISECONDS);
+
+
+    }
+
+
+    private void testMoveEnemyShip(){
+        enemyShipManager.update();
+        testEnemyTransparentView.invalidate();
+    }
 
     private void initBackgroundView(){
         TransparentView backgroundView = activity.findViewById(R.id.backgroundView);

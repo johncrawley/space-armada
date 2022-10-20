@@ -11,6 +11,7 @@ import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.jacstuff.spacearmada.DrawableItem;
 import com.jacstuff.spacearmada.actors.DrawInfo;
 import com.jacstuff.spacearmada.image.BitmapManager;
 
@@ -30,7 +31,7 @@ public class TransparentView extends View {
     private boolean isViewDrawn = false;
     private BitmapManager bitmapManager;
 
-    private List<DrawableItem> drawableItems;
+    private List<SimpleDrawableItem> simpleDrawableItems;
 
 
     public TransparentView(Context context) {
@@ -40,7 +41,7 @@ public class TransparentView extends View {
     public TransparentView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initPaint();
-        drawableItems = new ArrayList<>();
+        simpleDrawableItems = new ArrayList<>();
     }
 
 
@@ -52,12 +53,12 @@ public class TransparentView extends View {
     public TransparentView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initPaint();
-        drawableItems = new ArrayList<>();
+        simpleDrawableItems = new ArrayList<>();
     }
 
 
     public void clearDrawableItems(){
-        this.drawableItems.clear();
+        this.simpleDrawableItems.clear();
     }
 
 
@@ -84,8 +85,8 @@ public class TransparentView extends View {
         //angle = (angle + 15) % 360;
     }
 
-    public void addDrawableItem(DrawableItem drawableItem){
-        this.drawableItems.add(drawableItem);
+    public void addDrawableItem(SimpleDrawableItem drawableItem){
+        this.simpleDrawableItems.add(drawableItem);
     }
 
 
@@ -145,6 +146,7 @@ public class TransparentView extends View {
         canvasBitmap.translate(canvasTranslateX, canvasTranslateY);
         rotateCanvasBitmap();
         drawItems();
+        drawDrawableItems();
         canvasBitmap.restore();
         return bitmap;
     }
@@ -158,15 +160,29 @@ public class TransparentView extends View {
 
 
     private void drawItems(){
-        for(DrawableItem item : drawableItems){
+        for(SimpleDrawableItem item : simpleDrawableItems){
             item.draw(canvasBitmap, paint);
         }
     }
 
+    private List<DrawableItem> drawableItems;
 
-    private void drawItemsInList(Canvas canvas, Paint paint, List<? extends com.jacstuff.spacearmada.DrawableItem> drawableItems){
+    public void addDrawableItem(DrawableItem drawableItem){
+        this.drawableItems.add(drawableItem);
+    }
+
+
+
+
+    public void drawDrawableItems(){
+        List<DrawableItem> copiedList = new ArrayList<>(drawableItems);
+        drawItemsInList(copiedList);
+    }
+
+
+    public void drawItemsInList(List<? extends DrawableItem> drawableItems){
         DrawInfo drawInfo;
-        for(com.jacstuff.spacearmada.DrawableItem item : drawableItems) {
+        for(DrawableItem item : drawableItems) {
             if (item == null) {
                 continue;
             }
@@ -174,7 +190,7 @@ public class TransparentView extends View {
             if (drawInfo == null) {
                 continue;
             }
-            drawBitmap(canvas, paint, drawInfo);
+            drawBitmap(canvasBitmap, paint, drawInfo);
         }
     }
 

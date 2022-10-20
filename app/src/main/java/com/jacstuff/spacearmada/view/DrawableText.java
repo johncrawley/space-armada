@@ -3,7 +3,7 @@ package com.jacstuff.spacearmada.view;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-public class DrawableText implements DrawableItem{
+public class DrawableText implements SimpleDrawableItem {
 
     private String text;
     private int x,y;

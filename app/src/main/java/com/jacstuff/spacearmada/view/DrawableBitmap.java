@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-public class DrawableBitmap implements DrawableItem{
+public class DrawableBitmap implements SimpleDrawableItem {
 
     private final Bitmap bitmap;
     private int x,y;
