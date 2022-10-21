@@ -42,6 +42,7 @@ public class TransparentView extends View {
         super(context, attrs);
         initPaint();
         simpleDrawableItems = new ArrayList<>();
+        drawableItems = new ArrayList<>();
     }
 
 

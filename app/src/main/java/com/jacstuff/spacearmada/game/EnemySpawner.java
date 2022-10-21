@@ -19,11 +19,11 @@ public class EnemySpawner {
         this.canvasWidth = canvasWidth;
         this.borderWidth = borderWidth;
         enemySpawningService = Executors.newCachedThreadPool();
-        createEnemyTask();
+       // createEnemyTask();
     }
 
     public void startTask(){
-        enemySpawningService.execute(enemyCreatorTask);
+       // enemySpawningService.execute(enemyCreatorTask);
     }
 
     public void onPause(){

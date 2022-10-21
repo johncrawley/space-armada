@@ -9,12 +9,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import com.jacstuff.spacearmada.actors.ships.enemies.EnemyShip;
 import com.jacstuff.spacearmada.music.MusicPlayer;
 import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.controls.TouchPoint;
@@ -33,7 +31,6 @@ import com.jacstuff.spacearmada.state.State;
 import com.jacstuff.spacearmada.state.StateManager;
 import com.jacstuff.spacearmada.state.timed.TimedActionManager;
 import com.jacstuff.spacearmada.tasks.AnimatorTask;
-import com.jacstuff.spacearmada.tasks.EnemyCreatorTask;
 import com.jacstuff.spacearmada.utils.ImageLoader;
 import com.jacstuff.spacearmada.view.DrawableBitmap;
 import com.jacstuff.spacearmada.view.TransparentView;
@@ -59,7 +56,8 @@ public class GameState implements State {
     private final Activity activity;
     private MusicPlayer musicPlayer;
     private Rect gameScreenBounds;
-    private final EnemySpawner enemySpawner;
+    private EnemySpawner enemySpawner;
+    private TransparentView testEnemyTransparentView;
 
 
     private GameStateHandler currentGameStateHandler;
@@ -76,7 +74,7 @@ public class GameState implements State {
         bitmapManager = new SimpleBitmapManagerImpl();
         TimedActionManager timedActionManager = new TimedActionManager();
         int borderWidth = 90;
-        enemySpawner = new EnemySpawner(enemyShipManager, canvasWidth, borderWidth);
+       enemySpawner = new EnemySpawner(enemyShipManager, canvasWidth, borderWidth);
 
 
        // initShipsControlsAndProjectiles();
@@ -92,22 +90,18 @@ public class GameState implements State {
        TransparentView backgroundView = activity.findViewById(R.id.backgroundView);
        backgroundView.addDrawableItem(new DrawableBitmap(((BitmapDrawable)bgDrawable).getBitmap()));
        backgroundView.invalidate();
+       initShipsControlsAndProjectiles();
+       testShipMove();
     }
-
-    private EnemyShip testEnemyShip;
-    private TransparentView testEnemyTransparentView;
 
 
     private void testShipMove(){
         enemyShipManager.createShip(300, -10);
-
         testEnemyTransparentView = activity.findViewById(R.id.itemsView);
-        testEnemyShip = (EnemyShip) enemyShipManager.getDrawableItems().get(0);
         testEnemyTransparentView.addDrawableItem(enemyShipManager.getDrawableItems().get(0));
-        Executor testShipMoveExecutor = Executors.newSingleThreadScheduledExecutor();
-        //testShipMoveExecutor.execute(this::testMoveEnemyShip, 100, 100, TimeUnit.MILLISECONDS);
-
-
+        testEnemyTransparentView.setBitmapManager(bitmapManager);
+        ScheduledExecutorService testShipMoveExecutor = Executors.newSingleThreadScheduledExecutor();
+        testShipMoveExecutor.scheduleAtFixedRate(this::testMoveEnemyShip, 100, 20,TimeUnit.MILLISECONDS);
     }
 
 
@@ -115,6 +109,7 @@ public class GameState implements State {
         enemyShipManager.update();
         testEnemyTransparentView.invalidate();
     }
+
 
     private void initBackgroundView(){
         TransparentView backgroundView = activity.findViewById(R.id.backgroundView);
@@ -128,7 +123,6 @@ public class GameState implements State {
         this.canvasHeight = bottom;
         this.canvasWidth = width;
         gameScreenBounds = new Rect(0,gameScreenTop, canvasWidth, gameScreenBottom);
-
     }
 
 
@@ -157,7 +151,6 @@ public class GameState implements State {
         log("GameState onPause()");
         musicPlayer.pause();
         //enemyCreatorTask.setInactive();
-
     }
 
 

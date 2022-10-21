@@ -19,7 +19,7 @@ public abstract class AbstractActor implements DrawableItem {
     protected int speed = 2;
 
 
-    AbstractActor(AnimationDefinitionGroup animationDefinitionGroup, int x, int y){
+    public AbstractActor(AnimationDefinitionGroup animationDefinitionGroup, int x, int y){
         createInitialBoundingBox(animationDefinitionGroup, x, y);
         this.drawInfo = new DrawInfo(animationDefinitionGroup, this.boundingBox.left, this.boundingBox.top);
     }
