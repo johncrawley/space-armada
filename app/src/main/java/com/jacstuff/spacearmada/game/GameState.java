@@ -8,6 +8,9 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -87,13 +90,15 @@ public class GameState implements State {
        //enemyShipManager.createShip(400,100);
 
        Drawable bgDrawable = imageLoader.loadDrawable(R.drawable.level1_bg_2);
-       TransparentView backgroundView = activity.findViewById(R.id.backgroundView);
+       backgroundView = activity.findViewById(R.id.backgroundView);
        backgroundView.addDrawableItem(new DrawableBitmap(((BitmapDrawable)bgDrawable).getBitmap()));
        backgroundView.invalidate();
        initShipsControlsAndProjectiles();
        testShipMove();
+       testBackgroundMove();
     }
 
+    private final TransparentView backgroundView;
 
     private void testShipMove(){
         enemyShipManager.createShip(300, -10);
@@ -102,6 +107,19 @@ public class GameState implements State {
         testEnemyTransparentView.setBitmapManager(bitmapManager);
         ScheduledExecutorService testShipMoveExecutor = Executors.newSingleThreadScheduledExecutor();
         testShipMoveExecutor.scheduleAtFixedRate(this::testMoveEnemyShip, 100, 20,TimeUnit.MILLISECONDS);
+    }
+
+
+    private void testBackgroundMove(){
+        Animation scrollAnimation = new TranslateAnimation(
+                0,
+                0,
+                0,
+                1500);
+        scrollAnimation.setDuration(50_000);
+        scrollAnimation.setStartOffset(3000);
+        scrollAnimation.setFillAfter(true);
+        backgroundView.startAnimation(scrollAnimation);
     }
 
 
