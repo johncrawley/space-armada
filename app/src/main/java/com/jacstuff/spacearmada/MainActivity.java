@@ -1,30 +1,62 @@
 package com.jacstuff.spacearmada;
 
 import android.app.Activity;
-import androidx.appcompat.app.AppCompatActivity;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.graphics.Canvas;
+import android.os.IBinder;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 
+import com.jacstuff.spacearmada.service.GameService;
 import com.jacstuff.spacearmada.state.StateManager;
 
 public class MainActivity extends Activity {
 
 
   //  private DrawSurface drawSurface;
+    private GameService gameService;
     private StateManager stateManager;
     private int width,height;
-    @Override
 
+
+    private final ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            log("Entered onServiceConnected()");
+            GameService.LocalBinder binder = (GameService.LocalBinder) service;
+            gameService = binder.getService();
+            gameService.setActivity(MainActivity.this);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            log("Entered onServiceDisconnected()");
+        }
+    };
+
+
+
+    private void log(String msg){
+        System.out.println("^^^ MainActivity: " + msg);
+    }
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         deriveScreenDimensions();
         stateManager = new StateManager(this, width, height);
        // drawSurface = new DrawSurface(this, stateManager, width, height);
+        setupGameService();
+    }
+
+
+    private void setupGameService(){
+        Intent intent = new Intent(getApplicationContext(), GameService.class);
+        getApplicationContext().startService(intent);
+        getApplicationContext().bindService(intent, connection, 0);
     }
 
 
