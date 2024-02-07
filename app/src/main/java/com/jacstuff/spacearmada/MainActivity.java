@@ -8,23 +8,26 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
 
-import com.jacstuff.spacearmada.service.GameService;
-import com.jacstuff.spacearmada.state.StateManager;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentContainerView;
 
-public class MainActivity extends Activity {
+import com.jacstuff.spacearmada.service.GameService;
+import com.jacstuff.spacearmada.view.fragments.MainMenuFragment;
+
+public class MainActivity extends AppCompatActivity {
 
 
   //  private DrawSurface drawSurface;
     private GameService gameService;
-    private StateManager stateManager;
+  //  private StateManager stateManager;
     private int width,height;
-
 
     private final ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
             log("Entered onServiceConnected()");
             GameService.LocalBinder binder = (GameService.LocalBinder) service;
+            setupFragments();
             gameService = binder.getService();
             gameService.setActivity(MainActivity.this);
         }
@@ -35,6 +38,13 @@ public class MainActivity extends Activity {
         }
     };
 
+
+    private void setupFragments() {
+        FragmentContainerView fragmentContainerView = findViewById(R.id.fragment_container);
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, new MainMenuFragment())
+                .commit();
+    }
 
 
     private void log(String msg){
@@ -47,8 +57,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         deriveScreenDimensions();
-        stateManager = new StateManager(this, width, height);
-       // drawSurface = new DrawSurface(this, stateManager, width, height);
+
         setupGameService();
     }
 
@@ -61,20 +70,20 @@ public class MainActivity extends Activity {
 
 
     protected void onDestroy(){
-        stateManager.destroy();
+        //stateManager.destroy();
         super.onDestroy();
     }
 
 
     protected void onPause(){
         super.onPause();
-        stateManager.onPause();
+        //stateManager.onPause();
     }
 
 
     protected void onResume(){
         super.onResume();
-        stateManager.onResume();
+        //stateManager.onResume();
     }
 
 

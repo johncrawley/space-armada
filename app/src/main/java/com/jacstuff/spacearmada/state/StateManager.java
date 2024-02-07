@@ -30,8 +30,8 @@ public class StateManager {
         this.height = height;
         //currentState = new TitleState(context, width, height, this);
         currentState = new GameState(this, context, width, height);
-        context.findViewById(R.id.titleLayout).setVisibility(View.GONE);
-        context.findViewById(R.id.gameLayout).setVisibility(View.VISIBLE);
+      //  context.findViewById(R.id.titleLayout).setVisibility(View.GONE);
+       // context.findViewById(R.id.gameLayout).setVisibility(View.VISIBLE);
     }
 
 
