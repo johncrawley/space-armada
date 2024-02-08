@@ -13,6 +13,8 @@ import com.jacstuff.spacearmada.actors.ships.player.Energy;
 
 public abstract class CollidableActor extends AbstractActor implements Collidable {
 
+    protected Energy energy;
+
 
     public CollidableActor(AnimationDefinitionGroup animationDefinitionGroup, int x, int y, int initialEnergy){
         super(animationDefinitionGroup,x,y);
@@ -20,11 +22,10 @@ public abstract class CollidableActor extends AbstractActor implements Collidabl
     }
 
 
-    protected Energy energy;
-
     public Energy getEnergy(){
         return this.energy;
     }
+
 
     public boolean checkForCollision(Collidable otherCollidable){
         if(otherCollidable == null || !this.intersects(otherCollidable)){
@@ -34,6 +35,7 @@ public abstract class CollidableActor extends AbstractActor implements Collidabl
         return true;
     }
 
+
     public boolean intersects(Collidable otherCollidable){
         if( otherCollidable == null){
             return false;
@@ -42,7 +44,4 @@ public abstract class CollidableActor extends AbstractActor implements Collidabl
         return  doesBoundingBoxIntersectWith(otherBoundingBox);
     }
 
-    private void log(String msg){
-        Log.i("CollidableActor", msg);
-    }
 }

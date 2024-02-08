@@ -39,10 +39,10 @@ public class ProjectileManager implements DrawableItemGroup {
         return new ArrayList<DrawableItem>(this.projectiles);
     }
 
+
     public void createProjectile(float x, float y, int energy, ArmedShip ownerShip){
         synchronized(projectiles){
             Bullet bullet = new Bullet((int)x, (int)y, 15, energy, Direction.UP, animationInfoService, ownerShip);
-            Log.i("ProjectMngr", "createProjectile() new bullet drawInfo: " + bullet.getDrawInfo().toString());
             projectiles.add(bullet);
         }
     }

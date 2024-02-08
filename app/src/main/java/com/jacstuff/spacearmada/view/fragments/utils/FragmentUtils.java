@@ -72,6 +72,10 @@ public class FragmentUtils {
         fragment.getParentFragmentManager().setFragmentResultListener(key, fragment, (requestKey, bundle) -> consumer.accept(bundle));
     }
 
+    public static <E extends Enum<E>> void setListener(Fragment fragment, E key, Consumer<Bundle> consumer){
+        fragment.getParentFragmentManager().setFragmentResultListener(key.toString(), fragment, (requestKey, bundle) -> consumer.accept(bundle));
+    }
+
 
     public static void sendMessage(Fragment fragment, String key){
         sendMessage(fragment, key, new Bundle());

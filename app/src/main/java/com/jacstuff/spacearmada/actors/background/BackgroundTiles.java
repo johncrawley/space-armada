@@ -39,7 +39,6 @@ public class BackgroundTiles {
         this.view = view;
         addBackgroundTiles();
         update();
-
     }
 
 

@@ -189,7 +189,7 @@ public class GameState implements State {
     private void initShipsControlsAndProjectiles(){
         BitmapLoader bitmapLoader = new SimpleBitmapLoader(activity, bitmapManager);
         projectileManager = new ProjectileManager(gameScreenBounds, bitmapLoader);
-        playerShip = PlayerShipFactory.createPlayerShip(activity, gameScreenBounds, projectileManager, bitmapLoader);
+        playerShip = PlayerShipFactory.createPlayerShip(gameScreenBounds, projectileManager, bitmapLoader);
         initControls();
         enemyShipManager = new EnemyShipManager(projectileManager, bitmapLoader, canvasHeight);
         collisionDetectionManager = new CollisionDetectionManager(playerShip, enemyShipManager, projectileManager);

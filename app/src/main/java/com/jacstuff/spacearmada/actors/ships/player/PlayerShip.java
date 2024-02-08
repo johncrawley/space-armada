@@ -32,17 +32,15 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
         private ProjectileManager projectileManager;
         private boolean canFireWeapons = true;
         private boolean canMove = true;
-        private MusicPlayer musicPlayer;
         private Rect gameScreenBounds;
 
 
-        PlayerShip(Context context, float initialX, float initialY, int shield, int speed, AnimationDefinitionGroup animationInfoService, ProjectileManager projectileManager){
-            super( animationInfoService,
+        PlayerShip(float initialX, float initialY, int shield, int speed, AnimationDefinitionGroup animationDefinitionGroup, ProjectileManager projectileManager){
+            super( animationDefinitionGroup,
                     (int)initialX,
                     (int)initialY,
                     shield);
 
-            musicPlayer = new MusicPlayer(context);
             this.gameScreenBounds = new Rect(0,0,400,640);
             direction = Direction.NONE;
 
@@ -71,12 +69,10 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
 
         public void fire(){
             isFiring = true;
-            musicPlayer.playLoopingSound(R.raw.bloop1_short);
         }
 
         public void releaseFire(){
             isFiring = false;
-            musicPlayer.stopLoopingSound();
         }
 
 
@@ -120,7 +116,6 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
                 setState(ActorState.DESTROYING);
                 canFireWeapons = false;
                 canMove = false;
-                musicPlayer.release();
             }
 
         }

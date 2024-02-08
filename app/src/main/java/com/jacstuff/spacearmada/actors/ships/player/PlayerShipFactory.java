@@ -10,7 +10,7 @@ import com.jacstuff.spacearmada.image.BitmapLoader;
 public class PlayerShipFactory {
 
 
-    public static PlayerShip createPlayerShip(Context context, Rect gameScreenBounds, ProjectileManager projectileManager, BitmapLoader bitmapLoader){
+    public static PlayerShip createPlayerShip(Rect gameScreenBounds, ProjectileManager projectileManager, BitmapLoader bitmapLoader){
         float startingX = gameScreenBounds.centerX();
         float startingY = gameScreenBounds.centerY();
         int startingShield = 300;
@@ -18,7 +18,7 @@ public class PlayerShipFactory {
 
         AnimationDefinitionGroup animationDefinitionGroup = bitmapLoader.getAnimationDefinitionGroup("PLAYER_SHIP");
 
-        PlayerShip playerShip = new PlayerShip(context, startingX, startingY, startingShield, startingSpeed, animationDefinitionGroup, projectileManager);
+        PlayerShip playerShip = new PlayerShip(startingX, startingY, startingShield, startingSpeed, animationDefinitionGroup, projectileManager);
         playerShip.setGameScreenBounds(gameScreenBounds);
 
         return playerShip;

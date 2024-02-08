@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName className, IBinder service) {
             log("Entered onServiceConnected()");
             GameService.LocalBinder binder = (GameService.LocalBinder) service;
-            setupFragments();
+
             gameService = binder.getService();
             gameService.setActivity(MainActivity.this);
         }
@@ -37,14 +37,6 @@ public class MainActivity extends AppCompatActivity {
             log("Entered onServiceDisconnected()");
         }
     };
-
-
-    private void setupFragments() {
-        FragmentContainerView fragmentContainerView = findViewById(R.id.fragment_container);
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, new MainMenuFragment())
-                .commit();
-    }
 
 
     private void log(String msg){
@@ -57,8 +49,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         deriveScreenDimensions();
-
+        setupFragments();
         setupGameService();
+    }
+
+
+    public GameService getGameService(){
+        return gameService;
+    }
+
+
+    private void setupFragments() {
+        FragmentContainerView fragmentContainerView = findViewById(R.id.fragment_container);
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, new MainMenuFragment())
+                .commit();
     }
 
 

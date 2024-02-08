@@ -4,11 +4,13 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 
 import com.jacstuff.spacearmada.MainActivity;
 import com.jacstuff.spacearmada.service.sound.Sound;
 import com.jacstuff.spacearmada.service.sound.SoundPlayer;
+import com.jacstuff.spacearmada.view.fragments.GameFragment;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -36,6 +38,32 @@ public class GameService extends Service {
 
     public SharedPreferences getScorePrefs(){
         return getSharedPreferences("score_preferences", MODE_PRIVATE);
+    }
+
+
+    public Game getGame(){
+        return game;
+    }
+
+
+    public void updatePlayerShip(int shipX, int shipY){
+        Bundle bundle = new Bundle();
+        putInt(bundle, GameFragment.BundleTag.SHIP_X, shipX);
+        putInt(bundle, GameFragment.BundleTag.SHIP_Y, shipY);
+        sendMessage(GameFragment.MessageTag.UPDATE_SHIP, bundle);
+    }
+
+
+    private <E extends Enum<E>> void putInt(Bundle bundle, E key, int value){
+        bundle.putInt(key.toString(), value);
+    }
+
+
+    public <E extends Enum<E>> void sendMessage(E operationName, Bundle bundle) {
+        if(mainActivity == null){
+            return;
+        }
+        mainActivity.getSupportFragmentManager().setFragmentResult(operationName.toString(), bundle);
     }
 
 
