@@ -26,21 +26,21 @@ public class PlayerShip {
 
 
     public void moveRight(){
-        x+=distanceToMove;
+        x += distanceToMove;
     }
 
 
     public void moveLeft(){
-        x-=distanceToMove;
+        x -= distanceToMove;
     }
 
 
     public void moveDown(){
-        y+=distanceToMove;
+        y += distanceToMove;
     }
 
 
     public void moveUp(){
-        y-=distanceToMove;
+        y -= distanceToMove;
     }
 }

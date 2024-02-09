@@ -75,5 +75,11 @@
         android:layout_height="wrap_content"
         android:background="@drawable/ship1" />
 
+    <ImageView
+        android:id="@+id/enemyShipView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ship2" />
+
 
 </FrameLayout>

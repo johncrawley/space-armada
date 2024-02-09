@@ -21,11 +21,11 @@ import com.jacstuff.spacearmada.service.GameService;
 import com.jacstuff.spacearmada.view.fragments.utils.FragmentUtils;
 
 
-public class GameFragment extends Fragment {
+public class GameFragment extends Fragment implements GameView {
 
 
     private int width, height;
-    private ImageView shipView;
+    private ImageView shipView, enemyShip;
     private Game game;
 
     public enum BundleTag { SHIP_X, SHIP_Y};
@@ -58,6 +58,7 @@ public class GameFragment extends Fragment {
         deriveScreenDimensions();
         setupButtons(parentView);
         shipView = parentView.findViewById(R.id.shipView);
+        enemyShip = parentView.findViewById(R.id.enemyShipView);
         setupListeners();
         return parentView;
     }
@@ -149,9 +150,35 @@ public class GameFragment extends Fragment {
 
     @Override
     public void onAttach(@NonNull Context context){
+
         super.onAttach(context);
         deriveScreenDimensions();
+        Game game = getGame();
+        boolean isGameNull = game == null;
+      log("onAttach() is game null? " + isGameNull);
+        game.setGameView(this);
     }
+
+    @Override
+    public void updateShip(int x, int y){
+
+    }
+
+
+    @Override
+    public void updateEnemyShip(int x, int y){
+        if(getActivity() == null){
+            return;
+        }
+        getActivity().runOnUiThread(()->{
+            enemyShip.setX(x);
+            enemyShip.setY(y);
+        } );
+    }
+
+
+
+
 
 
     private void deriveScreenDimensions(){

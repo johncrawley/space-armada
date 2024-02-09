@@ -11,6 +11,7 @@ import com.jacstuff.spacearmada.MainActivity;
 import com.jacstuff.spacearmada.service.sound.Sound;
 import com.jacstuff.spacearmada.service.sound.SoundPlayer;
 import com.jacstuff.spacearmada.view.fragments.GameFragment;
+import com.jacstuff.spacearmada.view.fragments.GameView;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -87,6 +88,7 @@ public class GameService extends Service {
         log("entered onCreate()");
         game.init(this);
         soundPlayer = new SoundPlayer(getApplicationContext());
+
     }
 
 
@@ -117,9 +119,12 @@ public class GameService extends Service {
     }
 
 
+
+
     @Override
     public void onDestroy() {
         mainActivity = null;
+        game.quit();
     }
 
 
