@@ -3,6 +3,7 @@ package com.jacstuff.spacearmada.view.fragments;
 import static com.jacstuff.spacearmada.view.fragments.utils.ButtonUtils.setupButton;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,9 @@ import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.service.Game;
 import com.jacstuff.spacearmada.service.GameService;
 import com.jacstuff.spacearmada.view.fragments.utils.FragmentUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class GameFragment extends Fragment implements GameView {
@@ -51,6 +55,11 @@ public class GameFragment extends Fragment implements GameView {
 
 
     @Override
+    public void updateStars(List<Point> starCoordinates){
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -59,10 +68,25 @@ public class GameFragment extends Fragment implements GameView {
         setupButtons(parentView);
         shipView = parentView.findViewById(R.id.shipView);
         enemyShip = parentView.findViewById(R.id.enemyShipView);
+        addStarViewsTo(parentView, 20);
         setupListeners();
         return parentView;
     }
 
+    private List<View> starViews = new ArrayList<>();
+
+
+    private void addStarViewsTo(View parentView, int numberOfStars){
+        for(int i=0; i< numberOfStars;i++){
+            addStarViewTo(parentView);
+        }
+    }
+
+
+    private void addStarViewTo(View parentView){
+        View starView = new View(getContext());
+
+    }
 
     public void setupButtons(View parentView){
         setupButton(parentView, R.id.moveDownButton, this::moveDown);
