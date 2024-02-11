@@ -1,4 +1,4 @@
-package com.jacstuff.spacearmada.view.fragments;
+package com.jacstuff.spacearmada.view.fragments.game;
 
 import android.graphics.Point;
 

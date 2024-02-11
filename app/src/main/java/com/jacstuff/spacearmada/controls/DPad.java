@@ -1,33 +1,33 @@
 package com.jacstuff.spacearmada.controls;
 
 /*
- * Created by John on 29/08/2017.
- * Represents an 8-way directinal pad, and invokes specific commands
+ * Created by John on 28/05/2017.
+ * Represents a d-pad controller - links a motion event in a specific area of the draw
+ *  surface to a controllable actor.
+ *
+ * Represents an 8-way directional pad, and invokes specific commands
  * based on whether or not an x,y falls between particular segments of the dpad circle;
  */
 
-        import java.util.HashMap;
-        import java.util.List;
-        import java.util.Map;
-        import com.jacstuff.spacearmada.Direction;
-        import com.jacstuff.spacearmada.commands.Command;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import com.jacstuff.spacearmada.Direction;
+import com.jacstuff.spacearmada.commands.Command;
 
-/**
- * Created by John on 28/05/2017.
- *
- * Represents a d-pad controller - links a motion event in a specific area of the draw surface to a controllable actor.
- */
+
 public class DPad extends CircularControl {
 
-
     private CircleSegmentLine topRightLine, topLeftLine, leftTopLine, rightTopLine;
-    private Map<Direction, Command> commandMap;
+    private final Map<Direction, Command> commandMap;
+
 
     public DPad(int xPos, int yPos, int radius) {
         super(xPos, yPos, radius);
         commandMap = new HashMap<>();
         calculateSegmentLines();
     }
+
 
     @Override
     public void setCentrePosition(int x, int y, int radius){
@@ -41,10 +41,7 @@ public class DPad extends CircularControl {
     }
 
 
-
-
     private void calculateSegmentLines() {
-
         leftTopLine = initSegmentLine(202.5f, "leftTopLine");
         topLeftLine = initSegmentLine(247.5f, "topLeftLine");
         topRightLine = initSegmentLine(292.5f, "topRightLine");
@@ -52,13 +49,12 @@ public class DPad extends CircularControl {
     }
 
 
-
     private CircleSegmentLine initSegmentLine(float angle, String label) {
         return new CircleSegmentLine(circleCentreX, circleCentreY, radius, angle, label);
     }
 
-    public void process(float x, float y, boolean isUpEvent){
 
+    public void process(float x, float y, boolean isUpEvent){
         if(contains(x,y)){
             if(isUpEvent){
                Command command = commandMap.get(Direction.NONE);
@@ -69,13 +65,9 @@ public class DPad extends CircularControl {
             calculateDirection(x,y);
         }
     }
-    // what's going wrong
-    // It's not that there's some touchPoints not getting passed into this method
-    // This method only gets called when there is an event
-    // Calculate direction only gets called when the touchpoint is not a release
-    // It's getting called when
-    public void process(List<TouchPoint> touchPoints){
 
+
+    public void process(List<TouchPoint> touchPoints){
         for(TouchPoint touchPoint : touchPoints) {
             float x = touchPoint.getX();
             float y = touchPoint.getY();
@@ -83,16 +75,21 @@ public class DPad extends CircularControl {
                 calculateDirection(x,y);
                 return;
             }
-
         }
-
-        commandMap.get(Direction.NONE).release(); //it actually doesn't matter which MoveCommand you call release on.
+        Command command = commandMap.get(Direction.NONE);
+        if(command != null){
+            command.release();
+        }//it actually doesn't matter which MoveCommand you call release on.
     }
+
 
     private void invoke(Direction d){
-
-        commandMap.get(d).invoke();
+        Command command = commandMap.get(d);
+        if(command != null){
+            command.invoke();
+        }
     }
+
 
     private void calculateDirection(float x, float y){
         boolean isPointLeftOfTopLeftLine = pointIsLeftOf(x,y, topLeftLine);
@@ -118,12 +115,12 @@ public class DPad extends CircularControl {
         else if(!isPointLeftOfTopLeftLine && isPointLeftOfLeftTopLine){
             invoke(Direction.DOWN_RIGHT);
         }
-        else if(!isPointLeftOfTopRightLine){// && isPointLeftOfRightTopLine){
+        else if(!isPointLeftOfTopRightLine){
             invoke(Direction.UP_RIGHT);
         }
         else invoke(Direction.DOWN_LEFT);
-
     }
+
 
     private boolean pointIsLeftOf(float pointX, float pointY, CircleSegmentLine line){
         return !line.isRightOf(pointX, pointY);
@@ -131,35 +128,3 @@ public class DPad extends CircularControl {
 }
 
 
-class CircleSegmentLine {
-    private float x1, y1, x2, y2;
-    //private String colour;
-
-
-    CircleSegmentLine(float circleX, float circleY, float radius, float angle, String colour, String label) {
-        this.x1 = circleX;
-        this.y1 = circleY;
-        float pi = (float)Math.PI;
-        float angleInRadians = angle * pi/ 180.0f;
-        this.x2 = (float) (circleX + radius * Math.cos(angleInRadians));
-        this.y2 = (float) (circleY + radius * Math.sin(angleInRadians));
-        //this.colour = colour;
-    }
-    CircleSegmentLine(float circleX, float circleY, float radius, float angle, String label) {
-        this.x1 = circleX;
-        this.y1 = circleY;
-        float pi = (float)Math.PI;
-        float angleInRadians = angle * pi/ 180.0f;
-        this.x2 = (float) (circleX + radius * Math.cos(angleInRadians));
-        this.y2 = (float) (circleY + radius * Math.sin(angleInRadians));
-        //this.colour = colour;
-    }
-
-
-
-    // returns true if the line is to the right of the point
-    boolean isRightOf(float pointX, float pointY) {
-        return (x2 - x1) * (pointY - y1) - ((y2 - y1) * (pointX - x1)) > 0;
-    }
-
-}

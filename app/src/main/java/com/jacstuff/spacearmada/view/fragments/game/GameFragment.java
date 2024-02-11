@@ -1,8 +1,9 @@
-package com.jacstuff.spacearmada.view.fragments;
+package com.jacstuff.spacearmada.view.fragments.game;
 
 import static com.jacstuff.spacearmada.view.fragments.utils.ButtonUtils.setupButton;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 
@@ -19,6 +20,7 @@ import com.jacstuff.spacearmada.MainActivity;
 import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.service.Game;
 import com.jacstuff.spacearmada.service.GameService;
+import com.jacstuff.spacearmada.view.fragments.MainMenuFragment;
 import com.jacstuff.spacearmada.view.fragments.utils.FragmentUtils;
 
 import java.util.ArrayList;
@@ -56,8 +58,26 @@ public class GameFragment extends Fragment implements GameView {
 
     @Override
     public void updateStars(List<Point> starCoordinates){
-
+        if(getActivity() == null){
+            return;
+        }
+        if(starCoordinates == null){
+            log("updateStars() input coordinates are null!");
+            return;
+        }
+        if(starViews == null || starViews.size() != starCoordinates.size()){
+            return;
+        }
+        for(int i=0; i<starCoordinates.size(); i++){
+            View starView = starViews.get(i);
+            Point p = starCoordinates.get(i);
+            getActivity().runOnUiThread(()->{
+                starView.setX(p.x);
+                starView.setY(p.y);
+            } );
+        }
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,7 +88,7 @@ public class GameFragment extends Fragment implements GameView {
         setupButtons(parentView);
         shipView = parentView.findViewById(R.id.shipView);
         enemyShip = parentView.findViewById(R.id.enemyShipView);
-        addStarViewsTo(parentView, 20);
+        addStarViewsTo((ViewGroup)parentView, 20);
         setupListeners();
         return parentView;
     }
@@ -76,17 +96,21 @@ public class GameFragment extends Fragment implements GameView {
     private List<View> starViews = new ArrayList<>();
 
 
-    private void addStarViewsTo(View parentView, int numberOfStars){
+    private void addStarViewsTo(ViewGroup parentView, int numberOfStars){
         for(int i=0; i< numberOfStars;i++){
             addStarViewTo(parentView);
         }
     }
 
 
-    private void addStarViewTo(View parentView){
+    private void addStarViewTo(ViewGroup parentView){
         View starView = new View(getContext());
-
+        starView.setLayoutParams(new ViewGroup.LayoutParams(2,2));
+        parentView.addView(starView);
+        starView.setBackgroundColor(Color.LTGRAY);
+        starViews.add(starView);
     }
+
 
     public void setupButtons(View parentView){
         setupButton(parentView, R.id.moveDownButton, this::moveDown);
@@ -174,14 +198,16 @@ public class GameFragment extends Fragment implements GameView {
 
     @Override
     public void onAttach(@NonNull Context context){
-
         super.onAttach(context);
         deriveScreenDimensions();
         Game game = getGame();
         boolean isGameNull = game == null;
-      log("onAttach() is game null? " + isGameNull);
-        game.setGameView(this);
+        log("onAttach() is game null? " + isGameNull);
+        if(game != null){
+           game.setGameView(this);
+        }
     }
+
 
     @Override
     public void updateShip(int x, int y){
@@ -199,10 +225,6 @@ public class GameFragment extends Fragment implements GameView {
             enemyShip.setY(y);
         } );
     }
-
-
-
-
 
 
     private void deriveScreenDimensions(){

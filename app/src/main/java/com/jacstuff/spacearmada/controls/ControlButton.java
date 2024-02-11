@@ -8,19 +8,22 @@ import com.jacstuff.spacearmada.commands.Command;
 /**
  * Created by John on 29/08/2017.
  *
- *
  */
 
 public class ControlButton extends CircularControl {
 
     private Command command;
+
+
     public ControlButton(int x, int y, int radius){
         super(x,y,radius);
     }
 
+
     public void assignCommand(Command command){
         this.command = command;
     }
+
 
     public void process(float x, float y, boolean isUpEvent){
         if(contains(x,y)){
@@ -30,6 +33,8 @@ public class ControlButton extends CircularControl {
             command.invoke();
         }
     }
+
+
     public void process(List<TouchPoint> touchPoints){
         boolean isTouchDetected = false;
         for(TouchPoint touchPoint : touchPoints) {

@@ -10,8 +10,7 @@ import android.os.IBinder;
 import com.jacstuff.spacearmada.MainActivity;
 import com.jacstuff.spacearmada.service.sound.Sound;
 import com.jacstuff.spacearmada.service.sound.SoundPlayer;
-import com.jacstuff.spacearmada.view.fragments.GameFragment;
-import com.jacstuff.spacearmada.view.fragments.GameView;
+import com.jacstuff.spacearmada.view.fragments.game.GameFragment;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

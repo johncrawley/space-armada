@@ -30,6 +30,8 @@ public class TransparentView extends View {
     private Canvas canvasBitmap;
     private boolean isViewDrawn = false;
     private BitmapManager bitmapManager;
+    private List<DrawableItem> drawableItems;
+
 
     private List<SimpleDrawableItem> simpleDrawableItems;
 
@@ -37,6 +39,7 @@ public class TransparentView extends View {
     public TransparentView(Context context) {
         super(context);
     }
+
 
     public TransparentView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -85,6 +88,7 @@ public class TransparentView extends View {
     public void updateAndDraw(){
         //angle = (angle + 15) % 360;
     }
+
 
     public void addDrawableItem(SimpleDrawableItem drawableItem){
         this.simpleDrawableItems.add(drawableItem);
@@ -166,13 +170,10 @@ public class TransparentView extends View {
         }
     }
 
-    private List<DrawableItem> drawableItems;
 
     public void addDrawableItem(DrawableItem drawableItem){
         this.drawableItems.add(drawableItem);
     }
-
-
 
 
     public void drawDrawableItems(){
