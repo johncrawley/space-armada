@@ -8,8 +8,4 @@ import com.jacstuff.spacearmada.actors.ships.ControllableShip;
 
 public class AbstractSpaceshipCommand {
     protected ControllableShip spaceship;
-
-    public void assignShip(ControllableShip spaceship){
-        this.spaceship = spaceship;
-    }
 }

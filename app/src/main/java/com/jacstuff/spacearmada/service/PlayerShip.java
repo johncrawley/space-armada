@@ -2,7 +2,10 @@ package com.jacstuff.spacearmada.service;
 
 import android.graphics.Rect;
 
-public class PlayerShip {
+import com.jacstuff.spacearmada.Direction;
+import com.jacstuff.spacearmada.actors.ships.ControllableShip;
+
+public class PlayerShip implements ControllableShip {
 
     private int x,y;
     private Rect moveBounds;
@@ -14,6 +17,24 @@ public class PlayerShip {
         this.y = initialY;
         this.moveBounds = moveBounds;
     }
+
+
+    @Override
+    public void setDirection(Direction direction){
+
+    }
+
+
+    @Override
+    public void releaseFire(){
+
+    }
+
+    @Override
+    public void stopMoving(){
+
+    }
+
 
     public int getX(){
         return x;
@@ -42,5 +63,15 @@ public class PlayerShip {
 
     public void moveUp(){
         y -= distanceToMove;
+    }
+
+    @Override
+    public void fire() {
+
+    }
+
+    @Override
+    public void update() {
+
     }
 }

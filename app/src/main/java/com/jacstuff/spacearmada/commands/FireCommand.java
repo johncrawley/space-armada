@@ -13,11 +13,8 @@ import com.jacstuff.spacearmada.actors.ships.Spaceship;
  */
 
 public class FireCommand extends com.jacstuff.spacearmada.commands.AbstractSpaceshipCommand implements com.jacstuff.spacearmada.commands.Command {
-    private Context context;
 
-    public FireCommand(Context context, ControllableShip spaceship){
-
-        this.context = context;
+    public FireCommand(ControllableShip spaceship){
         this.spaceship = spaceship;
     }
 

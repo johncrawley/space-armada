@@ -15,15 +15,13 @@ import com.jacstuff.spacearmada.controls.DPad;
 
 /**
  * Created by John on 29/08/2017.
- *
  * Responsible for connecting the player's spaceship to the controls
  */
-
 public class InputControlsManager {
-    private DPad dpad;
-    private ControlButton fireButton;
-    private ControllableShip spaceship;
-    private Context context;
+    private final DPad dpad;
+    private final ControlButton fireButton;
+    private final ControllableShip spaceship;
+    private final Context context;
 
     public InputControlsManager(Context context, int screenWidth, int screenHeight, ControllableShip spaceship){
         this.context = context;
@@ -34,9 +32,6 @@ public class InputControlsManager {
         int actionButtonXPosition = screenWidth - ((actionButtonRadius * 2) + border);
         int yPosition = screenHeight - ((dpadRadius * 2) + border);
 
-
-
-
         this.spaceship = spaceship;
         dpad = new DPad(dpadXPosition, yPosition,140);
         fireButton = new ControlButton(actionButtonXPosition, yPosition, actionButtonRadius);
@@ -45,39 +40,40 @@ public class InputControlsManager {
 
 
     private void assignSpaceShipCommands(){
-
        assignActionCommands();
        for(Direction direction : Direction.values()){
            assignDPadCommand(direction);
        }
-
     }
+
 
     public void setDpadPosition(int centreX, int centreY, int radius){
         dpad.setCentrePosition(centreX,centreY, radius);
-
     }
 
+
     private void assignActionCommands(){
-        Command fireCommand = new FireCommand(context, spaceship);
+        Command fireCommand = new FireCommand(spaceship);
         fireButton.assignCommand(fireCommand);
     }
 
+
     private void assignDPadCommand(Direction d){
         MoveCommand command = new MoveCommand(spaceship);
-        command.assignShip(spaceship);
         command.assignDirection(d);
         dpad.assignCommand(d, command);
     }
 
 
     public void process(List<TouchPoint> touchPoints){
-        //Log.i("InputControlsMngr" , "touchPoints list size: " + touchPoints.size() + " " + System.currentTimeMillis());
         dpad.process(touchPoints);
         fireButton.process(touchPoints);
     }
 
+
     public CircularControl getDPad(){return this.dpad;}
+
+
     public CircularControl getFireButton(){return this.fireButton;}
 
 }
