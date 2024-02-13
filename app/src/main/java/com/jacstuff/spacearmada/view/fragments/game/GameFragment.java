@@ -33,6 +33,7 @@ public class GameFragment extends Fragment implements GameView {
     private int width, height;
     private ImageView shipView, enemyShip;
     private Game game;
+    private DpadControlView dpadControlView;
 
     public enum BundleTag { SHIP_X, SHIP_Y};
     public enum MessageTag {UPDATE_SHIP}
@@ -201,8 +202,11 @@ public class GameFragment extends Fragment implements GameView {
         super.onAttach(context);
         deriveScreenDimensions();
         Game game = getGame();
-        boolean isGameNull = game == null;
-        log("onAttach() is game null? " + isGameNull);
+        View parentView = getView();
+        if(parentView == null){
+            return;
+        }
+        dpadControlView = new DpadControlView(getContext(), game, parentView, R.id.dpadView);
         if(game != null){
            game.setGameView(this);
         }

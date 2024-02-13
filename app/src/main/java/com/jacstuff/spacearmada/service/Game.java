@@ -1,20 +1,18 @@
 package com.jacstuff.spacearmada.service;
 
-import android.graphics.Point;
 import android.graphics.Rect;
 
+import com.jacstuff.spacearmada.Direction;
+import com.jacstuff.spacearmada.actors.ships.ControllableShip;
 import com.jacstuff.spacearmada.view.fragments.game.GameView;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class Game {
+public class Game implements ControllableShip {
 
         private GameService gameService;
         private final PlayerShip playerShip;
@@ -44,13 +42,16 @@ public class Game {
                         return;
                 }
                 isRunning.set(true);
-               gameUpdateFuture = scheduledExecutorService.scheduleAtFixedRate(this::update, 0,20, TimeUnit.MILLISECONDS);
+               gameUpdateFuture = scheduledExecutorService.scheduleAtFixedRate(this::updateItems, 0,20, TimeUnit.MILLISECONDS);
         }
 
 
-        private void update(){
+        private void updateItems(){
                 updateEnemyShip();
                 starManager.updateStarsOnView();
+                if(playerShip.hasPositionChanged()){
+                        gameView.updateShip(playerShip.getX(), playerShip.getY());
+                }
         }
 
 
@@ -113,4 +114,29 @@ public class Game {
                 System.out.println("^^^ Game: " + msg);
         }
 
+
+        @Override
+        public void fire() {
+                playerShip.fire();
+        }
+
+        @Override
+        public void setDirection(Direction direction) {
+                playerShip.setDirection(direction);
+        }
+
+        @Override
+        public void releaseFire() {
+                playerShip.releaseFire();
+        }
+
+        @Override
+        public void stopMoving() {
+                playerShip.stopMoving();
+        }
+
+        @Override
+        public void update() {
+
+        }
 }
