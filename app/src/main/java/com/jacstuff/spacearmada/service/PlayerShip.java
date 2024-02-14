@@ -33,17 +33,16 @@ public class PlayerShip implements ControllableShip {
 
     }
 
+
     @Override
     public void stopMoving(){
-
+        this.currentDirection = Direction.NONE;
     }
 
 
     public int getX(){
         return x;
     }
-
-
 
 
     public boolean hasPositionChanged(){
@@ -84,32 +83,24 @@ public class PlayerShip implements ControllableShip {
 
     }
 
+
     @Override
     public void update() {
         updateDirection();
     }
 
+
     private void updateDirection(){
-
         switch(currentDirection){
-            case UP:
-                moveUp();break;
-            case DOWN:
-                moveDown();break;
-            case LEFT:
-                moveLeft();break;
-            case RIGHT:
-                moveRight();break;
-            case UP_LEFT:
-                moveUp(); moveLeft();break;
-            case UP_RIGHT:
-                moveUp(); moveRight();break;
-            case DOWN_LEFT:
-                moveDown(); moveLeft();break;
-            case DOWN_RIGHT:
-                moveDown(); moveRight();break;
-
-            // default: Log.i("PlayerShip updateDir()", "No direction detected");
+            case UP -> moveUp();
+            case DOWN -> moveDown();
+            case LEFT -> moveLeft();
+            case RIGHT -> moveRight();
+            case UP_LEFT -> { moveUp(); moveLeft(); }
+            case UP_RIGHT -> { moveUp(); moveRight(); }
+            case DOWN_LEFT -> { moveDown(); moveLeft(); }
+            case DOWN_RIGHT -> { moveDown(); moveRight(); }
+            case NONE -> {}
         }
     }
 }

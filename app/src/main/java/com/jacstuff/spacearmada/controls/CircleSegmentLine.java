@@ -1,6 +1,6 @@
 package com.jacstuff.spacearmada.controls;
 
-class CircleSegmentLine {
+public class CircleSegmentLine {
 
     private final float x1, y1, x2, y2;
 

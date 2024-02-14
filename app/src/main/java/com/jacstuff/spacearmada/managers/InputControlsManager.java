@@ -26,8 +26,9 @@ public class InputControlsManager {
     public InputControlsManager(Context context, int screenWidth, int screenHeight, ControllableShip spaceship){
         this.context = context;
         final int actionButtonRadius = 70;
+        log("constructor() screen width,height: " + screenWidth + ","  + screenHeight);
         int border = 50;
-        int dpadRadius = 140;
+        int dpadRadius = 200;
         int dpadXPosition = 50;
         int actionButtonXPosition = screenWidth - ((actionButtonRadius * 2) + border);
         int yPosition = screenHeight - ((dpadRadius * 2) + border);
@@ -36,6 +37,11 @@ public class InputControlsManager {
         dpad = new DPad(dpadXPosition, yPosition,140);
         fireButton = new ControlButton(actionButtonXPosition, yPosition, actionButtonRadius);
         assignSpaceShipCommands();
+    }
+
+
+    private void log(String msg){
+        System.out.println("^^^ InputControlsManager: " + msg);
     }
 
 

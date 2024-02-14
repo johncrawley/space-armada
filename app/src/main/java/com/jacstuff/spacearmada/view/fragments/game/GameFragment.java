@@ -20,6 +20,7 @@ import com.jacstuff.spacearmada.MainActivity;
 import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.service.Game;
 import com.jacstuff.spacearmada.service.GameService;
+import com.jacstuff.spacearmada.view.TransparentView;
 import com.jacstuff.spacearmada.view.fragments.MainMenuFragment;
 import com.jacstuff.spacearmada.view.fragments.utils.FragmentUtils;
 
@@ -34,6 +35,8 @@ public class GameFragment extends Fragment implements GameView {
     private ImageView shipView, enemyShip;
     private Game game;
     private DpadControlView dpadControlView;
+    private List<View> starViews = new ArrayList<>();
+
 
     public enum BundleTag { SHIP_X, SHIP_Y};
     public enum MessageTag {UPDATE_SHIP}
@@ -56,45 +59,51 @@ public class GameFragment extends Fragment implements GameView {
         super.onCreate(savedInstanceState);
     }
 
-
-    @Override
-    public void updateStars(List<Point> starCoordinates){
-        if(getActivity() == null){
-            return;
-        }
-        if(starCoordinates == null){
-            log("updateStars() input coordinates are null!");
-            return;
-        }
-        if(starViews == null || starViews.size() != starCoordinates.size()){
-            return;
-        }
-        for(int i=0; i<starCoordinates.size(); i++){
-            View starView = starViews.get(i);
-            Point p = starCoordinates.get(i);
-            getActivity().runOnUiThread(()->{
-                starView.setX(p.x);
-                starView.setY(p.y);
-            } );
-        }
-    }
-
+    private TransparentView dpadView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        log("Entered onCreateView()");
         View parentView = inflater.inflate(R.layout.fragment_game, container, false);
         deriveScreenDimensions();
         setupButtons(parentView);
         shipView = parentView.findViewById(R.id.shipView);
         enemyShip = parentView.findViewById(R.id.enemyShipView);
+        dpadView = parentView.findViewById(R.id.dpadView);
         addStarViewsTo((ViewGroup)parentView, 20);
         setupListeners();
+        //initControls();
         return parentView;
     }
 
-    private List<View> starViews = new ArrayList<>();
+
+    @Override
+    public void onViewCreated(View parentView,
+                             Bundle savedInstanceState) {
+        initControls();
+    }
+
+
+    @Override
+    public void onAttach(@NonNull Context context){
+        super.onAttach(context);
+        log("Entered onAttach()");
+        deriveScreenDimensions();
+        Game game = getGame();
+        //dpadControlView = new DpadControlView(getContext(), game, parentView, R.id.dpadView);
+        if(game != null){
+            game.setGameView(this);
+        }
+    }
+
+
+    private void initControls(){
+        if(dpadControlView == null) {
+            dpadControlView = new DpadControlView(getContext(), dpadView);
+        }
+        dpadControlView.initControls(game);
+    }
 
 
     private void addStarViewsTo(ViewGroup parentView, int numberOfStars){
@@ -131,6 +140,35 @@ public class GameFragment extends Fragment implements GameView {
         int shipY = getBundleInt(b, BundleTag.SHIP_Y);
         shipView.setX(shipX);
         shipView.setY(shipY);
+    }
+
+
+    @Override
+    public void updateStars(List<Point> starCoordinates){
+        if(starCoordinates == null){
+            log("updateStars() input coordinates are null!");
+            return;
+        }
+        if(starViews == null || starViews.size() != starCoordinates.size()){
+            return;
+        }
+        for(int i=0; i<starCoordinates.size(); i++){
+            if(i >= starViews.size()){
+                return;
+            }
+            updateStar(starViews.get(i), starCoordinates.get(i));
+        }
+    }
+
+
+    private void updateStar(View starView, Point p){
+        if(getActivity() == null){
+            return;
+        }
+        getActivity().runOnUiThread(()->{
+            starView.setX(p.x);
+            starView.setY(p.y);
+        } );
     }
 
 
@@ -198,23 +236,14 @@ public class GameFragment extends Fragment implements GameView {
 
 
     @Override
-    public void onAttach(@NonNull Context context){
-        super.onAttach(context);
-        deriveScreenDimensions();
-        Game game = getGame();
-        View parentView = getView();
-        if(parentView == null){
+    public void updateShip(int x, int y){
+        if(getActivity() == null){
             return;
         }
-        dpadControlView = new DpadControlView(getContext(), game, parentView, R.id.dpadView);
-        if(game != null){
-           game.setGameView(this);
-        }
-    }
-
-
-    @Override
-    public void updateShip(int x, int y){
+        getActivity().runOnUiThread(()->{
+            shipView.setX(x);
+            shipView.setY(y);
+        } );
 
     }
 

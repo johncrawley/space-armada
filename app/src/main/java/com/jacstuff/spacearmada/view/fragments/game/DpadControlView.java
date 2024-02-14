@@ -5,9 +5,9 @@ import android.content.Context;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.jacstuff.spacearmada.actors.ships.ControllableShip;
 import com.jacstuff.spacearmada.controls.TouchPoint;
 import com.jacstuff.spacearmada.managers.InputControlsManager;
-import com.jacstuff.spacearmada.service.Game;
 import com.jacstuff.spacearmada.view.TransparentView;
 
 import java.util.ArrayList;
@@ -16,16 +16,23 @@ import java.util.List;
 public class DpadControlView{
 
     private final TransparentView dpadView;
-    private final InputControlsManager inputControlsManager;
+    private InputControlsManager inputControlsManager;
+    private final Context context;
+
+    public DpadControlView(Context context, TransparentView dpadView){
+        this.context = context;
+        this.dpadView = dpadView;
+    }
 
 
     @SuppressLint("ClickableViewAccessibility")
-    public DpadControlView(Context context, Game game, View parentView, int viewId){
-        dpadView = parentView.findViewById(viewId);
+    public void initControls(ControllableShip controllableShip){
         int width = dpadView.getMeasuredWidth();
         int height = dpadView.getMeasuredHeight();
+        width = 300;
+        height = 300;
+        inputControlsManager = new InputControlsManager(context, width, height, controllableShip);
         dpadView.setOnTouchListener(this::onTouchEvent);
-        inputControlsManager = new InputControlsManager(context, dpadView.getMeasuredWidth(), dpadView.getMeasuredHeight(), game);
     }
 
 

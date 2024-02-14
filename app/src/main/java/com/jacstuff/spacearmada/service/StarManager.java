@@ -3,6 +3,7 @@ package com.jacstuff.spacearmada.service;
 import android.graphics.Point;
 import android.graphics.Rect;
 
+import com.jacstuff.spacearmada.view.fragments.game.GameFragment;
 import com.jacstuff.spacearmada.view.fragments.game.GameView;
 
 import java.util.ArrayList;
@@ -11,16 +12,21 @@ import java.util.Random;
 
 public class StarManager {
 
-    private final GameView gameView;
+    private GameView gameView;
     private List<Point> slowStars;
     private final Random random;
     private final Rect screenBounds;
 
 
-    public StarManager(GameView gameView, Rect screenBounds){
-        this.gameView = gameView;
+    public StarManager(Rect screenBounds){
         this.screenBounds = screenBounds;
         random = new Random();
+        generateStars();
+    }
+
+
+    public void setGameView(GameView gameView){
+        this.gameView = gameView;
     }
 
 

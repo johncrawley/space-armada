@@ -15,10 +15,12 @@ public class PlayerShipTest {
     private int screenMaxY = 200;
     private int initialX = 50;
     private int initialY = 50;
+    private Rect screenBounds;
 
     @Before
     public void setup(){
-        playerShip = new PlayerShip(50, 50, new Rect(screenMinX, screenMinY, screenMaxX, screenMaxY));
+        screenBounds = new Rect(screenMinX, screenMinY, screenMaxX, screenMaxY);
+        playerShip = new PlayerShip(50, 50, screenBounds);
     }
 
 
@@ -41,6 +43,12 @@ public class PlayerShipTest {
         playerShip.moveRight();
         assertEquals(initialX, playerShip.getX());
         assertEquals(initialY, playerShip.getY());
+    }
+
+
+    @Test
+    public void shipDoesNotEscapeBounds(){
+
     }
 
 

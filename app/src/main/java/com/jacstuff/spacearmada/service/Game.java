@@ -26,14 +26,14 @@ public class Game implements ControllableShip {
         private final AtomicBoolean isRunning = new AtomicBoolean(false);
 
         private final Rect screenBounds;
-        private final StarManager starManager;
+        private StarManager starManager;
+
 
         public Game(){
                 screenBounds = new Rect(0,0,1000,1000);
                 playerShip = new PlayerShip(50,50,screenBounds );
-                starManager = new StarManager(gameView, screenBounds);
+                starManager = new StarManager( screenBounds);
                 scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-                starManager.generateStars();
         }
 
 
@@ -49,9 +49,7 @@ public class Game implements ControllableShip {
         private void updateItems(){
                 updateEnemyShip();
                 starManager.updateStarsOnView();
-                if(playerShip.hasPositionChanged()){
-                        gameView.updateShip(playerShip.getX(), playerShip.getY());
-                }
+                updateShip();
         }
 
 
@@ -62,6 +60,14 @@ public class Game implements ControllableShip {
                         enemyDirection *= -1;
                 }
                 gameView.updateEnemyShip(enemyX, enemyY);
+        }
+
+
+        private void updateShip(){
+                playerShip.update();
+                if(playerShip.hasPositionChanged()){
+                       gameView.updateShip(playerShip.getX(), playerShip.getY());
+                }
         }
 
 
@@ -94,10 +100,12 @@ public class Game implements ControllableShip {
                 updatePlayerShip();
         }
 
+
         public void moveRight(){
                 playerShip.moveRight();
                 updatePlayerShip();
         }
+
 
         public void updatePlayerShip(){
                 gameService.updatePlayerShip(playerShip.getX(), playerShip.getY());
@@ -106,6 +114,7 @@ public class Game implements ControllableShip {
 
         public void setGameView(GameView gameView){
                 this.gameView = gameView;
+                starManager.setGameView(gameView);
                 start();
         }
 
@@ -120,20 +129,25 @@ public class Game implements ControllableShip {
                 playerShip.fire();
         }
 
+
         @Override
         public void setDirection(Direction direction) {
+                log("Entered setDirection() direction: " + direction.name());
                 playerShip.setDirection(direction);
         }
+
 
         @Override
         public void releaseFire() {
                 playerShip.releaseFire();
         }
 
+
         @Override
         public void stopMoving() {
                 playerShip.stopMoving();
         }
+
 
         @Override
         public void update() {
