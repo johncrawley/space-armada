@@ -136,8 +136,8 @@ public class GameFragment extends Fragment implements GameView {
 
 
     private void updateShip(Bundle b){
-        int shipX = getBundleInt(b, BundleTag.SHIP_X);
-        int shipY = getBundleInt(b, BundleTag.SHIP_Y);
+        float shipX = getBundleFloat(b, BundleTag.SHIP_X);
+        float shipY = getBundleInt(b, BundleTag.SHIP_Y);
         shipView.setX(shipX);
         shipView.setY(shipY);
     }
@@ -174,6 +174,10 @@ public class GameFragment extends Fragment implements GameView {
 
     private <E extends Enum<E>> int getBundleInt(Bundle bundle, E tag){
         return bundle.getInt(tag.toString(), 0);
+    }
+
+    private <E extends Enum<E>> float getBundleFloat(Bundle bundle, E tag){
+        return bundle.getFloat(tag.toString(), 0f);
     }
 
 
@@ -236,7 +240,7 @@ public class GameFragment extends Fragment implements GameView {
 
 
     @Override
-    public void updateShip(int x, int y){
+    public void updateShip(float x, float y){
         if(getActivity() == null){
             return;
         }

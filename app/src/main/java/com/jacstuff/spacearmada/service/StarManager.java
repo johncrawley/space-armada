@@ -1,9 +1,8 @@
 package com.jacstuff.spacearmada.service;
 
 import android.graphics.Point;
-import android.graphics.Rect;
+import android.graphics.RectF;
 
-import com.jacstuff.spacearmada.view.fragments.game.GameFragment;
 import com.jacstuff.spacearmada.view.fragments.game.GameView;
 
 import java.util.ArrayList;
@@ -15,10 +14,10 @@ public class StarManager {
     private GameView gameView;
     private List<Point> slowStars;
     private final Random random;
-    private final Rect screenBounds;
+    private final RectF screenBounds;
 
 
-    public StarManager(Rect screenBounds){
+    public StarManager(RectF screenBounds){
         this.screenBounds = screenBounds;
         random = new Random();
         generateStars();
@@ -61,7 +60,7 @@ public class StarManager {
 
     private void resetStarIfBeyondBounds(Point star){
         if(star.y > screenBounds.bottom){
-            star.y = screenBounds.top - random.nextInt(20);
+            star.y = (int)screenBounds.top - random.nextInt(20);
             star.x = getRandomXInBounds();
         }
     }
@@ -69,13 +68,13 @@ public class StarManager {
 
     private Point createStarAtRandomCoordinate(){
         int starX = getRandomXInBounds();
-        int starY = getRandomNumberBetween(screenBounds.top, screenBounds.bottom);
+        int starY = getRandomNumberBetween((int)screenBounds.top, (int)screenBounds.bottom);
         return new Point(starX, starY);
     }
 
 
     private int getRandomXInBounds(){
-        return getRandomNumberBetween(screenBounds.left, screenBounds.right);
+        return getRandomNumberBetween((int)screenBounds.left, (int) screenBounds.right);
     }
 
 

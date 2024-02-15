@@ -46,16 +46,21 @@ public class GameService extends Service {
     }
 
 
-    public void updatePlayerShip(int shipX, int shipY){
+    public void updatePlayerShip(float shipX, float shipY){
         Bundle bundle = new Bundle();
-        putInt(bundle, GameFragment.BundleTag.SHIP_X, shipX);
-        putInt(bundle, GameFragment.BundleTag.SHIP_Y, shipY);
+        putFloat(bundle, GameFragment.BundleTag.SHIP_X, shipX);
+        putFloat(bundle, GameFragment.BundleTag.SHIP_Y, shipY);
         sendMessage(GameFragment.MessageTag.UPDATE_SHIP, bundle);
     }
 
 
     private <E extends Enum<E>> void putInt(Bundle bundle, E key, int value){
         bundle.putInt(key.toString(), value);
+    }
+
+
+    private <E extends Enum<E>> void putFloat(Bundle bundle, E key, float value){
+        bundle.putFloat(key.toString(), value);
     }
 
 

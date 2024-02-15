@@ -1,24 +1,30 @@
 package com.jacstuff.spacearmada.service;
 
-import android.graphics.Rect;
+import android.graphics.RectF;
 
 import com.jacstuff.spacearmada.Direction;
 import com.jacstuff.spacearmada.actors.ships.ControllableShip;
 
 public class PlayerShip implements ControllableShip {
 
-    private int x,y;
-    private Rect moveBounds;
+    private float x,y;
+    private final RectF moveBounds;
+    private float width, height;
     public static final int distanceToMove = 5;
-    private int previousX, previousY;
+    private float previousX, previousY;
     private Direction currentDirection = Direction.NONE;
 
 
-
-    public PlayerShip(int initialX, int initialY, Rect moveBounds){
+    public PlayerShip(int initialX, int initialY, RectF moveBounds){
         this.x = initialX;
         this.y = initialY;
         this.moveBounds = moveBounds;
+    }
+
+
+    public void setDimensions(float width, float height){
+        this.width = width;
+        this.height = height;
     }
 
 
@@ -40,8 +46,29 @@ public class PlayerShip implements ControllableShip {
     }
 
 
-    public int getX(){
+    public float getX(){
         return x;
+    }
+
+
+    public float getY(){
+        return y;
+    }
+
+
+    public float getWidth(){
+        return width;
+    }
+
+
+    public float getHeight(){
+        return height;
+    }
+
+
+    public void moveCentreTo(float x, float y){
+        this.x = x - (width / 2f);
+        this.y = y - (height / 2f);
     }
 
 
@@ -53,28 +80,53 @@ public class PlayerShip implements ControllableShip {
     }
 
 
-    public int getY(){
-        return y;
+    public float getCentreX(){
+        return x + (width / 2f);
+    }
+
+
+    public float getCentreY(){
+        return y + (height / 2f);
+    }
+
+    private void log(String msg){
+        System.out.println("^^^ PlayerShip (svc) :" + msg);
     }
 
 
     public void moveRight(){
         x += distanceToMove;
+        log("moveRight() x after move = " + x);
+        if((x + width) > moveBounds.right){
+            x = moveBounds.right - width;
+            log("x has exceed right bound of: " + moveBounds.right);
+            log("move bounds are : " + moveBounds.left + "," + moveBounds.top + "," + moveBounds.right + "," + moveBounds.bottom);
+            log("x was exceeding right bound, and is adjusted to: " + x);
+        }
     }
 
 
     public void moveLeft(){
         x -= distanceToMove;
+        if((x< moveBounds.left)){
+            x = moveBounds.left;
+        }
     }
 
 
     public void moveDown(){
         y += distanceToMove;
+        if(y > moveBounds.bottom){
+            y = moveBounds.bottom;
+        }
     }
 
 
     public void moveUp(){
         y -= distanceToMove;
+        if(y < moveBounds.top){
+            y = moveBounds.top;
+        }
     }
 
 

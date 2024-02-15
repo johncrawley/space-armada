@@ -1,6 +1,6 @@
 package com.jacstuff.spacearmada.service;
 
-import android.graphics.Rect;
+import android.graphics.RectF;
 
 import com.jacstuff.spacearmada.Direction;
 import com.jacstuff.spacearmada.actors.ships.ControllableShip;
@@ -25,15 +25,25 @@ public class Game implements ControllableShip {
         private int enemyYLimit = 1600;
         private final AtomicBoolean isRunning = new AtomicBoolean(false);
 
-        private final Rect screenBounds;
-        private StarManager starManager;
+        private final RectF screenBounds;
+        private final StarManager starManager;
 
 
         public Game(){
-                screenBounds = new Rect(0,0,1000,1000);
+                screenBounds = createScreenBounds();
                 playerShip = new PlayerShip(50,50,screenBounds );
-                starManager = new StarManager( screenBounds);
+                starManager = new StarManager(screenBounds);
                 scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        }
+
+
+        private RectF createScreenBounds(){
+                RectF bounds = new RectF();
+                bounds.left = 0f;
+                bounds.right = 1000f;
+                bounds.top = 0f;
+                bounds.bottom = 1000f;
+                return bounds;
         }
 
 
