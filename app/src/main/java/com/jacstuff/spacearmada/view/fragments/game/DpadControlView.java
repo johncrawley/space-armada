@@ -2,8 +2,13 @@ package com.jacstuff.spacearmada.view.fragments.game;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import com.jacstuff.spacearmada.actors.ships.ControllableShip;
 import com.jacstuff.spacearmada.controls.TouchPoint;
@@ -18,10 +23,12 @@ public class DpadControlView{
     private final TransparentView dpadView;
     private InputControlsManager inputControlsManager;
     private final Context context;
+    private final TextView textView;
 
-    public DpadControlView(Context context, TransparentView dpadView){
+    public DpadControlView(Context context, TransparentView dpadView, TextView textView){
         this.context = context;
         this.dpadView = dpadView;
+        this.textView = textView;
     }
 
 
@@ -29,20 +36,53 @@ public class DpadControlView{
     public void initControls(ControllableShip controllableShip){
         int width = dpadView.getMeasuredWidth();
         int height = dpadView.getMeasuredHeight();
-        width = 300;
-        height = 300;
-        inputControlsManager = new InputControlsManager(context, width, height, controllableShip);
+        width = 1060;
+        height = 500;
+        int radius = getPixelsFrom(50);
+        int centreX = width / 2;
+        int centreY = height / 2;
+
+        inputControlsManager = new InputControlsManager(width, height, controllableShip);
+        inputControlsManager.setupDpad(centreX - radius, centreY - radius, radius);
         dpadView.setOnTouchListener(this::onTouchEvent);
+        drawCircleOnDpad(centreX, centreY, radius);
+    }
+
+
+    private void drawCircleOnDpad(int centreX, int centreY, int radius){
+        dpadView.addDrawableItem((canvas, paint) -> {
+
+            canvas.drawCircle(centreX, centreY, radius, paint);
+            paint.setStrokeWidth(10f);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setColor(Color.DKGRAY);
+            canvas.drawCircle(centreX, centreY, radius - 20, paint);
+        });
+    }
+
+
+    public int getPixelsFrom(int dp){
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        return (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, dm);
     }
 
 
     private boolean onTouchEvent(View view, MotionEvent motionEvent) {
         List<TouchPoint> touchPoints = new ArrayList<>();
         for (int i = 0; i < motionEvent.getPointerCount(); i++) {
+            //printCoordinatesToTextView(motionEvent);
             touchPoints.add(createTouchPoint(motionEvent, i));
         }
         inputControlsManager.process(touchPoints);
         return true;
+    }
+
+
+    private void printCoordinatesToTextView(MotionEvent motionEvent){
+        int x = (int) motionEvent.getX();
+        int y = (int) motionEvent.getY();
+        String str = " touchPoint: "  + x + "," + y;
+        textView.setText(str);
     }
 
 

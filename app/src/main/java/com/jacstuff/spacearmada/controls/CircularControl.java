@@ -38,7 +38,9 @@ public abstract class CircularControl {
 
 
     boolean contains(float x, float y){
-        return  squareOf(x - circleCentreX) + squareOf(y - circleCentreY)  <= radiusSquared;
+        return  squareOf(x - circleCentreX)
+                + squareOf(y - circleCentreY)
+                <= radiusSquared;
     }
 
 

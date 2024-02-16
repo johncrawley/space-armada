@@ -31,7 +31,7 @@ public class DPad extends CircularControl {
 
     @Override
     public void setCentrePosition(int x, int y, int radius){
-        super.setCentrePosition(x,y,radius);
+        super.setCentrePosition(x, y, radius);
         calculateSegmentLines();
     }
 
@@ -69,13 +69,26 @@ public class DPad extends CircularControl {
 
     public void process(List<TouchPoint> touchPoints){
         for(TouchPoint touchPoint : touchPoints) {
-            float x = touchPoint.getX();
-            float y = touchPoint.getY();
-            if ( (!touchPoint.isRelease()) && contains(x, y) ) {
-                calculateDirection(x,y);
+            if(handleTouchPoint(touchPoint)){
                 return;
             }
         }
+        releaseCommand();
+    }
+
+
+    private boolean handleTouchPoint(TouchPoint touchPoint){
+        float x = touchPoint.getX();
+        float y = touchPoint.getY();
+        if ( (!touchPoint.isRelease()) && contains(x, y) ) {
+            calculateDirection(x,y);
+            return true;
+        }
+        return false;
+    }
+
+
+    private void releaseCommand(){
         Command command = commandMap.get(Direction.NONE);
         if(command != null){
             command.release();

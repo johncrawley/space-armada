@@ -1,7 +1,5 @@
 package com.jacstuff.spacearmada.managers;
 
-import android.util.Log;
-
 import com.jacstuff.spacearmada.actors.projectiles.ProjectileManager;
 import com.jacstuff.spacearmada.actors.ships.enemies.EnemyShip;
 import com.jacstuff.spacearmada.actors.ships.enemies.EnemyShipManager;
@@ -15,21 +13,15 @@ import com.jacstuff.spacearmada.actors.projectiles.Projectile;
 
 public class CollisionDetectionManager {
 
-    private EnemyShipManager enemyShipManager;
-    private PlayerShip playerShip;
-    private ProjectileManager projectileManager;
-    private int detectionFrequency = 3; // the number of iterations that detections will be done - for efficiency
+    private final EnemyShipManager enemyShipManager;
+    private final PlayerShip playerShip;
+    private final ProjectileManager projectileManager;
     private int currentIteration = 0;
 
     public CollisionDetectionManager(PlayerShip playerShip, EnemyShipManager enemyShipManager, ProjectileManager projectileManager){
         this.playerShip = playerShip;
         this.enemyShipManager = enemyShipManager;
         this.projectileManager = projectileManager;
-    }
-
-    private void log(String msg){
-
-        Log.i("CollisionMngr", msg);
     }
 
 
@@ -42,8 +34,10 @@ public class CollisionDetectionManager {
         detectEnemyShipsAndPlayerBulletCollisions();
     }
 
+
     private boolean isDetectionSkippedOnThisUpdate(){
         currentIteration++;
+        int detectionFrequency = 3;
         if(currentIteration < detectionFrequency){
             return true;
         }
@@ -54,32 +48,43 @@ public class CollisionDetectionManager {
 
     private void detectPlayerAndEnemyShipCollisions(){
         for(EnemyShip enemyShip: enemyShipManager.getEnemyShips()) {
-           // log("checking for playerShip collision with enemyShip...");
             playerShip.checkForCollision(enemyShip);
-           // log("Checking for playerShip collision with enemyShip complete!");
         }
     }
+
 
     private void detectPlayerAndEnemyBulletCollisions(){
         for(Projectile projectile : projectileManager.getProjectiles()){
             playerShip.checkForCollision(projectile);
         }
     }
+
+
     private void detectEnemyShipsAndPlayerBulletCollisions() {
         for (Projectile projectile : projectileManager.getProjectiles()) {
-
-            for (EnemyShip enemyShip : enemyShipManager.getEnemyShips()) {
-                if(enemyShip == null || projectile == null){
-                    continue;
-                }
-                enemyShip.checkForCollision(projectile);
-                if(enemyShip.getEnergy().isDepleted() && enemyShip.isAlive()){
-                  playerShip.addToScore(enemyShip.getPoints());
-                }
-            }
+            detectPlayerProjectileCollisionWithEnemies(projectile);
         }
     }
 
 
+    private void detectPlayerProjectileCollisionWithEnemies(Projectile projectile){
+        if(projectile == null){
+            return;
+        }
+        for (EnemyShip enemyShip : enemyShipManager.getEnemyShips()) {
+            if(enemyShip == null){
+                continue;
+            }
+            checkForCollision(projectile, enemyShip);
+        }
+    }
+
+
+    private void checkForCollision(Projectile projectile, EnemyShip enemyShip){
+        enemyShip.checkForCollision(projectile);
+        if(enemyShip.getEnergy().isDepleted() && enemyShip.isAlive()){
+            playerShip.addToScore(enemyShip.getPoints());
+        }
+    }
 
 }

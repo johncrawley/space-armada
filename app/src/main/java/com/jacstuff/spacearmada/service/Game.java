@@ -52,7 +52,7 @@ public class Game implements ControllableShip {
                         return;
                 }
                 isRunning.set(true);
-               gameUpdateFuture = scheduledExecutorService.scheduleAtFixedRate(this::updateItems, 0,20, TimeUnit.MILLISECONDS);
+               gameUpdateFuture = scheduledExecutorService.scheduleAtFixedRate(this::updateItems, 0,16, TimeUnit.MILLISECONDS);
         }
 
 
@@ -142,7 +142,6 @@ public class Game implements ControllableShip {
 
         @Override
         public void setDirection(Direction direction) {
-                log("Entered setDirection() direction: " + direction.name());
                 playerShip.setDirection(direction);
         }
 

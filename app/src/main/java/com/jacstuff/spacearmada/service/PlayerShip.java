@@ -89,19 +89,11 @@ public class PlayerShip implements ControllableShip {
         return y + (height / 2f);
     }
 
-    private void log(String msg){
-        System.out.println("^^^ PlayerShip (svc) :" + msg);
-    }
-
 
     public void moveRight(){
         x += distanceToMove;
-        log("moveRight() x after move = " + x);
         if((x + width) > moveBounds.right){
             x = moveBounds.right - width;
-            log("x has exceed right bound of: " + moveBounds.right);
-            log("move bounds are : " + moveBounds.left + "," + moveBounds.top + "," + moveBounds.right + "," + moveBounds.bottom);
-            log("x was exceeding right bound, and is adjusted to: " + x);
         }
     }
 

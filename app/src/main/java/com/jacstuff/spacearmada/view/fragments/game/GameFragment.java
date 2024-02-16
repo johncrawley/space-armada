@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.jacstuff.spacearmada.MainActivity;
 import com.jacstuff.spacearmada.R;
@@ -33,6 +34,7 @@ public class GameFragment extends Fragment implements GameView {
 
     private int width, height;
     private ImageView shipView, enemyShip;
+    private TextView textView;
     private Game game;
     private DpadControlView dpadControlView;
     private List<View> starViews = new ArrayList<>();
@@ -71,6 +73,7 @@ public class GameFragment extends Fragment implements GameView {
         shipView = parentView.findViewById(R.id.shipView);
         enemyShip = parentView.findViewById(R.id.enemyShipView);
         dpadView = parentView.findViewById(R.id.dpadView);
+        textView = parentView.findViewById(R.id.tempTextView);
         addStarViewsTo((ViewGroup)parentView, 20);
         setupListeners();
         //initControls();
@@ -100,7 +103,7 @@ public class GameFragment extends Fragment implements GameView {
 
     private void initControls(){
         if(dpadControlView == null) {
-            dpadControlView = new DpadControlView(getContext(), dpadView);
+            dpadControlView = new DpadControlView(getContext(), dpadView, textView);
         }
         dpadControlView.initControls(game);
     }

@@ -200,7 +200,7 @@ public class GameState implements State {
         int dpadRadius = 150;
         int dpadCentreY = gameScreenBounds.bottom + ( canvasHeight - gameScreenBounds.bottom ) /2;
         int dpadCentreX = canvasWidth / 2;
-        inputControlsManager = new InputControlsManager(activity, canvasWidth, canvasHeight, playerShip);
+        inputControlsManager = new InputControlsManager(canvasWidth, canvasHeight, playerShip);
         inputControlsManager.setDpadPosition(dpadCentreX, dpadCentreY, dpadRadius);
     }
 

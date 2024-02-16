@@ -1,6 +1,6 @@
 package com.jacstuff.spacearmada.managers;
 
-import android.content.Context;
+
 import java.util.List;
 
 import com.jacstuff.spacearmada.Direction;
@@ -18,38 +18,36 @@ import com.jacstuff.spacearmada.controls.DPad;
  * Responsible for connecting the player's spaceship to the controls
  */
 public class InputControlsManager {
-    private final DPad dpad;
-    private final ControlButton fireButton;
+    private DPad dpad;
+    private ControlButton fireButton;
     private final ControllableShip spaceship;
-    private final Context context;
 
-    public InputControlsManager(Context context, int screenWidth, int screenHeight, ControllableShip spaceship){
-        this.context = context;
-        final int actionButtonRadius = 70;
-        log("constructor() screen width,height: " + screenWidth + ","  + screenHeight);
-        int border = 50;
-        int dpadRadius = 200;
-        int dpadXPosition = 50;
-        int actionButtonXPosition = screenWidth - ((actionButtonRadius * 2) + border);
-        int yPosition = screenHeight - ((dpadRadius * 2) + border);
-
+    public InputControlsManager(int viewWidth, int viewHeight, ControllableShip spaceship){
         this.spaceship = spaceship;
-        dpad = new DPad(dpadXPosition, yPosition,140);
-        fireButton = new ControlButton(actionButtonXPosition, yPosition, actionButtonRadius);
+        setupActionButton(viewWidth, viewHeight);
         assignSpaceShipCommands();
     }
 
 
-    private void log(String msg){
-        System.out.println("^^^ InputControlsManager: " + msg);
+    public void setupDpad(int centreX, int centreY, int radius){
+        dpad = new DPad(centreX, centreY, radius);
+        for(Direction direction : Direction.values()){
+            assignDPadCommand(direction);
+        }
+    }
+
+
+    private void setupActionButton(int viewWidth, int viewHeight){
+        int border = 50;
+        final int actionButtonRadius = 70;
+        int actionButtonXPosition = viewWidth - ((actionButtonRadius * 2) + border);
+        int yPosition = viewHeight/2 - (actionButtonRadius);
+        fireButton = new ControlButton(actionButtonXPosition, yPosition, actionButtonRadius);
     }
 
 
     private void assignSpaceShipCommands(){
        assignActionCommands();
-       for(Direction direction : Direction.values()){
-           assignDPadCommand(direction);
-       }
     }
 
 
