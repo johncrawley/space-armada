@@ -28,6 +28,15 @@ public class PlayerShip implements ControllableShip {
     }
 
 
+    public void setSizeBasedOn(int smallestScreenDimension){
+        // this.sizeFactor = sizeFactor;
+        final float sizeFactor = 0.05f;
+        final float heightWidthRatio = 2.4f;
+        width = smallestScreenDimension * sizeFactor;
+        height = width * heightWidthRatio;
+    }
+
+
     @Override
     public void setDirection(Direction direction){
         this.currentDirection = direction;

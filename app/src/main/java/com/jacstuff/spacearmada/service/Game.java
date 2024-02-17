@@ -47,6 +47,12 @@ public class Game implements ControllableShip {
         }
 
 
+        public void adjustSizesBasedOn(int smallestDimension){
+                playerShip.setSizeBasedOn(smallestDimension);
+                gameView.setShipSize((int)playerShip.getWidth(), (int)playerShip.getHeight());
+        }
+
+
         public void start(){
                 if(isRunning.get()){
                         return;
@@ -76,7 +82,7 @@ public class Game implements ControllableShip {
         private void updateShip(){
                 playerShip.update();
                 if(playerShip.hasPositionChanged()){
-                       gameView.updateShip(playerShip.getX(), playerShip.getY());
+                       gameView.updateShipPosition(playerShip.getX(), playerShip.getY());
                 }
         }
 

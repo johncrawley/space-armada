@@ -5,8 +5,8 @@ import android.graphics.Point;
 import java.util.List;
 
 public interface GameView {
-
-    void updateShip(float x, float y);
+    void updateShipPosition(float x, float y);
+    void setShipSize(int width, int height);
     void updateEnemyShip(int x, int y);
     void updateStars(List<Point> starCoordinates);
 }
