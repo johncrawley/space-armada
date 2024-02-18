@@ -4,8 +4,11 @@ import android.graphics.RectF;
 
 import com.jacstuff.spacearmada.Direction;
 import com.jacstuff.spacearmada.actors.ships.ControllableShip;
+import com.jacstuff.spacearmada.view.fragments.game.DrawInfo;
 import com.jacstuff.spacearmada.view.fragments.game.GameView;
+import com.jacstuff.spacearmada.view.fragments.game.ItemType;
 
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -27,6 +30,7 @@ public class Game implements ControllableShip {
 
         private final RectF screenBounds;
         private final StarManager starManager;
+        private final Random enemyShipRandom;
 
 
         public Game(){
@@ -34,6 +38,7 @@ public class Game implements ControllableShip {
                 playerShip = new PlayerShip(50,50,screenBounds );
                 starManager = new StarManager(screenBounds);
                 scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+                enemyShipRandom = new Random(2);
         }
 
 
@@ -58,7 +63,7 @@ public class Game implements ControllableShip {
                         return;
                 }
                 isRunning.set(true);
-               gameUpdateFuture = scheduledExecutorService.scheduleAtFixedRate(this::updateItems, 0,16, TimeUnit.MILLISECONDS);
+                gameUpdateFuture = scheduledExecutorService.scheduleAtFixedRate(this::updateItems, 0,16, TimeUnit.MILLISECONDS);
         }
 
 
@@ -66,6 +71,19 @@ public class Game implements ControllableShip {
                 updateEnemyShip();
                 starManager.updateStarsOnView();
                 updateShip();
+        }
+
+
+        private void createEnemyShip(){
+                DrawInfo drawInfo = new DrawInfo(ItemType.ENEMY_SHIP_1, System.currentTimeMillis());
+                drawInfo.setXY(getEnemyShipRandomStartingX(), -150);
+                drawInfo.setDimensions(100, 170);
+                gameView.createItem(drawInfo);
+        }
+
+
+        private int getEnemyShipRandomStartingX(){
+           return enemyShipRandom.nextInt(((int)screenBounds.right - 50));
         }
 
 

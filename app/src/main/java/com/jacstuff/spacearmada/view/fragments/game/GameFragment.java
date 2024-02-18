@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jacstuff.spacearmada.MainActivity;
@@ -22,11 +21,11 @@ import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.service.Game;
 import com.jacstuff.spacearmada.service.GameService;
 import com.jacstuff.spacearmada.view.TransparentView;
-import com.jacstuff.spacearmada.view.fragments.MainMenuFragment;
-import com.jacstuff.spacearmada.view.fragments.utils.FragmentUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class GameFragment extends Fragment implements GameView {
@@ -39,19 +38,11 @@ public class GameFragment extends Fragment implements GameView {
     private DpadControlView dpadControlView;
     private final List<View> starViews = new ArrayList<>();
     private TransparentView dpadView;
-    public enum BundleTag { SHIP_X, SHIP_Y};
-    public enum MessageTag {UPDATE_SHIP}
+    private int containerWidth, containerHeight, smallestContainerDimension;
+    private Map<Long, View> itemsMap;
 
     public GameFragment() {
         // Required empty public constructor
-    }
-
-
-    public static MainMenuFragment newInstance() {
-        MainMenuFragment fragment = new MainMenuFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
     }
 
 
@@ -71,7 +62,7 @@ public class GameFragment extends Fragment implements GameView {
             game.setGameView(this);
         }
     }
-    private int containerWidth, containerHeight, smallestContainerDimension;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,16 +77,17 @@ public class GameFragment extends Fragment implements GameView {
         }
         View parentView = inflater.inflate(R.layout.fragment_game, container, false);
         deriveScreenDimensions();
+        itemsMap = new HashMap<>();
         shipView = parentView.findViewById(R.id.shipView);
         enemyShip = parentView.findViewById(R.id.enemyShipView);
         dpadView = parentView.findViewById(R.id.dpadView);
         textView = parentView.findViewById(R.id.tempTextView);
         registerShipDimensions();
         addStarViewsTo((ViewGroup)parentView, 20);
-        setupListeners();
         //initControls();
         return parentView;
     }
+
 
     private void registerShipDimensions(){
         game.adjustSizesBasedOn(smallestContainerDimension);
@@ -132,19 +124,6 @@ public class GameFragment extends Fragment implements GameView {
     }
 
 
-    private void setupListeners(){
-        FragmentUtils.setListener(this, MessageTag.UPDATE_SHIP, this::updateShip);
-    }
-
-
-    private void updateShip(Bundle b){
-        float shipX = getBundleFloat(b, BundleTag.SHIP_X);
-        float shipY = getBundleInt(b, BundleTag.SHIP_Y);
-        shipView.setX(shipX);
-        shipView.setY(shipY);
-    }
-
-
     @Override
     public void updateStars(List<Point> starCoordinates){
         if(starCoordinates == null || starViews.size() != starCoordinates.size()){
@@ -161,18 +140,26 @@ public class GameFragment extends Fragment implements GameView {
     }
 
 
+    @Override
+    public void createItem(DrawInfo drawInfo) {
+        View itemView = new View(getContext());
+        itemView.setLayoutParams(new ViewGroup.LayoutParams(drawInfo.getWidth(),drawInfo.getHeight()));
+        ViewGroup parentView = (ViewGroup) getView();
+        if(parentView == null){
+            return;
+        }
+        parentView.addView(itemView);
+        itemView.setBackgroundColor(Color.WHITE);
+        itemView.setX(drawInfo.getX());
+        itemView.setY(drawInfo.getY());
+        itemsMap.put(drawInfo.getId(), itemView);
+
+    }
+
+
     private void updateStar(View starView, Point p){
         starView.setX(p.x);
         starView.setY(p.y);
-    }
-
-
-    private <E extends Enum<E>> int getBundleInt(Bundle bundle, E tag){
-        return bundle.getInt(tag.toString(), 0);
-    }
-
-    private <E extends Enum<E>> float getBundleFloat(Bundle bundle, E tag){
-        return bundle.getFloat(tag.toString(), 0f);
     }
 
 

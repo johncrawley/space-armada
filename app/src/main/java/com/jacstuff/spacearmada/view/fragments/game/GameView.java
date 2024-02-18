@@ -9,4 +9,5 @@ public interface GameView {
     void setShipSize(int width, int height);
     void updateEnemyShip(int x, int y);
     void updateStars(List<Point> starCoordinates);
+    void createItem(DrawInfo drawInfo);
 }
