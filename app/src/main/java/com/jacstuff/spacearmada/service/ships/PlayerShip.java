@@ -1,21 +1,20 @@
-package com.jacstuff.spacearmada.service;
+package com.jacstuff.spacearmada.service.ships;
 
 import android.graphics.RectF;
 
 import com.jacstuff.spacearmada.Direction;
 import com.jacstuff.spacearmada.actors.ships.ControllableShip;
+import com.jacstuff.spacearmada.view.fragments.game.ItemType;
 
-public class PlayerShip implements ControllableShip {
+public class PlayerShip extends AbstractItem implements ControllableShip {
 
-    private float x,y;
     private final RectF moveBounds;
-    private float width, height;
-    public static final int distanceToMove = 5;
     private float previousX, previousY;
     private Direction currentDirection = Direction.NONE;
 
 
     public PlayerShip(int initialX, int initialY, RectF moveBounds){
+        super(ItemType.PLAYER_SHIP, 5,.05f,2.4f);
         this.x = initialX;
         this.y = initialY;
         this.moveBounds = moveBounds;
@@ -25,15 +24,6 @@ public class PlayerShip implements ControllableShip {
     public void setDimensions(float width, float height){
         this.width = width;
         this.height = height;
-    }
-
-
-    public void setSizeBasedOn(int smallestScreenDimension){
-        // this.sizeFactor = sizeFactor;
-        final float sizeFactor = 0.05f;
-        final float heightWidthRatio = 2.4f;
-        width = smallestScreenDimension * sizeFactor;
-        height = width * heightWidthRatio;
     }
 
 
@@ -52,26 +42,6 @@ public class PlayerShip implements ControllableShip {
     @Override
     public void stopMoving(){
         this.currentDirection = Direction.NONE;
-    }
-
-
-    public float getX(){
-        return x;
-    }
-
-
-    public float getY(){
-        return y;
-    }
-
-
-    public float getWidth(){
-        return width;
-    }
-
-
-    public float getHeight(){
-        return height;
     }
 
 
@@ -100,7 +70,7 @@ public class PlayerShip implements ControllableShip {
 
 
     public void moveRight(){
-        x += distanceToMove;
+        x += speed;
         if((x + width) > moveBounds.right){
             x = moveBounds.right - width;
         }
@@ -108,7 +78,7 @@ public class PlayerShip implements ControllableShip {
 
 
     public void moveLeft(){
-        x -= distanceToMove;
+        x -= speed;
         if((x< moveBounds.left)){
             x = moveBounds.left;
         }
@@ -116,7 +86,7 @@ public class PlayerShip implements ControllableShip {
 
 
     public void moveDown(){
-        y += distanceToMove;
+        y += speed;
         if(y > moveBounds.bottom){
             y = moveBounds.bottom;
         }
@@ -124,7 +94,7 @@ public class PlayerShip implements ControllableShip {
 
 
     public void moveUp(){
-        y -= distanceToMove;
+        y -= speed;
         if(y < moveBounds.top){
             y = moveBounds.top;
         }

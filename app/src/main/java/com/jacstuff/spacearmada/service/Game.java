@@ -4,11 +4,10 @@ import android.graphics.RectF;
 
 import com.jacstuff.spacearmada.Direction;
 import com.jacstuff.spacearmada.actors.ships.ControllableShip;
-import com.jacstuff.spacearmada.view.fragments.game.DrawInfo;
+import com.jacstuff.spacearmada.service.ships.EnemyShipManager;
+import com.jacstuff.spacearmada.service.ships.PlayerShip;
 import com.jacstuff.spacearmada.view.fragments.game.GameView;
-import com.jacstuff.spacearmada.view.fragments.game.ItemType;
 
-import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -22,15 +21,11 @@ public class Game implements ControllableShip {
         private GameView gameView;
         private ScheduledFuture<?> gameUpdateFuture;
         private final ScheduledExecutorService scheduledExecutorService;
-        private int enemyX = 800;
-        private int enemyY;
-        private int enemyDirection = 1;
-        private int enemyYLimit = 1600;
         private final AtomicBoolean isRunning = new AtomicBoolean(false);
 
         private final RectF screenBounds;
         private final StarManager starManager;
-        private final Random enemyShipRandom;
+        private EnemyShipManager enemyShipManager;
 
 
         public Game(){
@@ -38,7 +33,7 @@ public class Game implements ControllableShip {
                 playerShip = new PlayerShip(50,50,screenBounds );
                 starManager = new StarManager(screenBounds);
                 scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-                enemyShipRandom = new Random(2);
+                enemyShipManager = new EnemyShipManager(screenBounds);
         }
 
 
@@ -68,32 +63,14 @@ public class Game implements ControllableShip {
 
 
         private void updateItems(){
-                updateEnemyShip();
+                updateEnemyShips();
                 starManager.updateStarsOnView();
                 updateShip();
         }
 
 
-        private void createEnemyShip(){
-                DrawInfo drawInfo = new DrawInfo(ItemType.ENEMY_SHIP_1, System.currentTimeMillis());
-                drawInfo.setXY(getEnemyShipRandomStartingX(), -150);
-                drawInfo.setDimensions(100, 170);
-                gameView.createItem(drawInfo);
-        }
-
-
-        private int getEnemyShipRandomStartingX(){
-           return enemyShipRandom.nextInt(((int)screenBounds.right - 50));
-        }
-
-
-        private void updateEnemyShip(){
-                int enemyProgressPerFrame = 5;
-                enemyY += enemyDirection * enemyProgressPerFrame;
-                if(enemyY > enemyYLimit || enemyY < 0){
-                        enemyDirection *= -1;
-                }
-                gameView.updateEnemyShip(enemyX, enemyY);
+        private void updateEnemyShips(){
+                gameView.updateItems(enemyShipManager.updateAndGetChanges());
         }
 
 
@@ -113,36 +90,6 @@ public class Game implements ControllableShip {
 
         public void init(GameService gameService){
             this.gameService = gameService;
-        }
-
-
-        public void moveUp(){
-                playerShip.moveUp();
-                updatePlayerShip();
-        }
-
-
-        public void moveDown(){
-                log("Entered moveDown()");
-                playerShip.moveDown();
-                updatePlayerShip();
-        }
-
-
-        public void moveLeft(){
-                playerShip.moveLeft();
-                updatePlayerShip();
-        }
-
-
-        public void moveRight(){
-                playerShip.moveRight();
-                updatePlayerShip();
-        }
-
-
-        public void updatePlayerShip(){
-                gameService.updatePlayerShip(playerShip.getX(), playerShip.getY());
         }
 
 

@@ -46,32 +46,6 @@ public class GameService extends Service {
     }
 
 
-    public void updatePlayerShip(float shipX, float shipY){
-        Bundle bundle = new Bundle();
-        putFloat(bundle, GameFragment.BundleTag.SHIP_X, shipX);
-        putFloat(bundle, GameFragment.BundleTag.SHIP_Y, shipY);
-        sendMessage(GameFragment.MessageTag.UPDATE_SHIP, bundle);
-    }
-
-
-    private <E extends Enum<E>> void putInt(Bundle bundle, E key, int value){
-        bundle.putInt(key.toString(), value);
-    }
-
-
-    private <E extends Enum<E>> void putFloat(Bundle bundle, E key, float value){
-        bundle.putFloat(key.toString(), value);
-    }
-
-
-    public <E extends Enum<E>> void sendMessage(E operationName, Bundle bundle) {
-        if(mainActivity == null){
-            return;
-        }
-        mainActivity.getSupportFragmentManager().setFragmentResult(operationName.toString(), bundle);
-    }
-
-
     public void quitGame(){
         game.quit();
     }

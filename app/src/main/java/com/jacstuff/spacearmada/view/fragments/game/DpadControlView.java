@@ -51,7 +51,6 @@ public class DpadControlView{
 
     private void drawCircleOnDpad(int centreX, int centreY, int radius){
         dpadView.addDrawableItem((canvas, paint) -> {
-
             canvas.drawCircle(centreX, centreY, radius, paint);
             paint.setStrokeWidth(10f);
             paint.setStyle(Paint.Style.STROKE);

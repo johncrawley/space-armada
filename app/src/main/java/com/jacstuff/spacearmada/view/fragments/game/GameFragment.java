@@ -39,7 +39,8 @@ public class GameFragment extends Fragment implements GameView {
     private final List<View> starViews = new ArrayList<>();
     private TransparentView dpadView;
     private int containerWidth, containerHeight, smallestContainerDimension;
-    private Map<Long, View> itemsMap;
+    private Map<Long, ImageView> itemsMap;
+    private Map<ItemType, Integer> itemTypeMap;
 
     public GameFragment() {
         // Required empty public constructor
@@ -78,6 +79,8 @@ public class GameFragment extends Fragment implements GameView {
         View parentView = inflater.inflate(R.layout.fragment_game, container, false);
         deriveScreenDimensions();
         itemsMap = new HashMap<>();
+        itemTypeMap = new HashMap<>();
+        itemTypeMap.put(ItemType.ENEMY_SHIP_1, R.drawable.ship2);
         shipView = parentView.findViewById(R.id.shipView);
         enemyShip = parentView.findViewById(R.id.enemyShipView);
         dpadView = parentView.findViewById(R.id.dpadView);
@@ -141,19 +144,42 @@ public class GameFragment extends Fragment implements GameView {
 
 
     @Override
-    public void createItem(DrawInfo drawInfo) {
-        View itemView = new View(getContext());
+    public void updateItems(List<DrawInfo> drawInfoList) {
+        runOnUiThread(()-> {
+            for (DrawInfo drawInfo : drawInfoList) {
+                updateViewFrom(drawInfo);
+            }
+        });
+    }
+
+
+    private void updateViewFrom(DrawInfo drawInfo){
+        ImageView view = itemsMap.putIfAbsent(drawInfo.getId(), createItem(drawInfo));
+        if(view != null){
+            view.setX(drawInfo.getX());
+            view.setY(drawInfo.getY());
+        }
+    }
+
+
+    @Override
+    public ImageView createItem(DrawInfo drawInfo) {
+        ImageView itemView = new ImageView(getContext());
         itemView.setLayoutParams(new ViewGroup.LayoutParams(drawInfo.getWidth(),drawInfo.getHeight()));
         ViewGroup parentView = (ViewGroup) getView();
         if(parentView == null){
-            return;
+            log("parent view is null, cannot add item");
+            return itemView;
         }
         parentView.addView(itemView);
-        itemView.setBackgroundColor(Color.WHITE);
+        Integer imageResource = itemTypeMap.get(drawInfo.getItemType());
+        if(imageResource != null){
+            itemView.setImageResource(imageResource);
+        }
         itemView.setX(drawInfo.getX());
         itemView.setY(drawInfo.getY());
         itemsMap.put(drawInfo.getId(), itemView);
-
+        return itemView;
     }
 
 

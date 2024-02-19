@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import android.graphics.RectF;
 
+import com.jacstuff.spacearmada.service.ships.PlayerShip;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -60,7 +62,7 @@ public class PlayerShipTest {
     public void shipCanMove(){
         playerShip.moveDown();
         assertFloat(initialX, playerShip.getX());
-        assertFloat(initialY + PlayerShip.distanceToMove, playerShip.getY());
+        assertFloat(initialY + playerShip.getSpeed(), playerShip.getY());
 
 
         playerShip.moveUp();
@@ -69,7 +71,7 @@ public class PlayerShipTest {
 
 
         playerShip.moveLeft();
-        assertFloat(initialX - PlayerShip.distanceToMove, playerShip.getX());
+        assertFloat(initialX - playerShip.getSpeed(), playerShip.getX());
         assertFloat(initialY, playerShip.getY());
 
         playerShip.moveRight();
