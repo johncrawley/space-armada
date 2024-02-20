@@ -1,6 +1,9 @@
 package com.jacstuff.spacearmada.service.ships;
 
 
+import android.graphics.RectF;
+
+import com.jacstuff.spacearmada.view.fragments.game.DrawInfo;
 import com.jacstuff.spacearmada.view.fragments.game.ItemType;
 
 public class AbstractItem {
@@ -12,13 +15,14 @@ public class AbstractItem {
     final float sizeFactor;
     final float heightWidthRatio;
     boolean hasChanged = false;
+    DrawInfo drawInfo;
 
-
-    public AbstractItem(ItemType itemType, int speed, float sizeFactor, float heightWidthRatio){
+    public AbstractItem(long id, ItemType itemType, int speed, float sizeFactor, float heightWidthRatio){
         this.itemType = itemType;
         this.speed = speed;
         this.sizeFactor = sizeFactor;
         this.heightWidthRatio = heightWidthRatio;
+        drawInfo = new DrawInfo(getItemType(), id);
     }
 
 
@@ -65,6 +69,7 @@ public class AbstractItem {
     public void setSizeBasedOn(int smallestScreenDimension){
         width = smallestScreenDimension * sizeFactor;
         height = width * heightWidthRatio;
+        drawInfo.setDimensions((int)width, (int)height);
     }
 
 

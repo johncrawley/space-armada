@@ -30,10 +30,10 @@ import java.util.Map;
 
 public class GameFragment extends Fragment implements GameView {
 
-
     private int width, height;
-    private ImageView shipView, enemyShip;
+    private ImageView shipView;
     private TextView textView;
+    private View gamePane;
     private Game game;
     private DpadControlView dpadControlView;
     private final List<View> starViews = new ArrayList<>();
@@ -64,9 +64,11 @@ public class GameFragment extends Fragment implements GameView {
         }
     }
 
+    ViewGroup parentView;
+
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         if(container != null){
@@ -81,12 +83,13 @@ public class GameFragment extends Fragment implements GameView {
         itemsMap = new HashMap<>();
         itemTypeMap = new HashMap<>();
         itemTypeMap.put(ItemType.ENEMY_SHIP_1, R.drawable.ship2);
+        gamePane = parentView.findViewById(R.id.gamePane);
         shipView = parentView.findViewById(R.id.shipView);
-        enemyShip = parentView.findViewById(R.id.enemyShipView);
         dpadView = parentView.findViewById(R.id.dpadView);
         textView = parentView.findViewById(R.id.tempTextView);
         registerShipDimensions();
         addStarViewsTo((ViewGroup)parentView, 20);
+        this.parentView = (ViewGroup)parentView;
         //initControls();
         return parentView;
     }
@@ -112,7 +115,7 @@ public class GameFragment extends Fragment implements GameView {
 
 
     private void addStarViewsTo(ViewGroup parentView, int numberOfStars){
-        for(int i=0; i< numberOfStars;i++){
+        for(int i = 0; i < numberOfStars; i++){
             addStarViewTo(parentView);
         }
     }
@@ -154,32 +157,58 @@ public class GameFragment extends Fragment implements GameView {
 
 
     private void updateViewFrom(DrawInfo drawInfo){
-        ImageView view = itemsMap.putIfAbsent(drawInfo.getId(), createItem(drawInfo));
+        long id = drawInfo.getId();
+        if(!itemsMap.containsKey(id)){
+            itemsMap.put(id, createItem(drawInfo));
+        }
+        ImageView view = itemsMap.get(id);
         if(view != null){
             view.setX(drawInfo.getX());
             view.setY(drawInfo.getY());
+            removeOutOfBoundsItems(id, view);
+        }
+    }
+
+
+    private void removeOutOfBoundsItems(long id, ImageView view){
+        if(view.getY() > gamePane.getBottom()){
+            parentView.removeView(view);
+            itemsMap.remove(id);
         }
     }
 
 
     @Override
     public ImageView createItem(DrawInfo drawInfo) {
-        ImageView itemView = new ImageView(getContext());
-        itemView.setLayoutParams(new ViewGroup.LayoutParams(drawInfo.getWidth(),drawInfo.getHeight()));
-        ViewGroup parentView = (ViewGroup) getView();
+        ImageView itemView = createImageViewWithDimensionsFrom(drawInfo);
         if(parentView == null){
-            log("parent view is null, cannot add item");
             return itemView;
         }
         parentView.addView(itemView);
+        setImage(itemView, drawInfo);
+        setImageViewCoordinates(itemView, drawInfo);
+        return itemView;
+    }
+
+
+    private ImageView createImageViewWithDimensionsFrom(DrawInfo drawInfo){
+        ImageView imageView = new ImageView(getContext());
+        imageView.setLayoutParams(new ViewGroup.LayoutParams(drawInfo.getWidth(), drawInfo.getHeight()));
+        return imageView;
+    }
+
+
+    private void setImage(ImageView imageView, DrawInfo drawInfo){
         Integer imageResource = itemTypeMap.get(drawInfo.getItemType());
         if(imageResource != null){
-            itemView.setImageResource(imageResource);
+            imageView.setImageResource(imageResource);
         }
-        itemView.setX(drawInfo.getX());
-        itemView.setY(drawInfo.getY());
-        itemsMap.put(drawInfo.getId(), itemView);
-        return itemView;
+    }
+
+
+    private void setImageViewCoordinates(ImageView imageView, DrawInfo drawInfo){
+        imageView.setY(drawInfo.getY());
+        imageView.setX(drawInfo.getX());
     }
 
 
@@ -200,12 +229,10 @@ public class GameFragment extends Fragment implements GameView {
         }
         MainActivity mainActivity = (MainActivity) getActivity();
         if(mainActivity == null){
-            log("getGame() main activity is null!");
             return null;
         }
         GameService gameService = mainActivity.getGameService();
         if(gameService == null){
-            log("getGame() game service is null!");
             return null;
         }
         game = gameService.getGame();
@@ -236,18 +263,6 @@ public class GameFragment extends Fragment implements GameView {
             return;
         }
         getActivity().runOnUiThread(runnable);
-    }
-
-
-    @Override
-    public void updateEnemyShip(int x, int y){
-        if(getActivity() == null){
-            return;
-        }
-        getActivity().runOnUiThread(()->{
-            enemyShip.setX(x);
-            enemyShip.setY(y);
-        } );
     }
 
 

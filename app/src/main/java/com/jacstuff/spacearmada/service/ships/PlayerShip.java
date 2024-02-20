@@ -14,7 +14,7 @@ public class PlayerShip extends AbstractItem implements ControllableShip {
 
 
     public PlayerShip(int initialX, int initialY, RectF moveBounds){
-        super(ItemType.PLAYER_SHIP, 5,.05f,2.4f);
+        super(1, ItemType.PLAYER_SHIP, 5,.05f,2.4f);
         this.x = initialX;
         this.y = initialY;
         this.moveBounds = moveBounds;

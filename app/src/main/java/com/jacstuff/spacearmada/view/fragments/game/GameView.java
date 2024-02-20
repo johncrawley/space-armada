@@ -8,8 +8,7 @@ import java.util.List;
 public interface GameView {
     void updateShipPosition(float x, float y);
     void setShipSize(int width, int height);
-    void updateEnemyShip(int x, int y);
     void updateStars(List<Point> starCoordinates);
-    void updateItems(List<DrawInfo> drawInfos);
+    void updateItems(List<DrawInfo> drawInfoList);
     ImageView createItem(DrawInfo drawInfo);
 }

@@ -25,12 +25,12 @@ public class Game implements ControllableShip {
 
         private final RectF screenBounds;
         private final StarManager starManager;
-        private EnemyShipManager enemyShipManager;
+        private final EnemyShipManager enemyShipManager;
 
 
         public Game(){
                 screenBounds = createScreenBounds();
-                playerShip = new PlayerShip(50,50,screenBounds );
+                playerShip = new PlayerShip(50,50, screenBounds);
                 starManager = new StarManager(screenBounds);
                 scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
                 enemyShipManager = new EnemyShipManager(screenBounds);
