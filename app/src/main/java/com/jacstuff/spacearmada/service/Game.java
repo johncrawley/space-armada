@@ -23,7 +23,7 @@ public class Game implements ControllableShip {
         private final ScheduledExecutorService scheduledExecutorService;
         private final AtomicBoolean isRunning = new AtomicBoolean(false);
 
-        private final RectF screenBounds;
+        private RectF screenBounds;
         private final StarManager starManager;
         private final EnemyShipManager enemyShipManager;
 
@@ -31,9 +31,26 @@ public class Game implements ControllableShip {
         public Game(){
                 screenBounds = createScreenBounds();
                 playerShip = new PlayerShip(50,50, screenBounds);
-                starManager = new StarManager(screenBounds);
+                starManager = new StarManager();
                 scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
                 enemyShipManager = new EnemyShipManager(screenBounds);
+        }
+
+
+        public void setBounds(float x, float y, int width, int height){
+                initBounds(x, y, width, height);
+                enemyShipManager.setScreenBounds(screenBounds);
+                playerShip.setScreenBounds(screenBounds);
+                starManager.setBoundsAndGenerateStars(screenBounds);
+        }
+
+
+        private void initBounds(float x, float y, int width, int height){
+                screenBounds = new RectF();
+                screenBounds.left = x;
+                screenBounds.top = y;
+                screenBounds.right = x + width;
+                screenBounds.bottom = y + height;
         }
 
 

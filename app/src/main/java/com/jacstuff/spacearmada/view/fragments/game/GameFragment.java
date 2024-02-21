@@ -8,13 +8,12 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import com.jacstuff.spacearmada.MainActivity;
 import com.jacstuff.spacearmada.R;
@@ -30,17 +29,22 @@ import java.util.Map;
 
 public class GameFragment extends Fragment implements GameView {
 
-    private int width, height;
     private ImageView shipView;
-    private TextView textView;
-    private View gamePane;
+    private ViewGroup gamePane;
     private Game game;
+    private ViewGroup controlPanel;
     private DpadControlView dpadControlView;
     private final List<View> starViews = new ArrayList<>();
     private TransparentView dpadView;
     private int containerWidth, containerHeight, smallestContainerDimension;
     private Map<Long, ImageView> itemsMap;
     private Map<ItemType, Integer> itemTypeMap;
+    private int gamePaneWidth, gamePaneHeight;
+    private int controlPanelWidth, controlPanelHeight;
+    private final int minDpadHeight = 500;
+    private final int minGamePaneWidth = 500;
+    private final int minLandscapeControlViewWidth = 300;
+    private final float gamePaneDimensionRatio = 1.5f;
 
     public GameFragment() {
         // Required empty public constructor
@@ -56,42 +60,79 @@ public class GameFragment extends Fragment implements GameView {
     @Override
     public void onAttach(@NonNull Context context){
         super.onAttach(context);
-        log("Entered onAttach()");
-        deriveScreenDimensions();
         Game game = getGame();
         if(game != null){
             game.setGameView(this);
         }
     }
 
-    ViewGroup parentView;
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        getContainerDimensions(container);
+        View parentView = inflater.inflate(R.layout.fragment_game, container, false);
+        itemsMap = new HashMap<>();
+        itemTypeMap = new HashMap<>();
+        itemTypeMap.put(ItemType.ENEMY_SHIP_1, R.drawable.ship2);
+        assignViews(parentView);
+        assignViewDimensions();
+        registerShipDimensions();
+        addStarViewsTo(20);
+        return parentView;
+    }
 
+
+    private void getContainerDimensions(ViewGroup container){
         if(container != null){
-            log("Entered onCreateView() container width: " +
-                    container.getMeasuredWidth());
             containerWidth = container.getMeasuredWidth();
             containerHeight = container.getMeasuredHeight();
             smallestContainerDimension = Math.min(containerWidth, containerHeight);
         }
-        View parentView = inflater.inflate(R.layout.fragment_game, container, false);
-        deriveScreenDimensions();
-        itemsMap = new HashMap<>();
-        itemTypeMap = new HashMap<>();
-        itemTypeMap.put(ItemType.ENEMY_SHIP_1, R.drawable.ship2);
+    }
+
+
+    private void assignViews(View parentView){
+        controlPanel = parentView.findViewById(R.id.controlPanel);
         gamePane = parentView.findViewById(R.id.gamePane);
         shipView = parentView.findViewById(R.id.shipView);
         dpadView = parentView.findViewById(R.id.dpadView);
-        textView = parentView.findViewById(R.id.tempTextView);
-        registerShipDimensions();
-        addStarViewsTo((ViewGroup)parentView, 20);
-        this.parentView = (ViewGroup)parentView;
-        //initControls();
-        return parentView;
+    }
+
+
+    private void assignViewDimensions(){
+        if(containerHeight > containerWidth){
+            setupDimensionVariablesForPortrait();
+        }else{
+          setupDimensionVariablesForLandscape();
+        }
+        gamePane.setLayoutParams(new LinearLayout.LayoutParams(Math.max(300, gamePaneWidth), Math.max(300, gamePaneHeight)));
+        controlPanel.setLayoutParams(new LinearLayout.LayoutParams(controlPanelWidth, controlPanelHeight));
+        setGameBounds();
+    }
+
+
+    private void setupDimensionVariablesForPortrait(){
+        gamePaneWidth = containerWidth;
+        gamePaneHeight = Math.min(containerHeight - minDpadHeight, (int)(containerWidth * gamePaneDimensionRatio));
+        controlPanelWidth = containerWidth;
+        controlPanelHeight = containerHeight - gamePaneHeight;
+    }
+
+
+    private void setupDimensionVariablesForLandscape(){
+        gamePaneHeight = containerHeight;
+        int maxGamePaneWidth = containerWidth - (minLandscapeControlViewWidth * 2);
+        gamePaneWidth = Math.min(maxGamePaneWidth, (int)(gamePaneHeight / gamePaneDimensionRatio));
+        controlPanelWidth = 300;
+        controlPanelHeight = containerHeight;
+    }
+
+
+    private void setGameBounds(){
+        if(game != null) {
+            game.setBounds(gamePane.getX(), gamePane.getY(), gamePaneWidth, gamePaneHeight);
+        }
     }
 
 
@@ -108,23 +149,23 @@ public class GameFragment extends Fragment implements GameView {
 
     private void initControls(){
         if(dpadControlView == null) {
-            dpadControlView = new DpadControlView(getContext(), dpadView, textView);
+            dpadControlView = new DpadControlView(getContext(), dpadView);
         }
         dpadControlView.initControls(game);
     }
 
 
-    private void addStarViewsTo(ViewGroup parentView, int numberOfStars){
+    private void addStarViewsTo(int numberOfStars){
         for(int i = 0; i < numberOfStars; i++){
-            addStarViewTo(parentView);
+            addStarViewTo();
         }
     }
 
 
-    private void addStarViewTo(ViewGroup parentView){
+    private void addStarViewTo(){
         View starView = new View(getContext());
         starView.setLayoutParams(new ViewGroup.LayoutParams(2,2));
-        parentView.addView(starView);
+        gamePane.addView(starView);
         starView.setBackgroundColor(Color.LTGRAY);
         starViews.add(starView);
     }
@@ -165,14 +206,14 @@ public class GameFragment extends Fragment implements GameView {
         if(view != null){
             view.setX(drawInfo.getX());
             view.setY(drawInfo.getY());
-            removeOutOfBoundsItems(id, view);
+            removeIfOutOfBounds(id, view);
         }
     }
 
 
-    private void removeOutOfBoundsItems(long id, ImageView view){
-        if(view.getY() > gamePane.getBottom()){
-            parentView.removeView(view);
+    private void removeIfOutOfBounds(long id, ImageView view){
+        if(view.getY() >= gamePane.getBottom()){
+            gamePane.removeView(view);
             itemsMap.remove(id);
         }
     }
@@ -181,10 +222,7 @@ public class GameFragment extends Fragment implements GameView {
     @Override
     public ImageView createItem(DrawInfo drawInfo) {
         ImageView itemView = createImageViewWithDimensionsFrom(drawInfo);
-        if(parentView == null){
-            return itemView;
-        }
-        parentView.addView(itemView);
+        gamePane.addView(itemView);
         setImage(itemView, drawInfo);
         setImageViewCoordinates(itemView, drawInfo);
         return itemView;
@@ -263,17 +301,6 @@ public class GameFragment extends Fragment implements GameView {
             return;
         }
         getActivity().runOnUiThread(runnable);
-    }
-
-
-    private void deriveScreenDimensions(){
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        if(getActivity() == null){
-            return;
-        }
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        height = displayMetrics.heightPixels;
-        width = displayMetrics.widthPixels;
     }
 
 }

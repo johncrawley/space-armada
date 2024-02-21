@@ -23,6 +23,15 @@ public class EnemyShipManager {
         setSmallestDimension();
     }
 
+
+    public void setScreenBounds(RectF screenBounds){
+        this.screenBounds.left = screenBounds.left;
+        this.screenBounds.top = screenBounds.top;
+        this.screenBounds.right = screenBounds.right;
+        this.screenBounds.bottom = screenBounds.bottom;
+    }
+
+
     private void setSmallestDimension(){
         smallestBoundsDimension = (int)Math.min(screenBounds.bottom - screenBounds.top, screenBounds.right - screenBounds.left);
     }

@@ -8,7 +8,6 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.TextView;
 
 import com.jacstuff.spacearmada.actors.ships.ControllableShip;
 import com.jacstuff.spacearmada.controls.TouchPoint;
@@ -23,12 +22,10 @@ public class DpadControlView{
     private final TransparentView dpadView;
     private InputControlsManager inputControlsManager;
     private final Context context;
-    private final TextView textView;
 
-    public DpadControlView(Context context, TransparentView dpadView, TextView textView){
+    public DpadControlView(Context context, TransparentView dpadView){
         this.context = context;
         this.dpadView = dpadView;
-        this.textView = textView;
     }
 
 
@@ -74,14 +71,6 @@ public class DpadControlView{
         }
         inputControlsManager.process(touchPoints);
         return true;
-    }
-
-
-    private void printCoordinatesToTextView(MotionEvent motionEvent){
-        int x = (int) motionEvent.getX();
-        int y = (int) motionEvent.getY();
-        String str = " touchPoint: "  + x + "," + y;
-        textView.setText(str);
     }
 
 

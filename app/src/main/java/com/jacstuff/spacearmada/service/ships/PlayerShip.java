@@ -21,6 +21,15 @@ public class PlayerShip extends AbstractItem implements ControllableShip {
     }
 
 
+    public void setScreenBounds(RectF screenBounds){
+        moveBounds.left = screenBounds.left;
+        moveBounds.top = screenBounds.top;
+        moveBounds.right = screenBounds.right;
+        moveBounds.bottom = screenBounds.bottom;
+
+    }
+
+
     public void setDimensions(float width, float height){
         this.width = width;
         this.height = height;

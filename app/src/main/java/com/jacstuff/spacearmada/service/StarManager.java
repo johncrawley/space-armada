@@ -14,12 +14,17 @@ public class StarManager {
     private GameView gameView;
     private List<Point> slowStars;
     private final Random random;
-    private final RectF screenBounds;
+    private RectF screenBounds;
 
 
-    public StarManager(RectF screenBounds){
-        this.screenBounds = screenBounds;
+    public StarManager(){
         random = new Random();
+        slowStars = new ArrayList<>();
+    }
+
+
+    public void setBoundsAndGenerateStars(RectF screenBounds){
+        this.screenBounds = screenBounds;
         generateStars();
     }
 
@@ -30,6 +35,9 @@ public class StarManager {
 
 
     public void updateStarsOnView(){
+        if(slowStars.isEmpty()){
+            return;
+        }
         updateStars();
         gameView.updateStars(slowStars);
     }
