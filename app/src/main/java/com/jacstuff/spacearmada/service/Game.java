@@ -29,11 +29,10 @@ public class Game implements ControllableShip {
 
 
         public Game(){
-                screenBounds = createScreenBounds();
-                playerShip = new PlayerShip(50,50, screenBounds);
+                playerShip = new PlayerShip(50,50);
                 starManager = new StarManager();
                 scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-                enemyShipManager = new EnemyShipManager(screenBounds);
+                enemyShipManager = new EnemyShipManager();
         }
 
 
@@ -54,16 +53,6 @@ public class Game implements ControllableShip {
         }
 
 
-        private RectF createScreenBounds(){
-                RectF bounds = new RectF();
-                bounds.left = 0f;
-                bounds.right = 1000f;
-                bounds.top = 0f;
-                bounds.bottom = 1000f;
-                return bounds;
-        }
-
-
         public void adjustSizesBasedOn(int smallestDimension){
                 playerShip.setSizeBasedOn(smallestDimension);
                 gameView.setShipSize((int)playerShip.getWidth(), (int)playerShip.getHeight());
@@ -80,14 +69,22 @@ public class Game implements ControllableShip {
 
 
         private void updateItems(){
+                if(gameView == null){
+                        return;
+                }
                 updateEnemyShips();
-                starManager.updateStarsOnView();
+                updateStars();
                 updateShip();
         }
 
 
+        private void updateStars(){
+               gameView.updateStars(starManager.updateAndGetStars());
+        }
+
+
         private void updateEnemyShips(){
-                gameView.updateItems(enemyShipManager.updateAndGetChanges());
+              gameView.updateItems(enemyShipManager.updateAndGetChanges());
         }
 
 
@@ -105,6 +102,11 @@ public class Game implements ControllableShip {
         }
 
 
+        public void onUnbind(){
+                gameUpdateFuture.cancel(false);
+        }
+
+
         public void init(GameService gameService){
             this.gameService = gameService;
         }
@@ -112,7 +114,6 @@ public class Game implements ControllableShip {
 
         public void setGameView(GameView gameView){
                 this.gameView = gameView;
-                starManager.setGameView(gameView);
                 start();
         }
 

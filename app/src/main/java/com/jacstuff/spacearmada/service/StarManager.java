@@ -11,7 +11,6 @@ import java.util.Random;
 
 public class StarManager {
 
-    private GameView gameView;
     private List<Point> slowStars;
     private final Random random;
     private RectF screenBounds;
@@ -29,20 +28,6 @@ public class StarManager {
     }
 
 
-    public void setGameView(GameView gameView){
-        this.gameView = gameView;
-    }
-
-
-    public void updateStarsOnView(){
-        if(slowStars.isEmpty()){
-            return;
-        }
-        updateStars();
-        gameView.updateStars(slowStars);
-    }
-
-
     public void generateStars(){
         int numberOfStars = 20;
         slowStars = new ArrayList<>(numberOfStars);
@@ -52,11 +37,13 @@ public class StarManager {
     }
 
 
-    private void updateStars(){
+    public List<Point> updateAndGetStars(){
         for(Point star : slowStars){
             updateStar(star);
         }
+        return slowStars;
     }
+
 
 
     private void updateStar(Point star){

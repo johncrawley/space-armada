@@ -82,12 +82,15 @@ public class GameService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+
         return binder;
     }
 
 
     @Override
     public boolean onUnbind(Intent intent) {
+        log("onUnbind()");
+        game.onUnbind();
         return false;
     }
 
@@ -95,8 +98,6 @@ public class GameService extends Service {
     @Override
     public void onRebind(Intent intent) {
     }
-
-
 
 
     @Override
@@ -112,7 +113,9 @@ public class GameService extends Service {
 
 
     public void setActivity(MainActivity mainActivity){
+
         this.mainActivity = mainActivity;
+        // game.setGameView(mainActivity.);
     }
 
 

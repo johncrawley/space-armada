@@ -13,13 +13,21 @@ public class EnemyShipManager {
 
     private final List<EnemyShip> enemyShips;
     private final Random enemyShipRandom;
-    private final RectF screenBounds;
+    private final RectF screenBounds = new RectF();
     private int smallestBoundsDimension;
 
-    public EnemyShipManager(RectF screenBounds){
+    public EnemyShipManager(){
         enemyShips = new ArrayList<>();
         enemyShipRandom = new Random(2);
-        this.screenBounds = screenBounds;
+        createTempBounds();
+    }
+
+
+    private void createTempBounds(){
+        this.screenBounds.left = 0;
+        this.screenBounds.top = 0;
+        this.screenBounds.right = 1000;
+        this.screenBounds.bottom = 1000;
         setSmallestDimension();
     }
 
@@ -29,6 +37,7 @@ public class EnemyShipManager {
         this.screenBounds.top = screenBounds.top;
         this.screenBounds.right = screenBounds.right;
         this.screenBounds.bottom = screenBounds.bottom;
+        setSmallestDimension();
     }
 
 
@@ -44,13 +53,17 @@ public class EnemyShipManager {
 
     public List<DrawInfo> updateAndGetChanges(){
         enemyShips.forEach(EnemyShip::update);
+        createEnemyShipIfListIsEmpty();
+        removeEnemiesIfBeyondBounds();
+        return getChangedDrawInfoList();
+    }
+
+    private void createEnemyShipIfListIsEmpty(){
         if(enemyShips.isEmpty()){
             EnemyShip enemyShip = new EnemyShip(getEnemyShipRandomStartingX(), -50, System.currentTimeMillis(), 5, 0.07f, 1.5f);
             enemyShip.setSizeBasedOn(smallestBoundsDimension);
             add(enemyShip);
         }
-        removeEnemiesIfBeyondBounds();
-        return getChangedDrawInfoList();
     }
 
 

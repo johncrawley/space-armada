@@ -20,6 +20,7 @@ import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.service.Game;
 import com.jacstuff.spacearmada.service.GameService;
 import com.jacstuff.spacearmada.view.TransparentView;
+import com.jacstuff.spacearmada.view.fragments.utils.FragmentUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,10 +42,8 @@ public class GameFragment extends Fragment implements GameView {
     private Map<ItemType, Integer> itemTypeMap;
     private int gamePaneWidth, gamePaneHeight;
     private int controlPanelWidth, controlPanelHeight;
-    private final int minDpadHeight = 500;
-    private final int minGamePaneWidth = 500;
-    private final int minLandscapeControlViewWidth = 300;
     private final float gamePaneDimensionRatio = 1.5f;
+    public enum Message { CONNECT_TO_GAME }
 
     public GameFragment() {
         // Required empty public constructor
@@ -60,6 +59,16 @@ public class GameFragment extends Fragment implements GameView {
     @Override
     public void onAttach(@NonNull Context context){
         super.onAttach(context);
+        connectViewToGame();
+    }
+
+
+    private void connectViewToGame(Bundle bundle){
+        connectViewToGame();
+    }
+
+
+    private void connectViewToGame(){
         Game game = getGame();
         if(game != null){
             game.setGameView(this);
@@ -79,6 +88,7 @@ public class GameFragment extends Fragment implements GameView {
         assignViewDimensions();
         registerShipDimensions();
         addStarViewsTo(20);
+        setupListeners();
         return parentView;
     }
 
@@ -89,6 +99,11 @@ public class GameFragment extends Fragment implements GameView {
             containerHeight = container.getMeasuredHeight();
             smallestContainerDimension = Math.min(containerWidth, containerHeight);
         }
+    }
+
+
+    private void setupListeners(){
+        FragmentUtils.setListener(this, Message.CONNECT_TO_GAME, this::connectViewToGame);
     }
 
 
@@ -114,6 +129,7 @@ public class GameFragment extends Fragment implements GameView {
 
     private void setupDimensionVariablesForPortrait(){
         gamePaneWidth = containerWidth;
+        int minDpadHeight = 500;
         gamePaneHeight = Math.min(containerHeight - minDpadHeight, (int)(containerWidth * gamePaneDimensionRatio));
         controlPanelWidth = containerWidth;
         controlPanelHeight = containerHeight - gamePaneHeight;
@@ -122,6 +138,7 @@ public class GameFragment extends Fragment implements GameView {
 
     private void setupDimensionVariablesForLandscape(){
         gamePaneHeight = containerHeight;
+        int minLandscapeControlViewWidth = 300;
         int maxGamePaneWidth = containerWidth - (minLandscapeControlViewWidth * 2);
         gamePaneWidth = Math.min(maxGamePaneWidth, (int)(gamePaneHeight / gamePaneDimensionRatio));
         controlPanelWidth = 300;

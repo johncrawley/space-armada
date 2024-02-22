@@ -12,24 +12,20 @@ import org.junit.Test;
 public class PlayerShipTest {
 
     private PlayerShip playerShip;
-    private final float screenMinX = 0, screenMinY = 0;
-    private final float screenMaxX = 200;
-    private final float screenMaxY = 200;
     private final int initialX = 50;
     private final int initialY = 50;
 
     @Before
     public void setup(){
-        RectF screenBounds = new RectF();
-        screenBounds.left = screenMinX;
-        screenBounds.right = screenMaxX;
-        screenBounds.top = screenMinY;
-        screenBounds.bottom = screenMaxY;
-        System.out.println("setup screenBounds : " + screenBounds.left + ","
-                + screenBounds.top + ","
-                + screenBounds.right + ","
-                + screenBounds.bottom);
-        playerShip = new PlayerShip(initialX, initialY, screenBounds);
+        float screenMaxX = 200;
+        float screenMaxY = 200;
+        float screenMinX = 0;
+        float screenMinY = 0;
+        RectF screenBounds = createBounds(screenMinX, screenMinY, screenMaxX, screenMaxY);
+
+        playerShip = new PlayerShip(initialX, initialY);
+        playerShip.setScreenBounds(screenBounds);
+        playerShip.setSizeBasedOn(1000);
     }
 
 
@@ -82,31 +78,51 @@ public class PlayerShipTest {
 
     @Test
     public void shipDoesNotEscapeBounds(){
+        float left = 100;
+        float top = 100;
+        float right = 900;
+        float bottom = 900;
+        RectF bounds = createBounds(left, top, right, bottom);
+        playerShip.setScreenBounds(bounds);
         float halfWidth = playerShip.getWidth() / 2f;
         float halfHeight = playerShip.getHeight() / 2f;
+        log("playership half height and half width: " + halfHeight + ", " + halfWidth);
 
-        playerShip.moveCentreTo(screenMinX + halfWidth, screenMinY +halfHeight);
-        assertFloat(screenMinX, playerShip.getX());
-        assertFloat(screenMinY, playerShip.getY());
+        playerShip.moveCentreTo(left + halfWidth, top + halfHeight);
+        assertShipHasNotMovedAfter(()->{
+            playerShip.moveLeft();
+            playerShip.moveUp();
+        });
 
-        playerShip.moveLeft();
-        assertFloat(screenMinX, playerShip.getX());
-        playerShip.moveUp();
-        assertFloat(screenMinY, playerShip.getY());
+        playerShip.moveCentreTo(right - halfWidth, bottom - halfHeight);
+        assertShipHasNotMovedAfter(()->{
+            playerShip.moveRight();
+            playerShip.moveDown();
+        });
+    }
+
+    private void log(String msg){
+        System.out.println("^^^ PlayerShipTest: " + msg);
+    }
 
 
-        playerShip.moveCentreTo(screenMaxX - halfWidth, screenMaxY - halfHeight);
+    private RectF createBounds(float left, float top, float right, float bottom){
+        RectF bounds = new RectF();
+        bounds.left = left;
+        bounds.top = top;
+        bounds.right = right;
+        bounds.bottom = bottom;
+        return bounds;
+    }
 
-        float expectedX = screenMaxX - playerShip.getWidth();
-        float expectedY = screenMaxY - playerShip.getHeight();
 
+    private void assertShipHasNotMovedAfter(Runnable runnable){
+        float expectedX = playerShip.getX();
+        float expectedY = playerShip.getY();
+        runnable.run();
         assertFloat(expectedX, playerShip.getX());
         assertFloat(expectedY, playerShip.getY());
 
-        playerShip.moveRight();
-        assertFloat(expectedX, playerShip.getX());
-        playerShip.moveDown();
-        assertFloat(expectedY, playerShip.getY());
     }
 
 

@@ -8,16 +8,15 @@ import com.jacstuff.spacearmada.view.fragments.game.ItemType;
 
 public class PlayerShip extends AbstractItem implements ControllableShip {
 
-    private final RectF moveBounds;
+    private final RectF moveBounds = new RectF();
     private float previousX, previousY;
     private Direction currentDirection = Direction.NONE;
 
 
-    public PlayerShip(int initialX, int initialY, RectF moveBounds){
+    public PlayerShip(int initialX, int initialY){
         super(1, ItemType.PLAYER_SHIP, 5,.05f,2.4f);
         this.x = initialX;
         this.y = initialY;
-        this.moveBounds = moveBounds;
     }
 
 
@@ -26,7 +25,6 @@ public class PlayerShip extends AbstractItem implements ControllableShip {
         moveBounds.top = screenBounds.top;
         moveBounds.right = screenBounds.right;
         moveBounds.bottom = screenBounds.bottom;
-
     }
 
 
@@ -54,9 +52,9 @@ public class PlayerShip extends AbstractItem implements ControllableShip {
     }
 
 
-    public void moveCentreTo(float x, float y){
-        this.x = x - (width / 2f);
-        this.y = y - (height / 2f);
+    public void moveCentreTo(float centreX, float centreY){
+        this.x = centreX - (width / 2f);
+        this.y = centreY - (height / 2f);
     }
 
 
@@ -96,8 +94,8 @@ public class PlayerShip extends AbstractItem implements ControllableShip {
 
     public void moveDown(){
         y += speed;
-        if(y > moveBounds.bottom){
-            y = moveBounds.bottom;
+        if(y + height > moveBounds.bottom){
+            y = moveBounds.bottom - height;
         }
     }
 
