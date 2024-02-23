@@ -10,5 +10,6 @@ public interface GameView {
     void setShipSize(int width, int height);
     void updateStars(List<Point> starCoordinates);
     void updateItems(List<DrawInfo> drawInfoList);
+    void updateProjectiles(List<DrawInfo> drawInfoList);
     ImageView createItem(DrawInfo drawInfo);
 }

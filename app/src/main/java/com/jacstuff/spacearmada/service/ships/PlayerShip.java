@@ -4,6 +4,8 @@ import android.graphics.RectF;
 
 import com.jacstuff.spacearmada.Direction;
 import com.jacstuff.spacearmada.actors.ships.ControllableShip;
+import com.jacstuff.spacearmada.service.ships.weapons.ProjectileManager;
+import com.jacstuff.spacearmada.service.ships.weapons.Weapon;
 import com.jacstuff.spacearmada.view.fragments.game.ItemType;
 
 public class PlayerShip extends AbstractItem implements ControllableShip {
@@ -11,6 +13,7 @@ public class PlayerShip extends AbstractItem implements ControllableShip {
     private final RectF moveBounds = new RectF();
     private float previousX, previousY;
     private Direction currentDirection = Direction.NONE;
+    private Weapon mainWeapon;
 
 
     public PlayerShip(int initialX, int initialY){
@@ -19,12 +22,27 @@ public class PlayerShip extends AbstractItem implements ControllableShip {
         this.y = initialY;
     }
 
+    public void initWeapons(ProjectileManager projectileManager){
+        mainWeapon = Weapon.Builder.newInstance()
+                .setOwner(this)
+                .setProjectileManager(projectileManager)
+                .setRate(12)
+                .setHeightWidthRatio(2f)
+                .setSpeed(10)
+                .setSizeFactor(0.02f)
+                .setProjectileType(ItemType.PLAYER_BULLET)
+                .setBounds(moveBounds)
+                .build();
+
+        mainWeapon.addBarrel(0, -100);
+    }
 
     public void setScreenBounds(RectF screenBounds){
         moveBounds.left = screenBounds.left;
         moveBounds.top = screenBounds.top;
         moveBounds.right = screenBounds.right;
         moveBounds.bottom = screenBounds.bottom;
+        mainWeapon.setBounds(moveBounds);
     }
 
 
@@ -41,8 +59,21 @@ public class PlayerShip extends AbstractItem implements ControllableShip {
 
 
     @Override
-    public void releaseFire(){
+    public void fire() {
+        log("Entered fire()");
+        mainWeapon.startFiring();
+    }
 
+
+    private void log(String msg){
+        System.out.println("^^^ PlayerShip: " + msg);
+    }
+
+
+
+    @Override
+    public void releaseFire(){
+        mainWeapon.stopFiring();
     }
 
 
@@ -109,14 +140,9 @@ public class PlayerShip extends AbstractItem implements ControllableShip {
 
 
     @Override
-    public void fire() {
-
-    }
-
-
-    @Override
     public void update() {
         updateDirection();
+        mainWeapon.update();
     }
 
 

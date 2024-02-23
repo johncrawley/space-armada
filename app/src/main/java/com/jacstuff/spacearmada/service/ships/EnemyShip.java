@@ -14,13 +14,6 @@ public class EnemyShip extends AbstractItem{
     }
 
 
-    public DrawInfo getDrawInfo(){
-        drawInfo.setXY(x,y);
-        drawInfo.setDimensions((int)width, (int) height);
-        return drawInfo;
-    }
-
-
     public void update(){
         setY(y + speed);
     }

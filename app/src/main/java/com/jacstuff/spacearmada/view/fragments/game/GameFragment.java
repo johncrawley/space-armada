@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 
 public class GameFragment extends Fragment implements GameView {
@@ -39,6 +40,7 @@ public class GameFragment extends Fragment implements GameView {
     private TransparentView dpadView;
     private int containerWidth, containerHeight, smallestContainerDimension;
     private Map<Long, ImageView> itemsMap;
+    private Map<Long, ImageView> projectilesMap;
     private Map<ItemType, Integer> itemTypeMap;
     private int gamePaneWidth, gamePaneHeight;
     private int controlPanelWidth, controlPanelHeight;
@@ -82,8 +84,10 @@ public class GameFragment extends Fragment implements GameView {
         getContainerDimensions(container);
         View parentView = inflater.inflate(R.layout.fragment_game, container, false);
         itemsMap = new HashMap<>();
+        projectilesMap = new HashMap<>();
         itemTypeMap = new HashMap<>();
         itemTypeMap.put(ItemType.ENEMY_SHIP_1, R.drawable.ship2);
+        itemTypeMap.put(ItemType.PLAYER_BULLET, R.drawable.bullet1);
         assignViews(parentView);
         assignViewDimensions();
         registerShipDimensions();
@@ -206,24 +210,36 @@ public class GameFragment extends Fragment implements GameView {
 
     @Override
     public void updateItems(List<DrawInfo> drawInfoList) {
+        updateViewsFrom(drawInfoList, itemsMap, this::removeIfOutOfBounds);
+    }
+
+
+    @Override
+    public void updateProjectiles(List<DrawInfo> drawInfoList) {
+        updateViewsFrom(drawInfoList, projectilesMap, this::removeProjectileViewIfOutOfBounds);
+    }
+
+
+    private void updateViewsFrom(List<DrawInfo> drawInfoList, Map<Long, ImageView> viewMap, BiConsumer<Long, ImageView> removalConsumer){
         runOnUiThread(()-> {
             for (DrawInfo drawInfo : drawInfoList) {
-                updateViewFrom(drawInfo);
+                updateViewFrom(drawInfo, viewMap, removalConsumer);
             }
         });
     }
 
 
-    private void updateViewFrom(DrawInfo drawInfo){
+    private void updateViewFrom(DrawInfo drawInfo, Map<Long, ImageView> map, BiConsumer<Long, ImageView> removalConsumer){
         long id = drawInfo.getId();
-        if(!itemsMap.containsKey(id)){
-            itemsMap.put(id, createItem(drawInfo));
+        if(!map.containsKey(id)){
+            map.put(id, createItem(drawInfo));
         }
-        ImageView view = itemsMap.get(id);
+        ImageView view = map.get(id);
         if(view != null){
             view.setX(drawInfo.getX());
             view.setY(drawInfo.getY());
             removeIfOutOfBounds(id, view);
+            removalConsumer.accept(id, view);
         }
     }
 
@@ -233,6 +249,22 @@ public class GameFragment extends Fragment implements GameView {
             gamePane.removeView(view);
             itemsMap.remove(id);
         }
+    }
+
+
+    private void removeProjectileViewIfOutOfBounds(long id, ImageView view){
+        if(isProjectileOutOfBounds(view)){
+            gamePane.removeView(view);
+            itemsMap.remove(id);
+        }
+    }
+
+
+    private boolean isProjectileOutOfBounds(View view){
+        return view.getRight() < gamePane.getX()
+                || view.getLeft() > gamePane.getRight()
+                || view.getTop() > gamePane.getBottom()
+                || view.getBottom()  < gamePane.getTop();
     }
 
 

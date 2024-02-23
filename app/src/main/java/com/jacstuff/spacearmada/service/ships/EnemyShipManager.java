@@ -1,5 +1,8 @@
 package com.jacstuff.spacearmada.service.ships;
 
+import static com.jacstuff.spacearmada.service.ships.Utils.getChangedDrawInfoList;
+import static com.jacstuff.spacearmada.service.ships.Utils.setSmallestDimension;
+
 import android.graphics.RectF;
 
 import com.jacstuff.spacearmada.view.fragments.game.DrawInfo;
@@ -28,7 +31,7 @@ public class EnemyShipManager {
         this.screenBounds.top = 0;
         this.screenBounds.right = 1000;
         this.screenBounds.bottom = 1000;
-        setSmallestDimension();
+        smallestBoundsDimension = setSmallestDimension(screenBounds);
     }
 
 
@@ -37,12 +40,7 @@ public class EnemyShipManager {
         this.screenBounds.top = screenBounds.top;
         this.screenBounds.right = screenBounds.right;
         this.screenBounds.bottom = screenBounds.bottom;
-        setSmallestDimension();
-    }
-
-
-    private void setSmallestDimension(){
-        smallestBoundsDimension = (int)Math.min(screenBounds.bottom - screenBounds.top, screenBounds.right - screenBounds.left);
+        smallestBoundsDimension = setSmallestDimension(screenBounds);
     }
 
 
@@ -55,8 +53,9 @@ public class EnemyShipManager {
         enemyShips.forEach(EnemyShip::update);
         createEnemyShipIfListIsEmpty();
         removeEnemiesIfBeyondBounds();
-        return getChangedDrawInfoList();
+        return getChangedDrawInfoList(enemyShips);
     }
+
 
     private void createEnemyShipIfListIsEmpty(){
         if(enemyShips.isEmpty()){
@@ -76,15 +75,5 @@ public class EnemyShipManager {
         return enemyShipRandom.nextInt(((int)screenBounds.right - 50));
     }
 
-
-    public List<DrawInfo> getChangedDrawInfoList(){
-        return enemyShips.stream()
-                .filter(EnemyShip::hasChanged)
-                .map(e -> {
-                    e.resetChangedStatus();
-                    return e.getDrawInfo();
-                })
-                .collect(Collectors.toList());
-    }
 
 }

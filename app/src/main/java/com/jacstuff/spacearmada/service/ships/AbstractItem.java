@@ -1,8 +1,6 @@
 package com.jacstuff.spacearmada.service.ships;
 
 
-import android.graphics.RectF;
-
 import com.jacstuff.spacearmada.view.fragments.game.DrawInfo;
 import com.jacstuff.spacearmada.view.fragments.game.ItemType;
 
@@ -83,5 +81,13 @@ public class AbstractItem {
         this.y = y;
         hasChanged = true;
     }
+
+
+    public DrawInfo getDrawInfo(){
+        drawInfo.setXY(x,y);
+        drawInfo.setDimensions((int)width, (int) height);
+        return drawInfo;
+    }
+
 
 }

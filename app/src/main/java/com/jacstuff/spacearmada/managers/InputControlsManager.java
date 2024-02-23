@@ -19,7 +19,7 @@ import com.jacstuff.spacearmada.controls.DPad;
  */
 public class InputControlsManager {
     private DPad dpad;
-    private ControlButton fireButton;
+    //private ControlButton fireButton;
     private final ControllableShip spaceship;
 
     public InputControlsManager(int viewWidth, int viewHeight, ControllableShip spaceship){
@@ -42,7 +42,7 @@ public class InputControlsManager {
         final int actionButtonRadius = 70;
         int actionButtonXPosition = viewWidth - ((actionButtonRadius * 2) + border);
         int yPosition = viewHeight/2 - (actionButtonRadius);
-        fireButton = new ControlButton(actionButtonXPosition, yPosition, actionButtonRadius);
+        //fireButton = new ControlButton(actionButtonXPosition, yPosition, actionButtonRadius);
     }
 
 
@@ -58,7 +58,7 @@ public class InputControlsManager {
 
     private void assignActionCommands(){
         Command fireCommand = new FireCommand(spaceship);
-        fireButton.assignCommand(fireCommand);
+        //fireButton.assignCommand(fireCommand);
     }
 
 
@@ -71,13 +71,16 @@ public class InputControlsManager {
 
     public void process(List<TouchPoint> touchPoints){
         dpad.process(touchPoints);
-        fireButton.process(touchPoints);
+       // fireButton.process(touchPoints);
     }
 
 
     public CircularControl getDPad(){return this.dpad;}
 
 
-    public CircularControl getFireButton(){return this.fireButton;}
+    public CircularControl getFireButton(){
+
+        return null; //this.fireButton;
+    }
 
 }

@@ -22,7 +22,7 @@ public class FireCommand extends com.jacstuff.spacearmada.commands.AbstractSpace
         spaceship.fire();
     }
     public void release() {
-
+        System.out.println("^^^ FireCommand: entered release()");
         spaceship.releaseFire();
     }
 
