@@ -3,6 +3,7 @@ package com.jacstuff.spacearmada.view.fragments.game;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -36,8 +37,9 @@ public class GameFragment extends Fragment implements GameView {
     private Game game;
     private ViewGroup controlPanel;
     private DpadControlView dpadControlView;
+    private FireButtonControlView fireButtonControlView;
     private final List<View> starViews = new ArrayList<>();
-    private TransparentView dpadView;
+    private TransparentView dpadView, fireButtonView;
     private int containerWidth, containerHeight, smallestContainerDimension;
     private Map<Long, ImageView> itemsMap;
     private Map<Long, ImageView> projectilesMap;
@@ -46,6 +48,8 @@ public class GameFragment extends Fragment implements GameView {
     private int controlPanelWidth, controlPanelHeight;
     private final float gamePaneDimensionRatio = 1.5f;
     public enum Message { CONNECT_TO_GAME }
+    private Rect gamePaneRect;
+
 
     public GameFragment() {
         // Required empty public constructor
@@ -116,6 +120,7 @@ public class GameFragment extends Fragment implements GameView {
         gamePane = parentView.findViewById(R.id.gamePane);
         shipView = parentView.findViewById(R.id.shipView);
         dpadView = parentView.findViewById(R.id.dpadView);
+        fireButtonView = parentView.findViewById(R.id.fireButtonView);
     }
 
 
@@ -153,7 +158,17 @@ public class GameFragment extends Fragment implements GameView {
     private void setGameBounds(){
         if(game != null) {
             game.setBounds(gamePane.getX(), gamePane.getY(), gamePaneWidth, gamePaneHeight);
+            initGamePaneRect();
         }
+    }
+
+
+    private void initGamePaneRect(){
+        gamePaneRect = new Rect();
+        gamePaneRect.left = (int)gamePane.getX();
+        gamePaneRect.top = (int)gamePane.getY();
+        gamePaneRect.right = (int)gamePane.getX() + gamePaneWidth;
+        gamePaneRect.bottom = (int)gamePane.getY() + gamePaneHeight;
     }
 
 
@@ -173,6 +188,10 @@ public class GameFragment extends Fragment implements GameView {
             dpadControlView = new DpadControlView(getContext(), dpadView);
         }
         dpadControlView.initControls(game);
+        if(fireButtonControlView == null){
+            fireButtonControlView = new FireButtonControlView(getContext(), fireButtonView);
+        }
+        fireButtonControlView.initControls(game);
     }
 
 
@@ -220,7 +239,7 @@ public class GameFragment extends Fragment implements GameView {
     }
 
 
-    private void updateViewsFrom(List<DrawInfo> drawInfoList, Map<Long, ImageView> viewMap, BiConsumer<Long, ImageView> removalConsumer){
+    private void updateViewsFrom(List<DrawInfo> drawInfoList, Map<Long, ImageView> viewMap, BiConsumer<DrawInfo, ImageView> removalConsumer){
         runOnUiThread(()-> {
             for (DrawInfo drawInfo : drawInfoList) {
                 updateViewFrom(drawInfo, viewMap, removalConsumer);
@@ -229,22 +248,28 @@ public class GameFragment extends Fragment implements GameView {
     }
 
 
-    private void updateViewFrom(DrawInfo drawInfo, Map<Long, ImageView> map, BiConsumer<Long, ImageView> removalConsumer){
+    private void updateViewFrom(DrawInfo drawInfo, Map<Long, ImageView> map, BiConsumer<DrawInfo, ImageView> removalConsumer){
         long id = drawInfo.getId();
+        if(map == null){
+            return;
+        }
         if(!map.containsKey(id)){
-            map.put(id, createItem(drawInfo));
+            ImageView item = createItemAndAddToGamePane(drawInfo);
+            map.put(id, item);
         }
         ImageView view = map.get(id);
         if(view != null){
             view.setX(drawInfo.getX());
             view.setY(drawInfo.getY());
-            removeIfOutOfBounds(id, view);
-            removalConsumer.accept(id, view);
+            view.setRotation(drawInfo.getRotation());
+            drawInfo.incrementRotation(5);
+            removalConsumer.accept(drawInfo, view);
         }
     }
 
 
-    private void removeIfOutOfBounds(long id, ImageView view){
+    private void removeIfOutOfBounds(DrawInfo drawInfo, ImageView view){
+        long id = drawInfo.getId();
         if(view.getY() >= gamePane.getBottom()){
             gamePane.removeView(view);
             itemsMap.remove(id);
@@ -252,24 +277,15 @@ public class GameFragment extends Fragment implements GameView {
     }
 
 
-    private void removeProjectileViewIfOutOfBounds(long id, ImageView view){
-        if(isProjectileOutOfBounds(view)){
+    private void removeProjectileViewIfOutOfBounds(DrawInfo drawInfo, ImageView view){
+        if(drawInfo.isScheduledForRemoval()){
             gamePane.removeView(view);
-            itemsMap.remove(id);
+            itemsMap.remove(drawInfo.getId());
         }
     }
 
 
-    private boolean isProjectileOutOfBounds(View view){
-        return view.getRight() < gamePane.getX()
-                || view.getLeft() > gamePane.getRight()
-                || view.getTop() > gamePane.getBottom()
-                || view.getBottom()  < gamePane.getTop();
-    }
-
-
-    @Override
-    public ImageView createItem(DrawInfo drawInfo) {
+    public ImageView createItemAndAddToGamePane(DrawInfo drawInfo) {
         ImageView itemView = createImageViewWithDimensionsFrom(drawInfo);
         gamePane.addView(itemView);
         setImage(itemView, drawInfo);
@@ -306,7 +322,7 @@ public class GameFragment extends Fragment implements GameView {
 
 
     private void log(String msg){
-        System.out.println("^^^ Game: " + msg);
+        System.out.println("^^^ GameFragment: " + msg);
     }
 
 

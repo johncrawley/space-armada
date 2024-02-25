@@ -6,6 +6,8 @@ public class DrawInfo {
     private final long id;
     private int width, height;
     private final ItemType itemType;
+    public boolean isScheduledForRemoval;
+    public float rotation;
 
     public DrawInfo(ItemType itemType, long id){
         this.itemType = itemType;
@@ -16,6 +18,26 @@ public class DrawInfo {
     public void setXY(float x, float y){
         this.x = x;
         this.y = y;
+    }
+
+
+    public void incrementRotation(float degrees){
+        rotation += degrees;
+        rotation %= 360;
+    }
+
+
+    public float getRotation(){
+        return rotation;
+    }
+
+    public boolean isScheduledForRemoval(){
+        return isScheduledForRemoval;
+    }
+
+
+    public void scheduleForRemoval(){
+        isScheduledForRemoval = true;
     }
 
 

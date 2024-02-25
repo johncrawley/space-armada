@@ -83,7 +83,7 @@ public class Game implements ControllableShip {
                 updateStars();
                 updateShip();
                 updateProjectiles();
-                firePlayerGun();
+               // firePlayerGun();
         }
 
 
@@ -92,7 +92,7 @@ public class Game implements ControllableShip {
 
         private void firePlayerGun(){
                 fireCounter++;
-                if(fireCounter == 300){
+                if(fireCounter == 100){
                         fireCounter = 0;
                         fire();
                         isFiring = true;

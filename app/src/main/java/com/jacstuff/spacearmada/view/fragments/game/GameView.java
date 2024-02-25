@@ -11,5 +11,4 @@ public interface GameView {
     void updateStars(List<Point> starCoordinates);
     void updateItems(List<DrawInfo> drawInfoList);
     void updateProjectiles(List<DrawInfo> drawInfoList);
-    ImageView createItem(DrawInfo drawInfo);
 }

@@ -34,22 +34,42 @@ public class ProjectileManager {
 
 
     private void log(String msg){
-        System.out.println("^^^ ProjectileManager : " + msg);
+
+        //System.out.println("^^^ ProjectileManager : " + msg);
     }
 
 
     public List<DrawInfo> update(){
         projectiles.forEach(Projectile::update);
-        projectiles.removeIf(this::hasProjectileExceededBounds);
+        projectiles.removeIf(this::isScheduledForRemoval);
+        projectiles.forEach(this::scheduleForRemovalIfOutOfBounds);
         return getChangedDrawInfoList(projectiles);
     }
 
 
+    private boolean isScheduledForRemoval(Projectile projectile){
+        return projectile.getDrawInfo().isScheduledForRemoval();
+    }
+
+
+    private void scheduleForRemovalIfOutOfBounds(Projectile projectile){
+        if(hasProjectileExceededBounds(projectile)){
+            projectile.getDrawInfo().scheduleForRemoval();
+        }
+    }
+
+
     private boolean hasProjectileExceededBounds(Projectile projectile){
-        return projectile.getX() < bounds.left
-                || projectile.getY() + projectile.getHeight() < bounds.top
-                || projectile.getX() + projectile.getWidth() > bounds.right
+
+        float projectileRight = projectile.getX() + projectile.getWidth();
+        float projectileBottom = projectile.getY() + projectile.getHeight();
+        boolean result = projectileRight < bounds.left
+                || projectileBottom < bounds.top
+                || projectile.getX() > bounds.right
                 || projectile.getY() > bounds.bottom;
+        log(" projectile : " + projectile.getX() + "," + projectile.getY() + "," + projectileRight + "," + projectileBottom);
+        log("bounds : " + bounds.left + "," + bounds.top + "," + bounds.right  +"," + bounds.bottom + " exceeded: " + result);
+        return result;
     }
 
 }
