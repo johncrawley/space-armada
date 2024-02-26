@@ -24,7 +24,8 @@ public class Weapon {
     private final ProjectileManager projectileManager;
     private final float heightWidthRatio;
     private final AbstractItem owner;
-    private RectF screenBounds;
+    private int pixelsTravelledPerFrame;
+    private int smallestScreenDimension;
 
 
     private Weapon(Builder builder){
@@ -35,7 +36,7 @@ public class Weapon {
         this.projectileManager = builder.projectileManager;
         this.owner = builder.owner;
         this.heightWidthRatio = builder.heightWidthRatio;
-        this.screenBounds = builder.screenBounds;
+        setBounds(builder.screenBounds);
         this.barrelOffsets = new ArrayList<>();
     }
 
@@ -59,13 +60,19 @@ public class Weapon {
 
 
     public void setBounds(RectF bounds){
-        this.screenBounds = bounds;
+        smallestScreenDimension = setSmallestDimension(bounds);
+        setPixelsTravelledPerFrame();
     }
 
 
     public void startFiring(){
-        reloadCounter = 0;
+        reloadCounter = rate - 1;
         isFiring = true;
+    }
+
+
+    private void setPixelsTravelledPerFrame(){
+        pixelsTravelledPerFrame = (smallestScreenDimension / 1000 ) * speed;
     }
 
 
@@ -75,23 +82,16 @@ public class Weapon {
 
 
     private void deployProjectiles(){
-        log("Entered deployProjectiles()");
-        int smallestScreenDimension = setSmallestDimension(screenBounds);
         for(PointF offset : barrelOffsets){
-            log("weapon added");
             Projectile projectile = new Projectile(createId(), projectileType, speed, sizeFactor, heightWidthRatio );
             projectile.setX(owner.getX() + offset.x);
             projectile.setY(owner.getY() + offset.y);
             projectile.setSizeBasedOn(smallestScreenDimension);
-            projectile.setPath(new LinearNavigationPath(owner.getX(), owner.getY(), 9, true));
+            projectile.setPath(new LinearNavigationPath(owner.getX(), owner.getY(), pixelsTravelledPerFrame, true));
             projectileManager.add(projectile);
         }
     }
 
-
-    private void log(String msg){
-        System.out.println("^^^ Weapon: " + msg);
-    }
 
     private long createId(){
         return System.nanoTime();

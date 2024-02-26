@@ -133,7 +133,9 @@ public class Game implements ControllableShip {
 
         public void quit(){
                 isRunning.set(false);
-                gameUpdateFuture.cancel(false);
+                if(gameUpdateFuture != null && !gameUpdateFuture.isCancelled()){
+                        gameUpdateFuture.cancel(false);
+                }
         }
 
 

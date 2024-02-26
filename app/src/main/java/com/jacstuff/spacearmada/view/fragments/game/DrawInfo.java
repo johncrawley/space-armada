@@ -8,10 +8,17 @@ public class DrawInfo {
     private final ItemType itemType;
     public boolean isScheduledForRemoval;
     public float rotation;
+    public boolean isRotating;
 
     public DrawInfo(ItemType itemType, long id){
+        this(itemType, id, false);
+    }
+
+
+    public DrawInfo(ItemType itemType, long id, boolean isRotating){
         this.itemType = itemType;
         this.id = id;
+        this.isRotating = isRotating;
     }
 
 
@@ -22,8 +29,10 @@ public class DrawInfo {
 
 
     public void incrementRotation(float degrees){
-        rotation += degrees;
-        rotation %= 360;
+        if(isRotating){
+            rotation += degrees;
+            rotation %= 360;
+        }
     }
 
 

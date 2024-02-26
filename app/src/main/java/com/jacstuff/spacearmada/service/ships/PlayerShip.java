@@ -26,16 +26,16 @@ public class PlayerShip extends AbstractItem implements ControllableShip {
         mainWeapon = Weapon.Builder.newInstance()
                 .setOwner(this)
                 .setProjectileManager(projectileManager)
-                .setRate(12)
-                .setHeightWidthRatio(2f)
-                .setSpeed(10)
-                .setSizeFactor(0.02f)
+                .setRate(20)
+                .setHeightWidthRatio(4f)
+                .setSpeed(20)
+                .setSizeFactor(0.01f)
                 .setProjectileType(ItemType.PLAYER_BULLET)
                 .setBounds(moveBounds)
                 .build();
-
         mainWeapon.addBarrel(0, -100);
     }
+
 
     public void setScreenBounds(RectF screenBounds){
         moveBounds.left = screenBounds.left;

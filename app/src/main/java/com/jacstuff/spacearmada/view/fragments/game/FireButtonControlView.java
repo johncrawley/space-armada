@@ -11,8 +11,6 @@ import android.view.View;
 
 import com.jacstuff.spacearmada.actors.ships.ControllableShip;
 import com.jacstuff.spacearmada.controls.TouchPoint;
-import com.jacstuff.spacearmada.managers.InputControlsManager;
-import com.jacstuff.spacearmada.service.Game;
 import com.jacstuff.spacearmada.view.TransparentView;
 
 import java.util.ArrayList;
@@ -21,27 +19,24 @@ import java.util.List;
 public class FireButtonControlView {
 
     private final TransparentView fireButtonView;
-    private InputControlsManager inputControlsManager;
-    private final Context context;
     private ControllableShip controllableShip;
-
-
-    public FireButtonControlView(Context context, TransparentView fireButtonView){
-        this.context = context;
-        this.fireButtonView = fireButtonView;
-    }
-
+    private int centreX, centreY;
+    private final int radius, radiusSquared;
 
 
     @SuppressLint("ClickableViewAccessibility")
-    public void initControls(ControllableShip controllableShip){
-        int width = fireButtonView.getMeasuredWidth();
-        int height = fireButtonView.getMeasuredHeight();
-        width = 500;
-        height = 500;
-        int radius = getPixelsFrom(30);
-        int centreX = width / 2;
-        int centreY = height / 2;
+    public FireButtonControlView(Context context, TransparentView fireButtonView){
+        radius = getPixelsFrom(context, 30);
+        radiusSquared = (int)Math.pow(radius, 2);
+        this.fireButtonView = fireButtonView;
+        fireButtonView.setOnTouchListener(this::onTouchEvent);
+    }
+
+
+    @SuppressLint("ClickableViewAccessibility")
+    public void init(ControllableShip controllableShip, int width, int height){
+        centreX = width / 2;
+        centreY = height / 2;
 
         this.controllableShip = controllableShip;
         drawView(centreX, centreY, radius);
@@ -61,7 +56,7 @@ public class FireButtonControlView {
     }
 
 
-    public int getPixelsFrom(int dp){
+    public int getPixelsFrom(Context context, int dp){
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, dm);
     }
@@ -70,8 +65,13 @@ public class FireButtonControlView {
     private boolean onTouchEvent(View view, MotionEvent motionEvent) {
         List<TouchPoint> touchPoints = new ArrayList<>();
         int action = motionEvent.getAction();
+        float x = motionEvent.getX();
+        float y = motionEvent.getY();
+
         if(action == MotionEvent.ACTION_DOWN){
-            controllableShip.fire();
+            if(isWithinButtonBounds(x,y)) {
+                controllableShip.fire();
+            }
         }
         else if(isUpEvent(motionEvent)){
             controllableShip.releaseFire();
@@ -80,15 +80,15 @@ public class FireButtonControlView {
     }
 
 
-    private TouchPoint createTouchPoint(MotionEvent motionEvent, int index){
-        float x = motionEvent.getX(index);
-        float y = motionEvent.getY(index);
-        return new TouchPoint(x,y, isReleasedTouchPoint(motionEvent, index));
+    boolean isWithinButtonBounds(float x, float y){
+        return  squareOf(x - centreX)
+                + squareOf(y - centreY)
+                <= radiusSquared;
     }
 
 
-    private boolean isReleasedTouchPoint(MotionEvent motionEvent, int pointIndex){
-        return isUpEvent(motionEvent) && motionEvent.getActionIndex() == pointIndex;
+    private float squareOf(float value){
+        return value * value;
     }
 
 

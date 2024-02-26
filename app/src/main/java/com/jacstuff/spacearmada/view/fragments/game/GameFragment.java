@@ -48,8 +48,7 @@ public class GameFragment extends Fragment implements GameView {
     private int controlPanelWidth, controlPanelHeight;
     private final float gamePaneDimensionRatio = 1.5f;
     public enum Message { CONNECT_TO_GAME }
-    private Rect gamePaneRect;
-
+    private int dPadViewWidth, dPadViewHeight, fireButtonViewWidth, fireButtonViewHeight;
 
     public GameFragment() {
         // Required empty public constructor
@@ -101,6 +100,12 @@ public class GameFragment extends Fragment implements GameView {
     }
 
 
+    @Override
+    public void onViewCreated(@NonNull View parentView, Bundle savedInstanceState) {
+        initControls();
+    }
+
+
     private void getContainerDimensions(ViewGroup container){
         if(container != null){
             containerWidth = container.getMeasuredWidth();
@@ -132,6 +137,8 @@ public class GameFragment extends Fragment implements GameView {
         }
         gamePane.setLayoutParams(new LinearLayout.LayoutParams(Math.max(300, gamePaneWidth), Math.max(300, gamePaneHeight)));
         controlPanel.setLayoutParams(new LinearLayout.LayoutParams(controlPanelWidth, controlPanelHeight));
+        dpadView.setLayoutParams(new LinearLayout.LayoutParams(dPadViewWidth, dPadViewHeight));
+        fireButtonView.setLayoutParams(new LinearLayout.LayoutParams(fireButtonViewWidth, fireButtonViewHeight));
         setGameBounds();
     }
 
@@ -142,6 +149,12 @@ public class GameFragment extends Fragment implements GameView {
         gamePaneHeight = Math.min(containerHeight - minDpadHeight, (int)(containerWidth * gamePaneDimensionRatio));
         controlPanelWidth = containerWidth;
         controlPanelHeight = containerHeight - gamePaneHeight;
+        dPadViewHeight = controlPanelHeight;
+        fireButtonViewHeight = controlPanelHeight;
+
+        dPadViewWidth = (controlPanelWidth / 3) * 2;
+        fireButtonViewWidth = controlPanelWidth - dPadViewWidth;
+
     }
 
 
@@ -164,7 +177,7 @@ public class GameFragment extends Fragment implements GameView {
 
 
     private void initGamePaneRect(){
-        gamePaneRect = new Rect();
+        Rect gamePaneRect = new Rect();
         gamePaneRect.left = (int)gamePane.getX();
         gamePaneRect.top = (int)gamePane.getY();
         gamePaneRect.right = (int)gamePane.getX() + gamePaneWidth;
@@ -173,13 +186,9 @@ public class GameFragment extends Fragment implements GameView {
 
 
     private void registerShipDimensions(){
-        game.adjustSizesBasedOn(smallestContainerDimension);
-    }
-
-
-    @Override
-    public void onViewCreated(@NonNull View parentView, Bundle savedInstanceState) {
-        initControls();
+        if(game != null){
+            game.adjustSizesBasedOn(smallestContainerDimension);
+         }
     }
 
 
@@ -187,11 +196,11 @@ public class GameFragment extends Fragment implements GameView {
         if(dpadControlView == null) {
             dpadControlView = new DpadControlView(getContext(), dpadView);
         }
-        dpadControlView.initControls(game);
+        dpadControlView.initControls(game, dPadViewWidth, dPadViewHeight);
         if(fireButtonControlView == null){
             fireButtonControlView = new FireButtonControlView(getContext(), fireButtonView);
         }
-        fireButtonControlView.initControls(game);
+        fireButtonControlView.init(game, fireButtonViewWidth, fireButtonViewHeight);
     }
 
 

@@ -37,21 +37,21 @@
 
             <com.jacstuff.spacearmada.view.TransparentView
                 android:id="@+id/dpadView"
-                android:layout_width="wrap_content"
+                android:layout_width="200dp"
                 android:layout_height="match_parent"
                 android:background="@color/colorAccent"
                 android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@id/gamePane"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/fireButtonView"
                 app:layout_constraintStart_toStartOf="parent"
                 />
 
             <com.jacstuff.spacearmada.view.TransparentView
                 android:id="@+id/fireButtonView"
-                android:layout_width="30dp"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
-                android:background="@color/colorAccent"
+                android:background="@color/cardview_dark_background"
                 android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@id/gamePane"
                 app:layout_constraintBottom_toBottomOf="parent"

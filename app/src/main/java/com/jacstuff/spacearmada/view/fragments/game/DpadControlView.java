@@ -30,11 +30,7 @@ public class DpadControlView{
 
 
     @SuppressLint("ClickableViewAccessibility")
-    public void initControls(ControllableShip controllableShip){
-        int width = dpadView.getMeasuredWidth();
-        int height = dpadView.getMeasuredHeight();
-        width = 1060;
-        height = 500;
+    public void initControls(ControllableShip controllableShip, int width, int height){
         int radius = getPixelsFrom(50);
         int centreX = width / 2;
         int centreY = height / 2;
