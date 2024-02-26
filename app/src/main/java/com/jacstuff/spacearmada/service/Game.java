@@ -6,6 +6,7 @@ import com.jacstuff.spacearmada.Direction;
 import com.jacstuff.spacearmada.actors.ships.ControllableShip;
 import com.jacstuff.spacearmada.service.ships.EnemyShipManager;
 import com.jacstuff.spacearmada.service.ships.PlayerShip;
+import com.jacstuff.spacearmada.service.ships.collisions.CollisionDetector;
 import com.jacstuff.spacearmada.service.ships.weapons.ProjectileManager;
 import com.jacstuff.spacearmada.view.fragments.game.GameView;
 
@@ -28,7 +29,9 @@ public class Game implements ControllableShip {
         private final StarManager starManager;
         private final EnemyShipManager enemyShipManager;
         private final ProjectileManager projectileManager;
+        private final CollisionDetector collisionDetector;
         private int fireCounter = 0;
+        private int score;
 
 
         public Game(){
@@ -38,6 +41,7 @@ public class Game implements ControllableShip {
                 starManager = new StarManager();
                 scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
                 enemyShipManager = new EnemyShipManager();
+                collisionDetector = new CollisionDetector(this, playerShip, enemyShipManager, projectileManager);
         }
 
 
@@ -47,7 +51,6 @@ public class Game implements ControllableShip {
                 playerShip.setScreenBounds(screenBounds);
                 starManager.setBoundsAndGenerateStars(screenBounds);
                 projectileManager.setBounds(screenBounds);
-
         }
 
 
@@ -83,29 +86,13 @@ public class Game implements ControllableShip {
                 updateStars();
                 updateShip();
                 updateProjectiles();
+                collisionDetector.detect();
                // firePlayerGun();
         }
 
 
-        private int releaseCounter;
-        private boolean isFiring = false;
-
-        private void firePlayerGun(){
-                fireCounter++;
-                if(fireCounter == 100){
-                        fireCounter = 0;
-                        fire();
-                        isFiring = true;
-                }
-                if(isFiring){
-                        releaseCounter++;
-                        if(releaseCounter == 25){
-                                releaseCounter = 0;
-                                isFiring = false;
-                                log("firePlayerGun() calling releaseFire()");
-                                releaseFire();
-                        }
-                }
+        public int getScore(){
+                return score;
         }
 
 
@@ -117,6 +104,7 @@ public class Game implements ControllableShip {
         private void updateEnemyShips(){
               gameView.updateItems(enemyShipManager.updateAndGetChanges());
         }
+
 
         private void updateProjectiles(){
                 gameView.updateProjectiles(projectileManager.update());
@@ -143,6 +131,11 @@ public class Game implements ControllableShip {
                 if(gameUpdateFuture != null && !gameUpdateFuture.isCancelled()){
                         gameUpdateFuture.cancel(false);
                 }
+        }
+
+
+        public void addToScore(int value){
+                this.score += value;
         }
 
 

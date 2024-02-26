@@ -10,7 +10,6 @@ import com.jacstuff.spacearmada.view.fragments.game.DrawInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 public class EnemyShipManager {
 
@@ -32,6 +31,11 @@ public class EnemyShipManager {
         this.screenBounds.right = 1000;
         this.screenBounds.bottom = 1000;
         smallestBoundsDimension = setSmallestDimension(screenBounds);
+    }
+
+
+    public List<EnemyShip> getEnemyShips(){
+        return enemyShips;
     }
 
 
@@ -59,7 +63,16 @@ public class EnemyShipManager {
 
     private void createEnemyShipIfListIsEmpty(){
         if(enemyShips.isEmpty()){
-            EnemyShip enemyShip = new EnemyShip(getEnemyShipRandomStartingX(), -50, System.currentTimeMillis(), 5, 0.07f, 1.5f);
+
+            EnemyShip enemyShip = EnemyShip.Builder.newInstance()
+                    .initialX(getEnemyShipRandomStartingX())
+                    .initialY(-50)
+                    .id(System.nanoTime())
+                    .speed(5)
+                    .sizeFactor(0.07f)
+                    .heightToWidthRatio(1.5f)
+                    .points(100)
+                    .build();
             enemyShip.setSizeBasedOn(smallestBoundsDimension);
             add(enemyShip);
         }
@@ -67,7 +80,7 @@ public class EnemyShipManager {
 
 
     private void removeEnemiesIfBeyondBounds(){
-        enemyShips.removeIf(e -> e.getY() > screenBounds.bottom);
+        enemyShips.removeIf(e -> e.getY() > screenBounds.bottom || e.isEnergyDepleted());
     }
 
 

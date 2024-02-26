@@ -33,8 +33,12 @@ public class ProjectileManager {
     }
 
 
-    private void log(String msg){
+    public List<Projectile> getProjectiles(){
+        return projectiles;
+    }
 
+
+    private void log(String msg){
         //System.out.println("^^^ ProjectileManager : " + msg);
     }
 
