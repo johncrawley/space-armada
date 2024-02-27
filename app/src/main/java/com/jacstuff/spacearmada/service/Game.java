@@ -1,5 +1,6 @@
 package com.jacstuff.spacearmada.service;
 
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.jacstuff.spacearmada.Direction;
@@ -45,27 +46,22 @@ public class Game implements ControllableShip {
         }
 
 
-        public void setBounds(float x, float y, int width, int height){
-                initBounds(x, y, width, height);
+        public void setBounds(Rect gamePaneRect, int smallestDimension){
+                initBounds(gamePaneRect);
                 enemyShipManager.setScreenBounds(screenBounds);
-                playerShip.setScreenBounds(screenBounds);
+                playerShip.setScreenBoundsAndSize(screenBounds, smallestDimension);
+                gameView.setShipSize((int)playerShip.getWidth(), (int)playerShip.getHeight());
                 starManager.setBoundsAndGenerateStars(screenBounds);
                 projectileManager.setBounds(screenBounds);
         }
 
 
-        private void initBounds(float x, float y, int width, int height){
+        private void initBounds(Rect gamePaneRect){
                 screenBounds = new RectF();
-                screenBounds.left = x;
-                screenBounds.top = y;
-                screenBounds.right = x + width;
-                screenBounds.bottom = y + height;
-        }
-
-
-        public void adjustSizesBasedOn(int smallestDimension){
-                playerShip.setSizeBasedOn(smallestDimension);
-                gameView.setShipSize((int)playerShip.getWidth(), (int)playerShip.getHeight());
+                screenBounds.left = gamePaneRect.left;
+                screenBounds.top = gamePaneRect.top;
+                screenBounds.right = gamePaneRect.right;
+                screenBounds.bottom = gamePaneRect.bottom;
         }
 
 
@@ -87,7 +83,6 @@ public class Game implements ControllableShip {
                 updateShip();
                 updateProjectiles();
                 collisionDetector.detect();
-               // firePlayerGun();
         }
 
 

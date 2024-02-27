@@ -1,7 +1,7 @@
 package com.jacstuff.spacearmada.service.ships.collisions;
 
-
 import com.jacstuff.spacearmada.service.Game;
+import com.jacstuff.spacearmada.service.ships.AbstractItem;
 import com.jacstuff.spacearmada.service.ships.EnemyShip;
 import com.jacstuff.spacearmada.service.ships.EnemyShipManager;
 import com.jacstuff.spacearmada.service.ships.PlayerShip;
@@ -25,33 +25,36 @@ public class CollisionDetector {
     }
 
 
-    private void  detectAtIntervals(){
-        int detectionFrequency = 5;
-        counter++;
-        if(counter >= detectionFrequency){
-            counter = 0;
-            detect();
+    public void detect() {
+        if (isReadyToDetect()) {
+            detectPlayerAndEnemyShipCollisions();
+           // detectPlayerAndEnemyBulletCollisions();
+            detectEnemyShipsAndPlayerBulletCollisions();
         }
     }
 
 
-    public void detect(){
-        detectPlayerAndEnemyShipCollisions();
-        detectPlayerAndEnemyBulletCollisions();
-        detectEnemyShipsAndPlayerBulletCollisions();
+    private boolean isReadyToDetect(){
+        int detectionFrequency = 5;
+        counter++;
+        if(counter >= detectionFrequency){
+            counter = 0;
+            return true;
+        }
+        return false;
     }
 
 
     private void detectPlayerAndEnemyShipCollisions(){
         for(EnemyShip enemyShip: enemyShipManager.getEnemyShips()) {
-            playerShip.checkForCollision(enemyShip);
+            checkForCollision(playerShip, enemyShip);
         }
     }
 
 
     private void detectPlayerAndEnemyBulletCollisions(){
         for(Projectile projectile : projectileManager.getProjectiles()){
-            playerShip.checkForCollision(projectile);
+          //  playerShip.checkForCollision(projectile);
         }
     }
 
@@ -68,19 +71,39 @@ public class CollisionDetector {
             return;
         }
         for (EnemyShip enemyShip : enemyShipManager.getEnemyShips()) {
-            if(enemyShip == null){
-                continue;
-            }
             checkForCollision(projectile, enemyShip);
         }
     }
 
 
     private void checkForCollision(Projectile projectile, EnemyShip enemyShip){
-        enemyShip.checkForCollision(projectile);
+        if(enemyShip == null){
+            return;
+        }
+        checkForCollision(enemyShip, projectile);
         if(enemyShip.isEnergyDepleted()){
             game.addToScore(enemyShip.getPoints());
         }
+    }
+
+
+    public void checkForCollision(AbstractItem item1, AbstractItem item2){
+        if(item1 == null || item2 == null){
+            return;
+        }
+        if(isIntersecting(item1, item2)){
+            item1.getEnergy().collideWith(item2.getEnergy());
+        }
+    }
+
+
+    public boolean isIntersecting(AbstractItem item1, AbstractItem item2){
+        return  item1.getBounds().intersect(item2.getBounds());
+    }
+
+
+    private void log(String msg){
+        System.out.println("^^^ CollisionDetector : " + msg);
     }
 
 }

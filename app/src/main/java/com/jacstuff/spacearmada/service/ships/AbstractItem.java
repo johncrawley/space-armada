@@ -19,6 +19,7 @@ public class AbstractItem {
     boolean hasChanged = false;
     DrawInfo drawInfo;
     protected Energy energy;
+    private boolean haveBoundsChanged;
 
     public AbstractItem(long id, ItemType itemType, int speed, float sizeFactor, float heightWidthRatio){
         this.itemType = itemType;
@@ -80,23 +81,25 @@ public class AbstractItem {
     public void setX(float x){
         this.x = x;
         hasChanged = true;
+        haveBoundsChanged = true;
     }
 
 
     public void setY(float y){
         this.y = y;
         hasChanged = true;
+        haveBoundsChanged = true;
     }
 
 
-
     public RectF getBounds(){
-        if(hasChanged){
+        if(haveBoundsChanged){
             bounds.left = x;
             bounds.top = y;
             bounds.right = x + width;
             bounds.bottom = y + height;
         }
+        haveBoundsChanged = false;
         return bounds;
     }
 
@@ -112,20 +115,8 @@ public class AbstractItem {
     }
 
 
-    public boolean checkForCollision(AbstractItem otherItem){
-        if(otherItem != null && this.intersects(otherItem)){
-            this.energy.collideWith(otherItem.getEnergy());
-            return true;
-        }
-        return false;
-    }
-
-
-    public boolean intersects(AbstractItem otherItem){
-        if( otherItem == null){
-            return false;
-        }
-        return  getBounds().intersect(otherItem.getBounds());
+    private void log(String msg){
+        System.out.println("^^^ AbstractItem : " + msg);
     }
 
 

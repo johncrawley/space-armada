@@ -10,10 +10,11 @@ import com.jacstuff.spacearmada.view.fragments.game.ItemType;
 
 public class PlayerShip extends AbstractItem implements ControllableShip {
 
-    private final RectF moveBounds = new RectF();
+    private final RectF screenBounds = new RectF();
     private float previousX, previousY;
     private Direction currentDirection = Direction.NONE;
     private Weapon mainWeapon;
+    private int maxX, maxY;
 
 
     public PlayerShip(int initialX, int initialY){
@@ -21,6 +22,7 @@ public class PlayerShip extends AbstractItem implements ControllableShip {
         this.x = initialX;
         this.y = initialY;
     }
+
 
     public void initWeapons(ProjectileManager projectileManager){
         mainWeapon = Weapon.Builder.newInstance()
@@ -31,18 +33,28 @@ public class PlayerShip extends AbstractItem implements ControllableShip {
                 .setSpeed(20)
                 .setSizeFactor(0.01f)
                 .setProjectileType(ItemType.PLAYER_BULLET)
-                .setBounds(moveBounds)
+                .setBounds(screenBounds)
                 .build();
         mainWeapon.addBarrel(0, -100);
     }
 
 
-    public void setScreenBounds(RectF screenBounds){
-        moveBounds.left = screenBounds.left;
-        moveBounds.top = screenBounds.top;
-        moveBounds.right = screenBounds.right;
-        moveBounds.bottom = screenBounds.bottom;
-        mainWeapon.setBounds(moveBounds);
+    public void setScreenBoundsAndSize(RectF screenBounds, int smallestDimension){
+        this.screenBounds.left = screenBounds.left;
+        this.screenBounds.top = screenBounds.top;
+        this.screenBounds.right = screenBounds.right;
+        this.screenBounds.bottom = screenBounds.bottom;
+        setWeaponBounds();
+        setSizeBasedOn(smallestDimension);
+        maxX = (int)(screenBounds.right - width);
+        maxY = (int)(screenBounds.bottom - height);
+    }
+
+
+    private void setWeaponBounds(){
+        if(mainWeapon != null) {
+            mainWeapon.setBounds(this.screenBounds);
+        }
     }
 
 
@@ -60,15 +72,8 @@ public class PlayerShip extends AbstractItem implements ControllableShip {
 
     @Override
     public void fire() {
-        log("Entered fire()");
         mainWeapon.startFiring();
     }
-
-
-    private void log(String msg){
-        System.out.println("^^^ PlayerShip: " + msg);
-    }
-
 
 
     @Override
@@ -84,8 +89,8 @@ public class PlayerShip extends AbstractItem implements ControllableShip {
 
 
     public void moveCentreTo(float centreX, float centreY){
-        this.x = centreX - (width / 2f);
-        this.y = centreY - (height / 2f);
+        setX(centreX - (width / 2f));
+        setY(centreY - (height / 2f));
     }
 
 
@@ -108,36 +113,58 @@ public class PlayerShip extends AbstractItem implements ControllableShip {
 
 
     public void moveRight(){
-        x += speed;
-        if((x + width) > moveBounds.right){
-            x = moveBounds.right - width;
-        }
+        setX(getMovedCoordinate(x, Movement.RIGHT, maxX));
     }
 
 
     public void moveLeft(){
-        x -= speed;
-        if((x< moveBounds.left)){
-            x = moveBounds.left;
-        }
+        setX(getMovedCoordinate(x, Movement.LEFT, screenBounds.left));
     }
 
 
     public void moveDown(){
-        y += speed;
-        if(y + height > moveBounds.bottom){
-            y = moveBounds.bottom - height;
-        }
+        setY(getMovedCoordinate(y, Movement.DOWN, maxY));
     }
 
 
     public void moveUp(){
-        y -= speed;
-        if(y < moveBounds.top){
-            y = moveBounds.top;
-        }
+        setY(getMovedCoordinate(y, Movement.UP, screenBounds.top));
     }
 
+
+    private float getMovedCoordinate(float value, Movement direction, float limit){
+        float result = getMoved(value, direction);
+        return direction.isIncreasing() ? Math.min(result, limit) : Math.max(result, limit);
+    }
+
+
+    private float getMoved(float value, Movement direction){
+        return value + getPixelsToMove(direction);
+    }
+
+
+    public int getPixelsToMove(Movement direction){
+        return speed * direction.getValue();
+    }
+
+
+    private enum Movement {
+
+        UP(-1), DOWN(1), LEFT(-1), RIGHT(1);
+        final int value;
+
+        Movement(int value){
+            this.value = value;
+        }
+
+        int getValue(){
+            return value;
+        }
+
+        boolean isIncreasing(){
+            return value > 0;
+        }
+    }
 
     @Override
     public void update() {

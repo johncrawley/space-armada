@@ -24,7 +24,7 @@ public class PlayerShipTest {
         RectF screenBounds = createBounds(screenMinX, screenMinY, screenMaxX, screenMaxY);
 
         playerShip = new PlayerShip(initialX, initialY);
-        playerShip.setScreenBounds(screenBounds);
+        playerShip.setScreenBoundsAndSize(screenBounds, 200);
         playerShip.setSizeBasedOn(1000);
     }
 
@@ -83,10 +83,10 @@ public class PlayerShipTest {
         float right = 900;
         float bottom = 900;
         RectF bounds = createBounds(left, top, right, bottom);
-        playerShip.setScreenBounds(bounds);
+        playerShip.setScreenBoundsAndSize(bounds, 900);
         float halfWidth = playerShip.getWidth() / 2f;
         float halfHeight = playerShip.getHeight() / 2f;
-        log("playership half height and half width: " + halfHeight + ", " + halfWidth);
+        log("player ship half height and half width: " + halfHeight + ", " + halfWidth);
 
         playerShip.moveCentreTo(left + halfWidth, top + halfHeight);
         assertShipHasNotMovedAfter(()->{

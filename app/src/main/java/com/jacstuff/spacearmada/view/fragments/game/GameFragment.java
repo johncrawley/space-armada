@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -49,6 +50,7 @@ public class GameFragment extends Fragment implements GameView {
     private final float gamePaneDimensionRatio = 1.5f;
     public enum Message { CONNECT_TO_GAME }
     private int dPadViewWidth, dPadViewHeight, fireButtonViewWidth, fireButtonViewHeight;
+    private AnimationDrawable frameAnimation;
 
     public GameFragment() {
         // Required empty public constructor
@@ -93,7 +95,6 @@ public class GameFragment extends Fragment implements GameView {
         itemTypeMap.put(ItemType.PLAYER_BULLET, R.drawable.bullet1);
         assignViews(parentView);
         assignViewDimensions();
-        registerShipDimensions();
         addStarViewsTo(20);
         setupListeners();
         return parentView;
@@ -170,25 +171,18 @@ public class GameFragment extends Fragment implements GameView {
 
     private void setGameBounds(){
         if(game != null) {
-            game.setBounds(gamePane.getX(), gamePane.getY(), gamePaneWidth, gamePaneHeight);
-            initGamePaneRect();
+            game.setBounds(getGamePaneRect(), smallestContainerDimension);
         }
     }
 
 
-    private void initGamePaneRect(){
+    private Rect getGamePaneRect(){
         Rect gamePaneRect = new Rect();
         gamePaneRect.left = (int)gamePane.getX();
         gamePaneRect.top = (int)gamePane.getY();
         gamePaneRect.right = (int)gamePane.getX() + gamePaneWidth;
         gamePaneRect.bottom = (int)gamePane.getY() + gamePaneHeight;
-    }
-
-
-    private void registerShipDimensions(){
-        if(game != null){
-            game.adjustSizesBasedOn(smallestContainerDimension);
-         }
+        return gamePaneRect;
     }
 
 
@@ -281,6 +275,9 @@ public class GameFragment extends Fragment implements GameView {
         long id = drawInfo.getId();
         if(view.getY() >= gamePane.getBottom()){
             gamePane.removeView(view);
+            //view.setImageResource(R.drawable.enemyship_drawables);
+            //AnimationDrawable frameAnimation = (AnimationDrawable) view.getDrawable();
+            //frameAnimation.setOneShot(true);
             itemsMap.remove(id);
         }
     }
