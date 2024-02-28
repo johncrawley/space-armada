@@ -80,7 +80,12 @@ public class EnemyShipManager {
 
 
     private void removeEnemiesIfBeyondBounds(){
-        enemyShips.removeIf(e -> e.getY() > screenBounds.bottom || e.isEnergyDepleted());
+        enemyShips.removeIf(e -> e.getY() > screenBounds.bottom);
+    }
+
+
+    public void removeEnemiesIfDestroyed(){
+        enemyShips.removeIf(e -> e.getDrawInfo().isDestroyed());
     }
 
 

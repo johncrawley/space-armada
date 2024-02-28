@@ -82,6 +82,7 @@ public class CollisionDetector {
         }
         checkForCollision(enemyShip, projectile);
         if(enemyShip.isEnergyDepleted()){
+            enemyShip.getDrawInfo().markAsDestroyed();
             game.addToScore(enemyShip.getPoints());
         }
     }

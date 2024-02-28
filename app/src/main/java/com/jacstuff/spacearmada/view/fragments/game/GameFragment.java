@@ -10,6 +10,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +51,6 @@ public class GameFragment extends Fragment implements GameView {
     private final float gamePaneDimensionRatio = 1.5f;
     public enum Message { CONNECT_TO_GAME }
     private int dPadViewWidth, dPadViewHeight, fireButtonViewWidth, fireButtonViewHeight;
-    private AnimationDrawable frameAnimation;
 
     public GameFragment() {
         // Required empty public constructor
@@ -209,6 +209,7 @@ public class GameFragment extends Fragment implements GameView {
         View starView = new View(getContext());
         starView.setLayoutParams(new ViewGroup.LayoutParams(2,2));
         gamePane.addView(starView);
+        //setupTempView();
         starView.setBackgroundColor(Color.LTGRAY);
         starViews.add(starView);
     }
@@ -232,7 +233,7 @@ public class GameFragment extends Fragment implements GameView {
 
     @Override
     public void updateItems(List<DrawInfo> drawInfoList) {
-        updateViewsFrom(drawInfoList, itemsMap, this::removeIfOutOfBounds);
+        updateViewsFrom(drawInfoList, itemsMap, this::removeEnemyShip);
     }
 
 
@@ -264,22 +265,43 @@ public class GameFragment extends Fragment implements GameView {
         if(view != null){
             view.setX(drawInfo.getX());
             view.setY(drawInfo.getY());
-            view.setRotation(drawInfo.getRotation());
-            drawInfo.incrementRotation(5);
+            view.setRotation(drawInfo.getCurrentRotation());
+            drawInfo.incrementRotation();
             removalConsumer.accept(drawInfo, view);
         }
     }
 
 
-    private void removeIfOutOfBounds(DrawInfo drawInfo, ImageView view){
+    private void removeEnemyShip(DrawInfo drawInfo, ImageView view){
         long id = drawInfo.getId();
+        removeIfOutOfBounds(view, id);
+        removeIfDestroyed(drawInfo, view, id);
+    }
+
+
+    private void removeIfOutOfBounds(ImageView view, long id){
         if(view.getY() >= gamePane.getBottom()){
             gamePane.removeView(view);
-            //view.setImageResource(R.drawable.enemyship_drawables);
-            //AnimationDrawable frameAnimation = (AnimationDrawable) view.getDrawable();
-            //frameAnimation.setOneShot(true);
             itemsMap.remove(id);
         }
+    }
+
+
+    private void removeIfDestroyed(DrawInfo drawInfo, ImageView view, long id){
+        if(!drawInfo.isDestroyed()) {
+            return;
+        }
+        view.setImageResource(R.drawable.enemy_ship_1_destruction);
+        AnimationDrawable frameAnimation = (AnimationDrawable) view.getDrawable();
+        frameAnimation.setOneShot(true);
+        frameAnimation.start();
+        new Handler().postDelayed(() -> removeImageview(view, id), 1100);
+    }
+
+
+    private void removeImageview(ImageView view, long id) {
+        gamePane.removeView(view);
+        itemsMap.remove(id);
     }
 
 

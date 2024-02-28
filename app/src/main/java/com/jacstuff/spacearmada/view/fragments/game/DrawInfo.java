@@ -6,9 +6,11 @@ public class DrawInfo {
     private final long id;
     private int width, height;
     private final ItemType itemType;
-    public boolean isScheduledForRemoval;
-    public float rotation;
-    public boolean isRotating;
+    private boolean isScheduledForRemoval;
+    private float rotationIncrement;
+    private float rotation;
+    private boolean isRotating;
+    private boolean isDestroyed;
 
     public DrawInfo(ItemType itemType, long id){
         this(itemType, id, false);
@@ -28,17 +30,26 @@ public class DrawInfo {
     }
 
 
-    public void incrementRotation(float degrees){
+    public void incrementRotation(){
         if(isRotating){
-            rotation += degrees;
+            rotation += rotationIncrement;
             rotation %= 360;
         }
     }
 
 
-    public float getRotation(){
+    public void markAsDestroyed(){
+        isDestroyed = true;
+    }
+
+    public boolean isDestroyed(){
+        return isDestroyed;
+    }
+
+    public float getCurrentRotation(){
         return rotation;
     }
+
 
     public boolean isScheduledForRemoval(){
         return isScheduledForRemoval;

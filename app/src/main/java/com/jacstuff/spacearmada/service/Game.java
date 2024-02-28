@@ -82,6 +82,7 @@ public class Game implements ControllableShip {
                 updateStars();
                 updateShip();
                 updateProjectiles();
+                enemyShipManager.removeEnemiesIfDestroyed();
                 collisionDetector.detect();
         }
 
