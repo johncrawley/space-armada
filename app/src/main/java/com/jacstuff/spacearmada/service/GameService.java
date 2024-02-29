@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 
 import com.jacstuff.spacearmada.MainActivity;
+import com.jacstuff.spacearmada.service.sound.MusicPlayer;
 import com.jacstuff.spacearmada.service.sound.Sound;
 import com.jacstuff.spacearmada.service.sound.SoundPlayer;
 import com.jacstuff.spacearmada.view.fragments.game.GameFragment;
@@ -23,6 +24,7 @@ public class GameService extends Service {
     private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> notifyGameOverFuture;
     private SoundPlayer soundPlayer;
+    private MusicPlayer musicPlayer;
 
 
     public GameService() {
@@ -64,9 +66,9 @@ public class GameService extends Service {
     @Override
     public void onCreate() {
         log("entered onCreate()");
-        game.init(this);
         soundPlayer = new SoundPlayer(getApplicationContext());
-
+        musicPlayer = new MusicPlayer();
+        game.init(this, musicPlayer, soundPlayer);
     }
 
 

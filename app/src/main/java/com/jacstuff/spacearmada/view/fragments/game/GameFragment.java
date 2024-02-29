@@ -116,6 +116,41 @@ public class GameFragment extends Fragment implements GameView {
     }
 
 
+    @Override
+    public void onGameOver(){
+        destroySpaceShip();
+        showGameOverText();
+        enableClickToHighScoreScreen();
+        moveToHighScoreScreenAfterPause();
+    }
+
+
+    private void destroySpaceShip(){
+
+
+    }
+
+
+    private void showGameOverText(){
+
+
+    }
+
+
+    private void enableClickToHighScoreScreen(){
+
+
+    }
+
+
+    private void moveToHighScoreScreenAfterPause(){
+
+
+    }
+
+
+
+
     private void setupListeners(){
         FragmentUtils.setListener(this, Message.CONNECT_TO_GAME, this::connectViewToGame);
     }
@@ -306,11 +341,12 @@ public class GameFragment extends Fragment implements GameView {
 
 
     private void removeProjectileViewIfOutOfBounds(DrawInfo drawInfo, ImageView view){
-        if(drawInfo.isScheduledForRemoval()){
+        if(drawInfo.isScheduledForRemoval() || drawInfo.isDestroyed()){
             gamePane.removeView(view);
             itemsMap.remove(drawInfo.getId());
         }
     }
+
 
 
     public ImageView createItemAndAddToGamePane(DrawInfo drawInfo) {

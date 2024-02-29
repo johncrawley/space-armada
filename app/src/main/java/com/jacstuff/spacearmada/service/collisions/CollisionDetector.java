@@ -1,4 +1,4 @@
-package com.jacstuff.spacearmada.service.ships.collisions;
+package com.jacstuff.spacearmada.service.collisions;
 
 import com.jacstuff.spacearmada.service.Game;
 import com.jacstuff.spacearmada.service.ships.AbstractItem;
@@ -54,7 +54,7 @@ public class CollisionDetector {
 
     private void detectPlayerAndEnemyBulletCollisions(){
         for(Projectile projectile : projectileManager.getProjectiles()){
-          //  playerShip.checkForCollision(projectile);
+            //playerShip.checkForCollision(projectile);
         }
     }
 
@@ -84,6 +84,9 @@ public class CollisionDetector {
         if(enemyShip.isEnergyDepleted()){
             enemyShip.getDrawInfo().markAsDestroyed();
             game.addToScore(enemyShip.getPoints());
+        }
+        if(projectile.isEnergyDepleted()){
+            projectile.getDrawInfo().markAsDestroyed();
         }
     }
 

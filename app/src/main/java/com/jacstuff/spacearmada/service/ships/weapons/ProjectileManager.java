@@ -63,6 +63,12 @@ public class ProjectileManager {
     }
 
 
+    public void removeProjectilesIfDestroyed(){
+
+    }
+
+
+
     private boolean hasProjectileExceededBounds(Projectile projectile){
 
         float projectileRight = projectile.getX() + projectile.getWidth();

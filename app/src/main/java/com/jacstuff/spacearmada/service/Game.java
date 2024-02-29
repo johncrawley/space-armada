@@ -7,8 +7,10 @@ import com.jacstuff.spacearmada.Direction;
 import com.jacstuff.spacearmada.actors.ships.ControllableShip;
 import com.jacstuff.spacearmada.service.ships.EnemyShipManager;
 import com.jacstuff.spacearmada.service.ships.PlayerShip;
-import com.jacstuff.spacearmada.service.ships.collisions.CollisionDetector;
+import com.jacstuff.spacearmada.service.collisions.CollisionDetector;
 import com.jacstuff.spacearmada.service.ships.weapons.ProjectileManager;
+import com.jacstuff.spacearmada.service.sound.MusicPlayer;
+import com.jacstuff.spacearmada.service.sound.SoundPlayer;
 import com.jacstuff.spacearmada.view.fragments.game.GameView;
 
 import java.util.concurrent.Executors;
@@ -33,6 +35,8 @@ public class Game implements ControllableShip {
         private final CollisionDetector collisionDetector;
         private int fireCounter = 0;
         private int score;
+        private SoundPlayer soundPlayer;
+        private MusicPlayer musicPlayer;
 
 
         public Game(){
@@ -43,6 +47,13 @@ public class Game implements ControllableShip {
                 scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
                 enemyShipManager = new EnemyShipManager();
                 collisionDetector = new CollisionDetector(this, playerShip, enemyShipManager, projectileManager);
+        }
+
+
+        public void init(GameService gameService, MusicPlayer musicPlayer, SoundPlayer soundPlayer){
+                this.musicPlayer = musicPlayer;
+                this.soundPlayer = soundPlayer;
+                this.gameService = gameService;
         }
 
 
@@ -83,12 +94,19 @@ public class Game implements ControllableShip {
                 updateShip();
                 updateProjectiles();
                 enemyShipManager.removeEnemiesIfDestroyed();
+                projectileManager.removeProjectilesIfDestroyed();
                 collisionDetector.detect();
         }
 
 
         public int getScore(){
                 return score;
+        }
+
+
+        private void setGameOver(){
+                gameView.onGameOver();
+                musicPlayer.playGameOverMusic();
         }
 
 
@@ -132,11 +150,6 @@ public class Game implements ControllableShip {
 
         public void addToScore(int value){
                 this.score += value;
-        }
-
-
-        public void init(GameService gameService){
-            this.gameService = gameService;
         }
 
 
