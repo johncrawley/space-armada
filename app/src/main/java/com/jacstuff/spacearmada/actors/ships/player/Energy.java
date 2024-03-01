@@ -19,16 +19,13 @@ public class Energy {
     }
 
 
-    public int get(){
-        return this.value;
+    public void set(int value){
+        this.value = value;
     }
 
 
-    public void drain(int amount){
-        value -= amount;
-        if(value < 0){
-            value = 0;
-        }
+    public int get(){
+        return this.value;
     }
 
 
@@ -54,6 +51,14 @@ public class Energy {
     private void drainFirstDepleteSecond(Energy e1, Energy e2){
         e1.drain(e2.get());
         e2.deplete();
+    }
+
+
+    public void drain(int amount){
+        value -= amount;
+        if(value < 0){
+            value = 0;
+        }
     }
 
 

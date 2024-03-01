@@ -17,10 +17,11 @@ public class PlayerShip extends AbstractItem implements ControllableShip {
     private int maxX, maxY;
 
 
-    public PlayerShip(int initialX, int initialY){
+    public PlayerShip(int initialX, int initialY, int initialHealth){
         super(1, ItemType.PLAYER_SHIP, 5,.05f,2.4f);
         this.x = initialX;
         this.y = initialY;
+        this.energy.set(initialHealth);
     }
 
 

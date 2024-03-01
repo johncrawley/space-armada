@@ -28,18 +28,12 @@ public class ProjectileManager {
 
 
     public void add(Projectile projectile){
-        log("Entered add()");
         this.projectiles.add(projectile);
     }
 
 
     public List<Projectile> getProjectiles(){
         return projectiles;
-    }
-
-
-    private void log(String msg){
-        //System.out.println("^^^ ProjectileManager : " + msg);
     }
 
 
@@ -64,22 +58,17 @@ public class ProjectileManager {
 
 
     public void removeProjectilesIfDestroyed(){
-
+       projectiles.removeIf(p -> p.getDrawInfo().isDestroyed());
     }
 
 
-
     private boolean hasProjectileExceededBounds(Projectile projectile){
-
-        float projectileRight = projectile.getX() + projectile.getWidth();
-        float projectileBottom = projectile.getY() + projectile.getHeight();
-        boolean result = projectileRight < bounds.left
-                || projectileBottom < bounds.top
+        float right = projectile.getX() + projectile.getWidth();
+        float bottom = projectile.getY() + projectile.getHeight();
+        return right < bounds.left
+                || bottom < bounds.top
                 || projectile.getX() > bounds.right
                 || projectile.getY() > bounds.bottom;
-        log(" projectile : " + projectile.getX() + "," + projectile.getY() + "," + projectileRight + "," + projectileBottom);
-        log("bounds : " + bounds.left + "," + bounds.top + "," + bounds.right  +"," + bounds.bottom + " exceeded: " + result);
-        return result;
     }
 
 }

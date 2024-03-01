@@ -37,11 +37,12 @@ public class Game implements ControllableShip {
         private int score;
         private SoundPlayer soundPlayer;
         private MusicPlayer musicPlayer;
+        private final int playerInitialHealth = 700;
 
 
         public Game(){
                 projectileManager = new ProjectileManager();
-                playerShip = new PlayerShip(50,50);
+                playerShip = new PlayerShip(50,50, playerInitialHealth);
                 playerShip.initWeapons(projectileManager);
                 starManager = new StarManager();
                 scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
@@ -49,6 +50,10 @@ public class Game implements ControllableShip {
                 collisionDetector = new CollisionDetector(this, playerShip, enemyShipManager, projectileManager);
         }
 
+
+        public int getPlayerInitialHealth(){
+                return playerInitialHealth;
+        }
 
         public void init(GameService gameService, MusicPlayer musicPlayer, SoundPlayer soundPlayer){
                 this.musicPlayer = musicPlayer;

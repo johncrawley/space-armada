@@ -1,5 +1,7 @@
 package com.jacstuff.spacearmada.view.fragments.game;
 
+import static com.jacstuff.spacearmada.view.fragments.game.GameViewUtils.updateViewFrom;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -37,7 +39,7 @@ public class GameFragment extends Fragment implements GameView {
     private ImageView shipView;
     private ViewGroup gamePane;
     private Game game;
-    private ViewGroup controlPanel;
+    private ViewGroup controlPanel, energyLayout, topPane;
     private DpadControlView dpadControlView;
     private FireButtonControlView fireButtonControlView;
     private final List<View> starViews = new ArrayList<>();
@@ -51,6 +53,11 @@ public class GameFragment extends Fragment implements GameView {
     private final float gamePaneDimensionRatio = 1.5f;
     public enum Message { CONNECT_TO_GAME }
     private int dPadViewWidth, dPadViewHeight, fireButtonViewWidth, fireButtonViewHeight;
+
+    private int energyLayoutWidth = 100;
+    private int energyLayoutHeight = 50;
+    private int topPaneHeight = 100;
+
 
     public GameFragment() {
         // Required empty public constructor
@@ -97,6 +104,7 @@ public class GameFragment extends Fragment implements GameView {
         assignViewDimensions();
         addStarViewsTo(20);
         setupListeners();
+        setupEnergyLayout();
         return parentView;
     }
 
@@ -149,8 +157,6 @@ public class GameFragment extends Fragment implements GameView {
     }
 
 
-
-
     private void setupListeners(){
         FragmentUtils.setListener(this, Message.CONNECT_TO_GAME, this::connectViewToGame);
     }
@@ -158,10 +164,31 @@ public class GameFragment extends Fragment implements GameView {
 
     private void assignViews(View parentView){
         controlPanel = parentView.findViewById(R.id.controlPanel);
+        energyLayout = parentView.findViewById(R.id.energyLayout);
         gamePane = parentView.findViewById(R.id.gamePane);
         shipView = parentView.findViewById(R.id.shipView);
         dpadView = parentView.findViewById(R.id.dpadView);
         fireButtonView = parentView.findViewById(R.id.fireButtonView);
+        topPane = parentView.findViewById(R.id.topPane);
+    }
+
+
+    private void setupEnergyLayout(){
+        Game game = getGame();
+        if(game == null){
+            return;
+        }
+        energyLayout.removeAllViews();
+        int numberOfHealthBars = game.getPlayerInitialHealth() / 12;
+        int healthBarWidth = numberOfHealthBars / energyLayoutWidth;
+        LinearLayout.LayoutParams healthBarLayoutParams = new LinearLayout.LayoutParams(healthBarWidth, energyLayoutHeight);
+        healthBarLayoutParams.setMargins(5, 10, 5, 10);
+        for(int i = 0; i<numberOfHealthBars; i++){
+            View healthBar = new View(getContext());
+            healthBar.setBackgroundColor(Color.GREEN);
+            healthBar.setLayoutParams(healthBarLayoutParams);
+            energyLayout.addView(healthBar);
+        }
     }
 
 
@@ -171,18 +198,16 @@ public class GameFragment extends Fragment implements GameView {
         }else{
           setupDimensionVariablesForLandscape();
         }
-        gamePane.setLayoutParams(new LinearLayout.LayoutParams(Math.max(300, gamePaneWidth), Math.max(300, gamePaneHeight)));
-        controlPanel.setLayoutParams(new LinearLayout.LayoutParams(controlPanelWidth, controlPanelHeight));
-        dpadView.setLayoutParams(new LinearLayout.LayoutParams(dPadViewWidth, dPadViewHeight));
-        fireButtonView.setLayoutParams(new LinearLayout.LayoutParams(fireButtonViewWidth, fireButtonViewHeight));
+        assignLayoutParamsToViews();
         setGameBounds();
     }
 
 
     private void setupDimensionVariablesForPortrait(){
         gamePaneWidth = containerWidth;
+        topPaneHeight = containerHeight / 10;
         int minDpadHeight = 500;
-        gamePaneHeight = Math.min(containerHeight - minDpadHeight, (int)(containerWidth * gamePaneDimensionRatio));
+        gamePaneHeight = Math.min(containerHeight - (minDpadHeight + topPaneHeight), (int)(containerWidth * gamePaneDimensionRatio));
         controlPanelWidth = containerWidth;
         controlPanelHeight = containerHeight - gamePaneHeight;
         dPadViewHeight = controlPanelHeight;
@@ -190,6 +215,8 @@ public class GameFragment extends Fragment implements GameView {
 
         dPadViewWidth = (controlPanelWidth / 3) * 2;
         fireButtonViewWidth = controlPanelWidth - dPadViewWidth;
+
+        energyLayoutWidth = containerWidth / 2;
 
     }
 
@@ -201,6 +228,16 @@ public class GameFragment extends Fragment implements GameView {
         gamePaneWidth = Math.min(maxGamePaneWidth, (int)(gamePaneHeight / gamePaneDimensionRatio));
         controlPanelWidth = 300;
         controlPanelHeight = containerHeight;
+    }
+
+
+    private void assignLayoutParamsToViews(){
+        gamePane.setLayoutParams(new LinearLayout.LayoutParams(Math.max(300, gamePaneWidth), Math.max(300, gamePaneHeight)));
+        controlPanel.setLayoutParams(new LinearLayout.LayoutParams(controlPanelWidth, controlPanelHeight));
+        dpadView.setLayoutParams(new LinearLayout.LayoutParams(dPadViewWidth, dPadViewHeight));
+        fireButtonView.setLayoutParams(new LinearLayout.LayoutParams(fireButtonViewWidth, fireButtonViewHeight));
+        topPane.setLayoutParams(new LinearLayout.LayoutParams(gamePaneWidth, topPaneHeight));
+        energyLayout.setLayoutParams(new LinearLayout.LayoutParams(energyLayoutWidth, topPaneHeight));
     }
 
 
@@ -244,7 +281,6 @@ public class GameFragment extends Fragment implements GameView {
         View starView = new View(getContext());
         starView.setLayoutParams(new ViewGroup.LayoutParams(2,2));
         gamePane.addView(starView);
-        //setupTempView();
         starView.setBackgroundColor(Color.LTGRAY);
         starViews.add(starView);
     }
@@ -266,6 +302,12 @@ public class GameFragment extends Fragment implements GameView {
     }
 
 
+    private void updateStar(View starView, Point p){
+        starView.setX(p.x);
+        starView.setY(p.y);
+    }
+
+
     @Override
     public void updateItems(List<DrawInfo> drawInfoList) {
         updateViewsFrom(drawInfoList, itemsMap, this::removeEnemyShip);
@@ -281,29 +323,9 @@ public class GameFragment extends Fragment implements GameView {
     private void updateViewsFrom(List<DrawInfo> drawInfoList, Map<Long, ImageView> viewMap, BiConsumer<DrawInfo, ImageView> removalConsumer){
         runOnUiThread(()-> {
             for (DrawInfo drawInfo : drawInfoList) {
-                updateViewFrom(drawInfo, viewMap, removalConsumer);
+                updateViewFrom(drawInfo, viewMap, removalConsumer, getContext(), gamePane, itemTypeMap);
             }
         });
-    }
-
-
-    private void updateViewFrom(DrawInfo drawInfo, Map<Long, ImageView> map, BiConsumer<DrawInfo, ImageView> removalConsumer){
-        long id = drawInfo.getId();
-        if(map == null){
-            return;
-        }
-        if(!map.containsKey(id)){
-            ImageView item = createItemAndAddToGamePane(drawInfo);
-            map.put(id, item);
-        }
-        ImageView view = map.get(id);
-        if(view != null){
-            view.setX(drawInfo.getX());
-            view.setY(drawInfo.getY());
-            view.setRotation(drawInfo.getCurrentRotation());
-            drawInfo.incrementRotation();
-            removalConsumer.accept(drawInfo, view);
-        }
     }
 
 
@@ -345,43 +367,6 @@ public class GameFragment extends Fragment implements GameView {
             gamePane.removeView(view);
             itemsMap.remove(drawInfo.getId());
         }
-    }
-
-
-
-    public ImageView createItemAndAddToGamePane(DrawInfo drawInfo) {
-        ImageView itemView = createImageViewWithDimensionsFrom(drawInfo);
-        gamePane.addView(itemView);
-        setImage(itemView, drawInfo);
-        setImageViewCoordinates(itemView, drawInfo);
-        return itemView;
-    }
-
-
-    private ImageView createImageViewWithDimensionsFrom(DrawInfo drawInfo){
-        ImageView imageView = new ImageView(getContext());
-        imageView.setLayoutParams(new ViewGroup.LayoutParams(drawInfo.getWidth(), drawInfo.getHeight()));
-        return imageView;
-    }
-
-
-    private void setImage(ImageView imageView, DrawInfo drawInfo){
-        Integer imageResource = itemTypeMap.get(drawInfo.getItemType());
-        if(imageResource != null){
-            imageView.setImageResource(imageResource);
-        }
-    }
-
-
-    private void setImageViewCoordinates(ImageView imageView, DrawInfo drawInfo){
-        imageView.setY(drawInfo.getY());
-        imageView.setX(drawInfo.getX());
-    }
-
-
-    private void updateStar(View starView, Point p){
-        starView.setX(p.x);
-        starView.setY(p.y);
     }
 
 
