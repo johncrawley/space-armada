@@ -172,6 +172,7 @@ public class GameFragment extends Fragment implements GameView {
         topPane = parentView.findViewById(R.id.topPane);
     }
 
+    private List<View> healthBarViews;
 
     private void setupEnergyLayout(){
         Game game = getGame();
@@ -179,16 +180,24 @@ public class GameFragment extends Fragment implements GameView {
             return;
         }
         energyLayout.removeAllViews();
-        int numberOfHealthBars = game.getPlayerInitialHealth() / 12;
-        int healthBarWidth = numberOfHealthBars / energyLayoutWidth;
+        int numberOfHealthBars = game.getPlayerInitialHealth() / 20;
+        log("energyLayout width : " + energyLayoutWidth);
+        healthBarViews = new ArrayList<>(numberOfHealthBars);
+        int healthBarMargin = 2;
+        int healthBarWidth = (energyLayoutWidth - (numberOfHealthBars * 2 * healthBarMargin)) / numberOfHealthBars;
         LinearLayout.LayoutParams healthBarLayoutParams = new LinearLayout.LayoutParams(healthBarWidth, energyLayoutHeight);
-        healthBarLayoutParams.setMargins(5, 10, 5, 10);
+        healthBarLayoutParams.setMargins(healthBarMargin, 10, healthBarMargin, 10);
         for(int i = 0; i<numberOfHealthBars; i++){
             View healthBar = new View(getContext());
             healthBar.setBackgroundColor(Color.GREEN);
             healthBar.setLayoutParams(healthBarLayoutParams);
             energyLayout.addView(healthBar);
+            healthBarViews.add(healthBar);
         }
+        log("setupEnergyLayout: number of energy bar views : " + healthBarViews.size());
+        log("energyLayout width, height:  " + energyLayout.getMeasuredWidth() + " ," + energyLayout.getMeasuredHeight());
+        log("energy bar width height: " + healthBarWidth + ", " + energyLayoutHeight);
+        log("energyLayoutWidth: " + energyLayoutWidth);
     }
 
 
@@ -205,11 +214,11 @@ public class GameFragment extends Fragment implements GameView {
 
     private void setupDimensionVariablesForPortrait(){
         gamePaneWidth = containerWidth;
-        topPaneHeight = containerHeight / 10;
+        topPaneHeight = containerHeight / 15;
         int minDpadHeight = 500;
         gamePaneHeight = Math.min(containerHeight - (minDpadHeight + topPaneHeight), (int)(containerWidth * gamePaneDimensionRatio));
         controlPanelWidth = containerWidth;
-        controlPanelHeight = containerHeight - gamePaneHeight;
+        controlPanelHeight = containerHeight - (gamePaneHeight + topPaneHeight);
         dPadViewHeight = controlPanelHeight;
         fireButtonViewHeight = controlPanelHeight;
 
@@ -217,7 +226,6 @@ public class GameFragment extends Fragment implements GameView {
         fireButtonViewWidth = controlPanelWidth - dPadViewWidth;
 
         energyLayoutWidth = containerWidth / 2;
-
     }
 
 
@@ -331,13 +339,13 @@ public class GameFragment extends Fragment implements GameView {
 
     private void removeEnemyShip(DrawInfo drawInfo, ImageView view){
         long id = drawInfo.getId();
-        removeIfOutOfBounds(view, id);
+        removeIfOutOfBounds(view, drawInfo, id);
         removeIfDestroyed(drawInfo, view, id);
     }
 
 
-    private void removeIfOutOfBounds(ImageView view, long id){
-        if(view.getY() >= gamePane.getBottom()){
+    private void removeIfOutOfBounds(ImageView view, DrawInfo drawInfo, long id){
+        if(drawInfo.isOutOfBounds()){
             gamePane.removeView(view);
             itemsMap.remove(id);
         }

@@ -10,6 +10,7 @@ import com.jacstuff.spacearmada.view.fragments.game.DrawInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class EnemyShipManager {
 
@@ -56,7 +57,7 @@ public class EnemyShipManager {
     public List<DrawInfo> updateAndGetChanges(){
         enemyShips.forEach(EnemyShip::update);
         createEnemyShipIfListIsEmpty();
-        removeEnemiesIfBeyondBounds();
+        notifyEnemiesIfBeyondBounds();
         return getChangedDrawInfoList(enemyShips);
     }
 
@@ -79,13 +80,15 @@ public class EnemyShipManager {
     }
 
 
-    private void removeEnemiesIfBeyondBounds(){
-        enemyShips.removeIf(e -> e.getY() > screenBounds.bottom);
+    private void notifyEnemiesIfBeyondBounds(){
+        enemyShips.stream()
+                .filter(es -> es.getY() > screenBounds.bottom)
+                .forEach(ship -> ship.getDrawInfo().markAsOutOfBounds());
     }
 
 
-    public void removeEnemiesIfDestroyed(){
-        enemyShips.removeIf(e -> e.getDrawInfo().isDestroyed());
+    public void removeAnyDestroyedOrOutOfBounds(){
+        enemyShips.removeIf(e -> e.getDrawInfo().shouldBeRemoved());
     }
 
 

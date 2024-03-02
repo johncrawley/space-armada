@@ -11,6 +11,7 @@ public class DrawInfo {
     private float rotation;
     private boolean isRotating;
     private boolean isDestroyed;
+    private boolean isOutOfBounds;
 
     public DrawInfo(ItemType itemType, long id){
         this(itemType, id, false);
@@ -42,9 +43,21 @@ public class DrawInfo {
         isDestroyed = true;
     }
 
+
+    public void markAsOutOfBounds(){
+        isOutOfBounds = true;
+    }
+
+
     public boolean isDestroyed(){
         return isDestroyed;
     }
+
+    public boolean isOutOfBounds(){
+        return isOutOfBounds;
+    }
+
+    public boolean shouldBeRemoved(){ return isDestroyed || isOutOfBounds;}
 
     public float getCurrentRotation(){
         return rotation;

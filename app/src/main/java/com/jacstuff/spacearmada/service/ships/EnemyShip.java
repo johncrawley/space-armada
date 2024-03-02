@@ -1,7 +1,5 @@
 package com.jacstuff.spacearmada.service.ships;
 
-import android.graphics.Rect;
-import android.graphics.RectF;
 
 import com.jacstuff.spacearmada.view.fragments.game.ItemType;
 

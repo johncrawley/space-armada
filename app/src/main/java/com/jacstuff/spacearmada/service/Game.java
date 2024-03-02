@@ -98,7 +98,7 @@ public class Game implements ControllableShip {
                 updateStars();
                 updateShip();
                 updateProjectiles();
-                enemyShipManager.removeEnemiesIfDestroyed();
+                enemyShipManager.removeAnyDestroyedOrOutOfBounds();
                 projectileManager.removeProjectilesIfDestroyed();
                 collisionDetector.detect();
         }
@@ -171,7 +171,6 @@ public class Game implements ControllableShip {
 
         @Override
         public void fire() {
-                log("Entered fire()");
                 playerShip.fire();
         }
 
@@ -184,7 +183,6 @@ public class Game implements ControllableShip {
 
         @Override
         public void releaseFire() {
-                log("Entered releaseFire()");
                 playerShip.releaseFire();
         }
 
