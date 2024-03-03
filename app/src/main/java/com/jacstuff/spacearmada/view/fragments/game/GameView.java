@@ -12,4 +12,5 @@ public interface GameView {
     void updateItems(List<DrawInfo> drawInfoList);
     void updateProjectiles(List<DrawInfo> drawInfoList);
     void onGameOver();
+    void updateShipHealth(int remainingHealth);
 }

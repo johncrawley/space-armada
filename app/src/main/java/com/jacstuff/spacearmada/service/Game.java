@@ -55,10 +55,16 @@ public class Game implements ControllableShip {
                 return playerInitialHealth;
         }
 
+
         public void init(GameService gameService, MusicPlayer musicPlayer, SoundPlayer soundPlayer){
                 this.musicPlayer = musicPlayer;
                 this.soundPlayer = soundPlayer;
                 this.gameService = gameService;
+        }
+
+
+        public void updatePlayerHealthOnView(){
+                gameView.updateShipHealth(playerShip.getEnergy().get());
         }
 
 
@@ -184,6 +190,9 @@ public class Game implements ControllableShip {
         @Override
         public void releaseFire() {
                 playerShip.releaseFire();
+                int energy = playerShip.getEnergy().get() + 10;
+                playerShip.getEnergy().set(energy);
+                updatePlayerHealthOnView();
         }
 
 

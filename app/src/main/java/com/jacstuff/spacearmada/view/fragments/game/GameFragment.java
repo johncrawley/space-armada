@@ -180,8 +180,7 @@ public class GameFragment extends Fragment implements GameView {
             return;
         }
         energyLayout.removeAllViews();
-        int numberOfHealthBars = game.getPlayerInitialHealth() / 20;
-        log("energyLayout width : " + energyLayoutWidth);
+        int numberOfHealthBars = getNumberOfHealthBarsFor(game.getPlayerInitialHealth());
         healthBarViews = new ArrayList<>(numberOfHealthBars);
         int healthBarMargin = 2;
         int healthBarWidth = (energyLayoutWidth - (numberOfHealthBars * 2 * healthBarMargin)) / numberOfHealthBars;
@@ -194,10 +193,22 @@ public class GameFragment extends Fragment implements GameView {
             energyLayout.addView(healthBar);
             healthBarViews.add(healthBar);
         }
-        log("setupEnergyLayout: number of energy bar views : " + healthBarViews.size());
-        log("energyLayout width, height:  " + energyLayout.getMeasuredWidth() + " ," + energyLayout.getMeasuredHeight());
-        log("energy bar width height: " + healthBarWidth + ", " + energyLayoutHeight);
-        log("energyLayoutWidth: " + energyLayoutWidth);
+
+    }
+
+
+    @Override
+    public void updateShipHealth(int remainingHealth){
+        int numberOfRemainingHealthBars = getNumberOfHealthBarsFor(remainingHealth);
+        for(int i = 0; i < healthBarViews.size(); i++){
+            int visibility = i < numberOfRemainingHealthBars ? View.VISIBLE : View.INVISIBLE;
+            healthBarViews.get(i).setVisibility(visibility);
+        }
+    }
+
+
+    private int getNumberOfHealthBarsFor(int remainingHealth){
+        return remainingHealth / 20;
     }
 
 

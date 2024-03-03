@@ -27,7 +27,7 @@ public class CollisionDetector {
 
     public void detect() {
         if (isReadyToDetect()) {
-            detectPlayerAndEnemyShipCollisions();
+            detectPlayerShipAndEnemyShipCollisions();
            // detectPlayerAndEnemyBulletCollisions();
             detectEnemyShipsAndPlayerBulletCollisions();
         }
@@ -45,9 +45,9 @@ public class CollisionDetector {
     }
 
 
-    private void detectPlayerAndEnemyShipCollisions(){
+    private void detectPlayerShipAndEnemyShipCollisions(){
         for(EnemyShip enemyShip: enemyShipManager.getEnemyShips()) {
-            checkForCollision(playerShip, enemyShip);
+            checkForCollision(playerShip, enemyShip, game::updatePlayerHealthOnView);
         }
     }
 
@@ -92,11 +92,18 @@ public class CollisionDetector {
 
 
     public void checkForCollision(AbstractItem item1, AbstractItem item2){
+        checkForCollision(item1, item2, ()->{});
+    }
+
+
+
+    public void checkForCollision(AbstractItem item1, AbstractItem item2, Runnable runnable){
         if(item1 == null || item2 == null){
             return;
         }
         if(isIntersecting(item1, item2)){
             item1.getEnergy().collideWith(item2.getEnergy());
+            runnable.run();
         }
     }
 
