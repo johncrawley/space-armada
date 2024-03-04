@@ -47,7 +47,10 @@ public class CollisionDetector {
 
     private void detectPlayerShipAndEnemyShipCollisions(){
         for(EnemyShip enemyShip: enemyShipManager.getEnemyShips()) {
-            checkForCollision(playerShip, enemyShip, game::updatePlayerHealthOnView);
+            checkForCollision(playerShip, enemyShip, ()->{
+                handleEnemyShipEnergyDepleted(enemyShip);
+                game.updatePlayerHealthOnView();
+            });
         }
     }
 
@@ -81,10 +84,7 @@ public class CollisionDetector {
             return;
         }
         checkForCollision(enemyShip, projectile);
-        if(enemyShip.isEnergyDepleted()){
-            enemyShip.getDrawInfo().markAsDestroyed();
-            game.addToScore(enemyShip.getPoints());
-        }
+        handleEnemyShipEnergyDepleted(enemyShip);
         if(projectile.isEnergyDepleted()){
             projectile.getDrawInfo().markAsDestroyed();
         }
@@ -104,6 +104,15 @@ public class CollisionDetector {
         if(isIntersecting(item1, item2)){
             item1.getEnergy().collideWith(item2.getEnergy());
             runnable.run();
+        }
+    }
+
+
+    private void handleEnemyShipEnergyDepleted(AbstractItem abstractItem){
+        EnemyShip enemyShip = (EnemyShip) abstractItem;
+        if(enemyShip.isEnergyDepleted()){
+            enemyShip.getDrawInfo().markAsDestroyed();
+            game.addToScore(enemyShip.getPoints());
         }
     }
 

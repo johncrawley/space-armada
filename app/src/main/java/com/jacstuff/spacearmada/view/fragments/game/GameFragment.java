@@ -57,6 +57,7 @@ public class GameFragment extends Fragment implements GameView {
     private int energyLayoutWidth = 100;
     private int energyLayoutHeight = 50;
     private int topPaneHeight = 100;
+    private List<View> healthBarViews;
 
 
     public GameFragment() {
@@ -172,7 +173,6 @@ public class GameFragment extends Fragment implements GameView {
         topPane = parentView.findViewById(R.id.topPane);
     }
 
-    private List<View> healthBarViews;
 
     private void setupEnergyLayout(){
         Game game = getGame();
