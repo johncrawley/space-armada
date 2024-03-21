@@ -60,6 +60,7 @@ public class Game implements ControllableShip {
                 this.musicPlayer = musicPlayer;
                 this.soundPlayer = soundPlayer;
                 this.gameService = gameService;
+                collisionDetector.setSoundPlayer(soundPlayer);
         }
 
 

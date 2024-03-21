@@ -9,7 +9,8 @@ public enum Sound {
     CORRECT_ANSWER(SoundType.GAME_EFFECT),
     INCORRECT_ANSWER(SoundType.GAME_EFFECT),
     GAME_OVER(SoundType.GAME_EFFECT),
-    LOW_TIME(SoundType.GAME_EFFECT);
+    LOW_TIME(SoundType.GAME_EFFECT),
+    ENEMY_SHIP_1_EXPLOSION(SoundType.GAME_EFFECT);
 
 
     private final SoundType soundType;

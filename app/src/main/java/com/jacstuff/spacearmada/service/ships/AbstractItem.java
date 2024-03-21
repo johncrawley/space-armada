@@ -4,6 +4,7 @@ package com.jacstuff.spacearmada.service.ships;
 import android.graphics.RectF;
 
 import com.jacstuff.spacearmada.actors.ships.player.Energy;
+import com.jacstuff.spacearmada.service.sound.Sound;
 import com.jacstuff.spacearmada.view.fragments.game.DrawInfo;
 import com.jacstuff.spacearmada.view.fragments.game.ItemType;
 
@@ -20,6 +21,7 @@ public class AbstractItem {
     DrawInfo drawInfo;
     protected Energy energy;
     private boolean haveBoundsChanged;
+    private Sound explosionSound;
 
     public AbstractItem(long id, ItemType itemType, int speed, float sizeFactor, float heightWidthRatio){
         this.itemType = itemType;
@@ -28,6 +30,16 @@ public class AbstractItem {
         this.heightWidthRatio = heightWidthRatio;
         drawInfo = new DrawInfo(getItemType(), id);
         energy = new Energy(100);
+    }
+
+
+    public void setExplosionSound(Sound explosionSound){
+        this.explosionSound = explosionSound;
+    }
+
+
+    public Sound getExplosionSound(){
+        return explosionSound;
     }
 
 

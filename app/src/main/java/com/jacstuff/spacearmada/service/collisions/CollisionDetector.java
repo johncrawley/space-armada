@@ -7,6 +7,7 @@ import com.jacstuff.spacearmada.service.ships.EnemyShipManager;
 import com.jacstuff.spacearmada.service.ships.PlayerShip;
 import com.jacstuff.spacearmada.service.ships.weapons.Projectile;
 import com.jacstuff.spacearmada.service.ships.weapons.ProjectileManager;
+import com.jacstuff.spacearmada.service.sound.SoundPlayer;
 
 public class CollisionDetector {
 
@@ -15,6 +16,7 @@ public class CollisionDetector {
     private final ProjectileManager projectileManager;
     private int counter = 0;
     private final Game game;
+    private SoundPlayer soundPlayer;
 
 
     public CollisionDetector(Game game, PlayerShip playerShip, EnemyShipManager enemyShipManager, ProjectileManager projectileManager){
@@ -22,6 +24,11 @@ public class CollisionDetector {
         this.playerShip = playerShip;
         this.enemyShipManager = enemyShipManager;
         this.projectileManager = projectileManager;
+    }
+
+
+    public void setSoundPlayer(SoundPlayer soundPlayer){
+        this.soundPlayer = soundPlayer;
     }
 
 
@@ -113,6 +120,7 @@ public class CollisionDetector {
         if(enemyShip.isEnergyDepleted()){
             enemyShip.getDrawInfo().markAsDestroyed();
             game.addToScore(enemyShip.getPoints());
+            soundPlayer.playSound(enemyShip.getExplosionSound());
         }
     }
 

@@ -13,7 +13,8 @@ import com.jacstuff.spacearmada.actors.ships.player.Energy;
  * Represents the enemy spaceships that the player must destroy.
  */
 
-public class EnemyShip extends CollidableActor implements ArmedShip {
+public class
+EnemyShip extends CollidableActor implements ArmedShip {
 
     private final ProjectileManager projectileManager;
     private final int points;

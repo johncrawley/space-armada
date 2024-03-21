@@ -24,12 +24,12 @@ public class PlayerShip extends CollidableActor implements ControllableShip {
 
         private Direction direction;
         private int updateCount = 0;
-        private int fireDelay = 5; //TODO: move into a bullet class
+        private final int fireDelay = 5; //TODO: move into a bullet class
         private int currentFireIteration = 0;
         private Score score;
         private boolean isFiring = false;
         private Rect tempRect; // used for seeing if the ships rect stays within the game screen bounds
-        private ProjectileManager projectileManager;
+        private final ProjectileManager projectileManager;
         private boolean canFireWeapons = true;
         private boolean canMove = true;
         private Rect gameScreenBounds;

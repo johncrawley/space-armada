@@ -5,12 +5,12 @@ import static com.jacstuff.spacearmada.service.ships.Utils.setSmallestDimension;
 
 import android.graphics.RectF;
 
+import com.jacstuff.spacearmada.service.sound.Sound;
 import com.jacstuff.spacearmada.view.fragments.game.DrawInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 public class EnemyShipManager {
 
@@ -72,6 +72,7 @@ public class EnemyShipManager {
                     .speed(5)
                     .sizeFactor(0.07f)
                     .heightToWidthRatio(1.5f)
+                    .explosionSound(Sound.ENEMY_SHIP_1_EXPLOSION)
                     .points(100)
                     .build();
             enemyShip.setSizeBasedOn(smallestBoundsDimension);

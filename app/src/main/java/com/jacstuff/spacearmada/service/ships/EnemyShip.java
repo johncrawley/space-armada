@@ -1,6 +1,7 @@
 package com.jacstuff.spacearmada.service.ships;
 
 
+import com.jacstuff.spacearmada.service.sound.Sound;
 import com.jacstuff.spacearmada.view.fragments.game.ItemType;
 
 public class EnemyShip extends AbstractItem{
@@ -15,6 +16,7 @@ public class EnemyShip extends AbstractItem{
         this.y = builder.initialY;
         drawInfo.setDimensions((int)width, (int)height);
         this.points = builder.points;
+        setExplosionSound(builder.explosionSound);
     }
 
 
@@ -32,6 +34,7 @@ public class EnemyShip extends AbstractItem{
         float initialX, initialY, sizeFactor, heightToWidthRatio;
         long id;
         int speed, points;
+        Sound explosionSound;
 
 
         public static Builder newInstance(){
@@ -62,6 +65,12 @@ public class EnemyShip extends AbstractItem{
 
         public Builder heightToWidthRatio(float heightToWidthRatio){
             this.heightToWidthRatio = heightToWidthRatio;
+            return this;
+        }
+
+
+        public Builder explosionSound(Sound sound){
+            this.explosionSound = sound;
             return this;
         }
 
