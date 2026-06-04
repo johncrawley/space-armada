@@ -24,7 +24,7 @@
             android:label="GameService"
             android:stopWithTask="true">
             <intent-filter>
-                <action android:name="com.jacstuff.spacearmada.service.GmeService" />
+                <action android:name="com.jacstuff.spacearmada.service.GameService" />
             </intent-filter>
         </service>
     </application>
