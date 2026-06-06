@@ -11,6 +11,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.jacstuff.spacearmada.MainActivity;
+import com.jacstuff.spacearmada.MainViewModel;
 import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.service.Game;
 import com.jacstuff.spacearmada.service.GameService;
@@ -58,6 +60,7 @@ public class GameFragment extends Fragment implements GameView {
     private int energyLayoutHeight = 50;
     private int topPaneHeight = 100;
     private List<View> healthBarViews;
+    private MainViewModel viewModel;
 
 
     public GameFragment() {
@@ -74,20 +77,7 @@ public class GameFragment extends Fragment implements GameView {
     @Override
     public void onAttach(@NonNull Context context){
         super.onAttach(context);
-        connectViewToGame();
-    }
-
-
-    private void connectViewToGame(Bundle bundle){
-        connectViewToGame();
-    }
-
-
-    private void connectViewToGame(){
-        Game game = getGame();
-        if(game != null){
-            game.setGameView(this);
-        }
+        game.setGameView(this);
     }
 
 
@@ -101,12 +91,19 @@ public class GameFragment extends Fragment implements GameView {
         itemTypeMap = new HashMap<>();
         itemTypeMap.put(ItemType.ENEMY_SHIP_1, R.drawable.ship2);
         itemTypeMap.put(ItemType.PLAYER_BULLET, R.drawable.bullet1);
+        setupViewModelAndGame();
         assignViews(parentView);
         assignViewDimensions();
         addStarViewsTo(20);
         setupListeners();
         setupEnergyLayout();
         return parentView;
+    }
+
+
+    private void setupViewModelAndGame(){
+        viewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
+        game = viewModel.game;
     }
 
 
@@ -159,7 +156,7 @@ public class GameFragment extends Fragment implements GameView {
 
 
     private void setupListeners(){
-        FragmentUtils.setListener(this, Message.CONNECT_TO_GAME, this::connectViewToGame);
+       // FragmentUtils.setListener(this, Message.CONNECT_TO_GAME, this::connectViewToGame);
     }
 
 
@@ -368,7 +365,7 @@ public class GameFragment extends Fragment implements GameView {
             return;
         }
         view.setImageResource(R.drawable.enemy_ship_1_destruction);
-        AnimationDrawable frameAnimation = (AnimationDrawable) view.getDrawable();
+        var frameAnimation = (AnimationDrawable) view.getDrawable();
         frameAnimation.setOneShot(true);
         frameAnimation.start();
         new Handler().postDelayed(() -> removeImageview(view, id), 1100);
@@ -402,7 +399,7 @@ public class GameFragment extends Fragment implements GameView {
         if(mainActivity == null){
             return null;
         }
-        GameService gameService = mainActivity.getGameService();
+        var gameService = mainActivity.getGameService();
         if(gameService == null){
             return null;
         }

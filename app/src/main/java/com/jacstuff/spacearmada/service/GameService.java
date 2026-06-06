@@ -68,7 +68,7 @@ public class GameService extends Service {
         log("entered onCreate()");
         soundPlayer = new SoundPlayer(getApplicationContext());
         musicPlayer = new MusicPlayer();
-        game.init(this, musicPlayer, soundPlayer);
+        game.init(musicPlayer, soundPlayer);
     }
 
 

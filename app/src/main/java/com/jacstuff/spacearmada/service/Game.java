@@ -21,7 +21,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Game implements ControllableShip {
 
-        private GameService gameService;
         private final PlayerShip playerShip;
         private GameView gameView;
         private ScheduledFuture<?> gameUpdateFuture;
@@ -56,10 +55,9 @@ public class Game implements ControllableShip {
         }
 
 
-        public void init(GameService gameService, MusicPlayer musicPlayer, SoundPlayer soundPlayer){
+        public void init(MusicPlayer musicPlayer, SoundPlayer soundPlayer){
                 this.musicPlayer = musicPlayer;
                 this.soundPlayer = soundPlayer;
-                this.gameService = gameService;
                 collisionDetector.setSoundPlayer(soundPlayer);
         }
 

@@ -16,17 +16,6 @@
             </intent-filter>
         </activity>
 
-
-        <service
-            android:name=".service.GameService"
-            android:enabled="true"
-            android:exported="false"
-            android:label="GameService"
-            android:stopWithTask="true">
-            <intent-filter>
-                <action android:name="com.jacstuff.spacearmada.service.GameService" />
-            </intent-filter>
-        </service>
     </application>
 
 </manifest>

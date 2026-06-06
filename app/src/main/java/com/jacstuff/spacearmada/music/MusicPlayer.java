@@ -16,10 +16,9 @@ public class MusicPlayer {
     }
 
     public void release(){
-        if(isMusicMuted){
-            return;
-        }
-        if(mediaPlayer == null || isReleased){
+        if(isMusicMuted
+                || mediaPlayer == null
+                || isReleased){
             return;
         }
 
@@ -29,11 +28,9 @@ public class MusicPlayer {
         }
     }
 
+
     public void pause(){
-        if(isMusicMuted){
-            return;
-        }
-        if(isReleased){
+        if(isMusicMuted || isReleased){
             return;
         }
         if(mediaPlayer.isPlaying()) {
@@ -42,11 +39,9 @@ public class MusicPlayer {
         }
     }
 
+
     public void resume(){
-        if(isMusicMuted){
-            return;
-        }
-        if(isReleased){
+        if(isMusicMuted || isReleased){
             return;
         }
         mediaPlayer.seekTo(trackPosition);
@@ -58,9 +53,12 @@ public class MusicPlayer {
         playTrack(trackResourceId, false);
     }
 
+
     public void playTrack(int trackResourceId){
         playTrack(trackResourceId, true);
     }
+
+
     public void playTrack(int trackResourceId, boolean loopTrack){
         if(isMusicMuted){
             return;
