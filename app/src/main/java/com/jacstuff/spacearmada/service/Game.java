@@ -41,13 +41,13 @@ public class Game implements ControllableShip {
 
 
         public Game(){
-                projectileManager = new ProjectileManager();
-                playerShip = new PlayerShip(50,50, playerInitialHealth);
-                playerShip.initWeapons(projectileManager);
-                starManager = new StarManager();
-                scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-                enemyShipManager = new EnemyShipManager();
-                collisionDetector = new CollisionDetector(this, playerShip, enemyShipManager, projectileManager);
+            projectileManager = new ProjectileManager();
+            playerShip = new PlayerShip(50,50, playerInitialHealth);
+            playerShip.initWeapons(projectileManager);
+            starManager = new StarManager();
+            scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+            enemyShipManager = new EnemyShipManager();
+            collisionDetector = new CollisionDetector(this, playerShip, enemyShipManager, projectileManager);
         }
 
 
@@ -57,56 +57,56 @@ public class Game implements ControllableShip {
 
 
         public void init(MusicPlayer musicPlayer, SoundPlayer soundPlayer){
-                this.musicPlayer = musicPlayer;
-                this.soundPlayer = soundPlayer;
-                collisionDetector.setSoundPlayer(soundPlayer);
+            this.musicPlayer = musicPlayer;
+            this.soundPlayer = soundPlayer;
+            collisionDetector.setSoundPlayer(soundPlayer);
         }
 
 
         public void updatePlayerHealthOnView(){
-                gameView.updateShipHealth(playerShip.getEnergy().get());
+            gameView.updateShipHealth(playerShip.getEnergy().get());
         }
 
 
         public void setBounds(Rect gamePaneRect, int smallestDimension){
-                initBounds(gamePaneRect);
-                enemyShipManager.setScreenBounds(screenBounds);
-                playerShip.setScreenBoundsAndSize(screenBounds, smallestDimension);
-                gameView.setShipSize((int)playerShip.getWidth(), (int)playerShip.getHeight());
-                starManager.setBoundsAndGenerateStars(screenBounds);
-                projectileManager.setBounds(screenBounds);
+            initBounds(gamePaneRect);
+            enemyShipManager.setScreenBounds(screenBounds);
+            playerShip.setScreenBoundsAndSize(screenBounds, smallestDimension);
+            gameView.setShipSize((int)playerShip.getWidth(), (int)playerShip.getHeight());
+            starManager.setBoundsAndGenerateStars(screenBounds);
+            projectileManager.setBounds(screenBounds);
         }
 
 
         private void initBounds(Rect gamePaneRect){
-                screenBounds = new RectF();
-                screenBounds.left = gamePaneRect.left;
-                screenBounds.top = gamePaneRect.top;
-                screenBounds.right = gamePaneRect.right;
-                screenBounds.bottom = gamePaneRect.bottom;
+            screenBounds = new RectF();
+            screenBounds.left = gamePaneRect.left;
+            screenBounds.top = gamePaneRect.top;
+            screenBounds.right = gamePaneRect.right;
+            screenBounds.bottom = gamePaneRect.bottom;
         }
 
 
         public void start(){
-                if(isRunning.get()){
-                        return;
-                }
-                isRunning.set(true);
-                gameUpdateFuture = scheduledExecutorService.scheduleAtFixedRate(this::updateItems, 0,16, TimeUnit.MILLISECONDS);
+            if(isRunning.get()){
+                    return;
+            }
+            isRunning.set(true);
+            gameUpdateFuture = scheduledExecutorService.scheduleWithFixedDelay(this::updateItems, 0,16, TimeUnit.MILLISECONDS);
         }
 
 
         private void updateItems(){
-                if(gameView == null){
-                        return;
-                }
-                updateEnemyShips();
-                updateStars();
-                updateShip();
-                updateProjectiles();
-                enemyShipManager.removeAnyDestroyedOrOutOfBounds();
-                projectileManager.removeProjectilesIfDestroyed();
-                collisionDetector.detect();
+            if(gameView == null){
+                    return;
+            }
+            updateEnemyShips();
+            updateStars();
+            updateShip();
+            updateProjectiles();
+            enemyShipManager.removeAnyDestroyedOrOutOfBounds();
+            projectileManager.removeProjectilesIfDestroyed();
+            collisionDetector.detect();
         }
 
 
@@ -116,18 +116,18 @@ public class Game implements ControllableShip {
 
 
         private void setGameOver(){
-                gameView.onGameOver();
-                musicPlayer.playGameOverMusic();
+            gameView.onGameOver();
+            musicPlayer.playGameOverMusic();
         }
 
 
         private void updateStars(){
-               gameView.updateStars(starManager.updateAndGetStars());
+           gameView.updateStars(starManager.updateAndGetStars());
         }
 
 
         private void updateEnemyShips(){
-              gameView.updateItems(enemyShipManager.updateAndGetChanges());
+          gameView.updateItems(enemyShipManager.updateAndGetChanges());
         }
 
 
@@ -137,25 +137,25 @@ public class Game implements ControllableShip {
 
 
         private void updateShip(){
-                playerShip.update();
-                if(playerShip.hasPositionChanged()){
-                       gameView.updateShipPosition(playerShip.getX(), playerShip.getY());
-                }
+            playerShip.update();
+            if(playerShip.hasPositionChanged()){
+                   gameView.updateShipPosition(playerShip.getX(), playerShip.getY());
+            }
         }
 
 
         public void quit(){
-                isRunning.set(false);
-                if(gameUpdateFuture != null && !gameUpdateFuture.isCancelled()){
-                        gameUpdateFuture.cancel(false);
-                }
+            isRunning.set(false);
+            if(gameUpdateFuture != null && !gameUpdateFuture.isCancelled()){
+                    gameUpdateFuture.cancel(false);
+            }
         }
 
 
         public void onUnbind(){
-                if(gameUpdateFuture != null && !gameUpdateFuture.isCancelled()){
-                        gameUpdateFuture.cancel(false);
-                }
+            if(gameUpdateFuture != null && !gameUpdateFuture.isCancelled()){
+                    gameUpdateFuture.cancel(false);
+            }
         }
 
 
@@ -189,10 +189,10 @@ public class Game implements ControllableShip {
 
         @Override
         public void releaseFire() {
-                playerShip.releaseFire();
-                int energy = playerShip.getEnergy().get() + 10;
-                playerShip.getEnergy().set(energy);
-                updatePlayerHealthOnView();
+            playerShip.releaseFire();
+            int energy = playerShip.getEnergy().get() + 10;
+            playerShip.getEnergy().set(energy);
+            updatePlayerHealthOnView();
         }
 
 

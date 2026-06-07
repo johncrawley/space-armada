@@ -10,7 +10,6 @@ import java.util.Random;
 public class StarManager {
 
     private List<Point> slowStars;
-    private List<Point> fastStars;
     private final Random random;
     private RectF screenBounds;
 
@@ -18,7 +17,6 @@ public class StarManager {
     public StarManager(){
         random = new Random();
         slowStars = new ArrayList<>();
-        fastStars = new ArrayList<>();
     }
 
 
@@ -29,38 +27,20 @@ public class StarManager {
 
 
     public void generateStars(){
-        slowStars = createStars();
-        fastStars = createStars();
-    }
-
-
-    public List<Point> createStars(){
-        int numberOfStars = 20;
-        var stars = new ArrayList<Point>(numberOfStars);
+        int numberOfStars = 60;
+        slowStars = new ArrayList<>(numberOfStars);
         for(int i = 0; i < numberOfStars; i++){
-            stars.add(createStarAtRandomCoordinate());
+            slowStars.add(createStarAtRandomCoordinate());
         }
-        return stars;
-    }
-
-
-    private void log(String msg){
-        System.out.println("^^^ StarManager: " + msg);
     }
 
 
     public List<Point> updateAndGetStars(){
-        for(var star : slowStars){
-            updateStar(star, 1);
+        for(int i = 0; i < slowStars.size(); i++){
+            int speed = i < 30 ? 1 : i < 55 ? 2 : 3;
+            updateStar(slowStars.get(i), speed);
         }
-        for(var star : fastStars){
-            updateStar(star, 3);
-        }
-        var allStars = new ArrayList<Point>();
-        allStars.addAll(slowStars);
-        allStars.addAll(fastStars);
-
-        return allStars;
+        return slowStars;
     }
 
 

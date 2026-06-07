@@ -25,9 +25,7 @@ import com.jacstuff.spacearmada.MainActivity;
 import com.jacstuff.spacearmada.MainViewModel;
 import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.service.Game;
-import com.jacstuff.spacearmada.service.GameService;
 import com.jacstuff.spacearmada.view.TransparentView;
-import com.jacstuff.spacearmada.view.fragments.utils.FragmentUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,6 +59,7 @@ public class GameFragment extends Fragment implements GameView {
     private int topPaneHeight = 100;
     private List<View> healthBarViews;
     private MainViewModel viewModel;
+    private boolean shouldStarsBeUpdated = false;
 
 
     public GameFragment() {
@@ -93,7 +92,7 @@ public class GameFragment extends Fragment implements GameView {
         setupViewModelAndGame();
         assignViews(parentView);
         assignViewDimensions();
-        addStarViewsTo(20);
+        addStarViewsTo(60);
         setupListeners();
         setupEnergyLayout();
         return parentView;
@@ -304,7 +303,10 @@ public class GameFragment extends Fragment implements GameView {
 
     @Override
     public void updateStars(List<Point> starCoordinates){
-        if(starCoordinates == null || starViews.size() != starCoordinates.size()){
+        shouldStarsBeUpdated = !shouldStarsBeUpdated;
+        if(starCoordinates == null
+                || starViews.size() != starCoordinates.size()
+                || !shouldStarsBeUpdated){
             return;
         }
         runOnUiThread(()->{
