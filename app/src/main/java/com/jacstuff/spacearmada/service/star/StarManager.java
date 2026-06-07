@@ -1,9 +1,7 @@
-package com.jacstuff.spacearmada.service;
+package com.jacstuff.spacearmada.service.star;
 
 import android.graphics.Point;
 import android.graphics.RectF;
-
-import com.jacstuff.spacearmada.view.fragments.game.GameView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +10,7 @@ import java.util.Random;
 public class StarManager {
 
     private List<Point> slowStars;
+    private List<Point> fastStars;
     private final Random random;
     private RectF screenBounds;
 
@@ -19,6 +18,7 @@ public class StarManager {
     public StarManager(){
         random = new Random();
         slowStars = new ArrayList<>();
+        fastStars = new ArrayList<>();
     }
 
 
@@ -29,26 +29,43 @@ public class StarManager {
 
 
     public void generateStars(){
+        slowStars = createStars();
+        fastStars = createStars();
+    }
+
+
+    public List<Point> createStars(){
         int numberOfStars = 20;
-        slowStars = new ArrayList<>(numberOfStars);
-        for(int i=0; i<numberOfStars; i++){
-            slowStars.add(createStarAtRandomCoordinate());
+        var stars = new ArrayList<Point>(numberOfStars);
+        for(int i = 0; i < numberOfStars; i++){
+            stars.add(createStarAtRandomCoordinate());
         }
+        return stars;
+    }
+
+
+    private void log(String msg){
+        System.out.println("^^^ StarManager: " + msg);
     }
 
 
     public List<Point> updateAndGetStars(){
-        for(Point star : slowStars){
-            updateStar(star);
+        for(var star : slowStars){
+            updateStar(star, 1);
         }
-        return slowStars;
+        for(var star : fastStars){
+            updateStar(star, 3);
+        }
+        var allStars = new ArrayList<Point>();
+        allStars.addAll(slowStars);
+        allStars.addAll(fastStars);
+
+        return allStars;
     }
 
 
-
-    private void updateStar(Point star){
-        int starMovement = 2;
-        star.y = star.y + starMovement;
+    private void updateStar(Point star, int movementOffset){
+        star.y = star.y + movementOffset;
         resetStarIfBeyondBounds(star);
     }
 

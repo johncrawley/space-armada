@@ -77,7 +77,6 @@ public class GameFragment extends Fragment implements GameView {
     @Override
     public void onAttach(@NonNull Context context){
         super.onAttach(context);
-        game.setGameView(this);
     }
 
 
@@ -104,6 +103,7 @@ public class GameFragment extends Fragment implements GameView {
     private void setupViewModelAndGame(){
         viewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
         game = viewModel.game;
+        game.setGameView(this);
     }
 
 
@@ -294,7 +294,7 @@ public class GameFragment extends Fragment implements GameView {
 
 
     private void addStarViewTo(){
-        View starView = new View(getContext());
+        var starView = new View(getContext());
         starView.setLayoutParams(new ViewGroup.LayoutParams(2,2));
         gamePane.addView(starView);
         starView.setBackgroundColor(Color.LTGRAY);
@@ -308,11 +308,10 @@ public class GameFragment extends Fragment implements GameView {
             return;
         }
         runOnUiThread(()->{
-            for(int i=0; i<starCoordinates.size(); i++){
-                if(i >= starViews.size()){
-                    return;
-                };
-                updateStar(starViews.get(i), starCoordinates.get(i));
+            for(int i = 0; i < starCoordinates.size(); i++){
+                if(i < starViews.size()){
+                    updateStar(starViews.get(i), starCoordinates.get(i));
+                }
             }
         });
     }

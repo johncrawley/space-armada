@@ -11,6 +11,7 @@ import com.jacstuff.spacearmada.service.collisions.CollisionDetector;
 import com.jacstuff.spacearmada.service.ships.weapons.ProjectileManager;
 import com.jacstuff.spacearmada.service.sound.MusicPlayer;
 import com.jacstuff.spacearmada.service.sound.SoundPlayer;
+import com.jacstuff.spacearmada.service.star.StarManager;
 import com.jacstuff.spacearmada.view.fragments.game.GameView;
 
 import java.util.concurrent.Executors;
