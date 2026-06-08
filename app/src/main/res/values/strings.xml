@@ -7,6 +7,6 @@
 
     <string name="is_level_music">false</string>
 
-    <string name="game_logo">Space Armada</string>
+    <string name="game_logo">SPACE\nARMADA</string>
     <string name="button_new_game">New Game</string>
 </resources>

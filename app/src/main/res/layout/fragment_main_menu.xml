@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/colorAccent"
+    android:background="@drawable/title_bg"
     tools:context=".view.fragments.MainMenuFragment">
 
 
@@ -13,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/game_logo"
+        android:textColor="@color/colorAccent"
         android:gravity="center"
         android:textSize="52sp"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,7 +26,9 @@
         android:id="@+id/startGameButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorAccent"
         android:text="@string/button_new_game"
+        android:textSize="24sp"
         app:layout_constraintTop_toBottomOf="@id/logoText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

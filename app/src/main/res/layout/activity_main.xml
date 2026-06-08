@@ -8,9 +8,6 @@
     tools:context=".MainActivity">
 
 
-
-
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/titleLayout"
         android:layout_width="1dp"
