@@ -90,19 +90,19 @@ public class GameState implements State {
        //enemyShipManager.createShip(400,100);
 
        Drawable bgDrawable = imageLoader.loadDrawable(R.drawable.level1_bg_2);
-       backgroundView = activity.findViewById(R.id.backgroundView);
-       backgroundView.addDrawableItem(new DrawableBitmap(((BitmapDrawable)bgDrawable).getBitmap()));
-       backgroundView.invalidate();
+     //  backgroundView = activity.findViewById(R.id.backgroundView);
+      // backgroundView.addDrawableItem(new DrawableBitmap(((BitmapDrawable)bgDrawable).getBitmap()));
+      // backgroundView.invalidate();
        initShipsControlsAndProjectiles();
        testShipMove();
        testBackgroundMove();
     }
 
-    private final TransparentView backgroundView;
+    //private final TransparentView backgroundView;
 
     private void testShipMove(){
         enemyShipManager.createShip(300, -10);
-        testEnemyTransparentView = activity.findViewById(R.id.itemsView);
+       // testEnemyTransparentView = activity.findViewById(R.id.itemsView);
         testEnemyTransparentView.addDrawableItem(enemyShipManager.getDrawableItems().get(0));
         testEnemyTransparentView.setBitmapManager(bitmapManager);
         ScheduledExecutorService testShipMoveExecutor = Executors.newSingleThreadScheduledExecutor();
@@ -119,7 +119,7 @@ public class GameState implements State {
         scrollAnimation.setDuration(50_000);
         scrollAnimation.setStartOffset(3000);
         scrollAnimation.setFillAfter(true);
-        backgroundView.startAnimation(scrollAnimation);
+        //backgroundView.startAnimation(scrollAnimation);
     }
 
 
@@ -130,8 +130,8 @@ public class GameState implements State {
 
 
     private void initBackgroundView(){
-        TransparentView backgroundView = activity.findViewById(R.id.backgroundView);
-        backgroundTiles = new BackgroundTiles(activity, backgroundView, gameScreenBounds.top, gameScreenBounds.bottom);
+      //  TransparentView backgroundView = activity.findViewById(R.id.backgroundView);
+      //  backgroundTiles = new BackgroundTiles(activity, backgroundView, gameScreenBounds.top, gameScreenBounds.bottom);
     }
 
 

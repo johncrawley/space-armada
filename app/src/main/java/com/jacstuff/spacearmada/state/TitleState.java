@@ -48,8 +48,8 @@ public class TitleState implements  State {
 
     private void initTitleGraphics(){
 
-        backgroundView = activity.findViewById(R.id.titleBackgroundView);
-        animatedView = activity.findViewById(R.id.titleAnimationsView);
+       // backgroundView = activity.findViewById(R.id.titleBackgroundView);
+        //animatedView = activity.findViewById(R.id.titleAnimationsView);
 
         DrawableLoader imageLoader = new DefaultDrawableLoader(activity);
         ScaledBitmapLoader scaledBitmapLoader = new ScaledBitmapLoader(activity, width, height);
