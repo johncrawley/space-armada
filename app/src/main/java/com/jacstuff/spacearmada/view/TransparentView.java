@@ -12,8 +12,8 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.jacstuff.spacearmada.DrawableItem;
-import com.jacstuff.spacearmada.actors.DrawInfo;
-import com.jacstuff.spacearmada.image.BitmapManager;
+import com.jacstuff.spacearmada.view.custom.BitmapManager;
+import com.jacstuff.spacearmada.view.fragments.game.DrawInfoOLD;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -183,7 +183,7 @@ public class TransparentView extends View {
 
 
     public void drawItemsInList(List<? extends DrawableItem> drawableItems){
-        DrawInfo drawInfo;
+        DrawInfoOLD drawInfo;
         for(DrawableItem item : drawableItems) {
             if (item == null) {
                 continue;
@@ -197,7 +197,7 @@ public class TransparentView extends View {
     }
 
 
-    private void drawBitmap(Canvas canvas, Paint paint, DrawInfo drawInfo){
+    private void drawBitmap(Canvas canvas, Paint paint, DrawInfoOLD drawInfo){
         Bitmap bitmap = bitmapManager.getBitmap(drawInfo);
         if(bitmap == null || canvas == null || paint == null){
             return;

@@ -1,6 +1,6 @@
 package com.jacstuff.spacearmada.view.fragments.game;
 
-public class DrawInfo {
+public class DrawInfoOLD {
 
     private float x, y;
     private final long id;
@@ -13,12 +13,12 @@ public class DrawInfo {
     private boolean isDestroyed;
     private boolean isOutOfBounds;
 
-    public DrawInfo(ItemType itemType, long id){
+    public DrawInfoOLD(ItemType itemType, long id){
         this(itemType, id, false);
     }
 
 
-    public DrawInfo(ItemType itemType, long id, boolean isRotating){
+    public DrawInfoOLD(ItemType itemType, long id, boolean isRotating){
         this.itemType = itemType;
         this.id = id;
         this.isRotating = isRotating;

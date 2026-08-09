@@ -3,7 +3,6 @@ package com.jacstuff.spacearmada.service.ships;
 import android.graphics.RectF;
 
 import com.jacstuff.spacearmada.Direction;
-import com.jacstuff.spacearmada.actors.ships.ControllableShip;
 import com.jacstuff.spacearmada.service.ships.weapons.ProjectileManager;
 import com.jacstuff.spacearmada.service.ships.weapons.Weapon;
 import com.jacstuff.spacearmada.view.fragments.game.ItemType;

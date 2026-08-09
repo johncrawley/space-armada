@@ -6,7 +6,7 @@ import static com.jacstuff.spacearmada.service.ships.Utils.setSmallestDimension;
 import android.graphics.RectF;
 
 import com.jacstuff.spacearmada.service.sound.Sound;
-import com.jacstuff.spacearmada.view.fragments.game.DrawInfo;
+import com.jacstuff.spacearmada.view.fragments.game.DrawInfoOLD;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +54,7 @@ public class EnemyShipManager {
     }
 
 
-    public List<DrawInfo> updateAndGetChanges(){
+    public List<DrawInfoOLD> updateAndGetChanges(){
         enemyShips.forEach(EnemyShip::update);
         createEnemyShipIfListIsEmpty();
         notifyEnemiesIfBeyondBounds();

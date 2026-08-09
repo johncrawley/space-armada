@@ -4,7 +4,7 @@ import static com.jacstuff.spacearmada.service.ships.Utils.getChangedDrawInfoLis
 
 import android.graphics.RectF;
 
-import com.jacstuff.spacearmada.view.fragments.game.DrawInfo;
+import com.jacstuff.spacearmada.view.fragments.game.DrawInfoOLD;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class ProjectileManager {
     }
 
 
-    public List<DrawInfo> update(){
+    public List<DrawInfoOLD> update(){
         projectiles.forEach(Projectile::update);
         projectiles.removeIf(this::isScheduledForRemoval);
         projectiles.forEach(this::scheduleForRemovalIfOutOfBounds);

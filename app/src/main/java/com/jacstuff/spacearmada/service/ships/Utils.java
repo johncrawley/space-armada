@@ -2,7 +2,7 @@ package com.jacstuff.spacearmada.service.ships;
 
 import android.graphics.RectF;
 
-import com.jacstuff.spacearmada.view.fragments.game.DrawInfo;
+import com.jacstuff.spacearmada.view.fragments.game.DrawInfoOLD;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class Utils {
 
 
-    public static <E extends AbstractItem>  List<DrawInfo> getChangedDrawInfoList(List<E> items){
+    public static <E extends AbstractItem>  List<DrawInfoOLD> getChangedDrawInfoList(List<E> items){
         return items.stream()
                 .filter(AbstractItem::hasChanged)
                 .map(e -> {

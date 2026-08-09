@@ -1,4 +1,4 @@
-package com.jacstuff.spacearmada.view.fragments.game;
+package com.jacstuff.spacearmada.view.fragments.game.controls;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,11 +11,9 @@ import android.view.View;
 
 import com.jacstuff.spacearmada.actors.ships.ControllableShip;
 import com.jacstuff.spacearmada.controls.TouchPoint;
-import com.jacstuff.spacearmada.managers.InputControlsManager;
 import com.jacstuff.spacearmada.view.TransparentView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class DpadControlView{
 
@@ -62,7 +60,7 @@ public class DpadControlView{
 
 
     private boolean onTouchEvent(View view, MotionEvent motionEvent) {
-        List<TouchPoint> touchPoints = new ArrayList<>();
+        var touchPoints = new ArrayList<TouchPoint>();
         for (int i = 0; i < motionEvent.getPointerCount(); i++) {
             //printCoordinatesToTextView(motionEvent);
             touchPoints.add(createTouchPoint(motionEvent, i));

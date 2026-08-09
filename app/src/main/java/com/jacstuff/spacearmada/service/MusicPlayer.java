@@ -1,4 +1,4 @@
-package com.jacstuff.spacearmada.music;
+package com.jacstuff.spacearmada.service;
 
 import android.content.Context;
 import android.media.MediaPlayer;

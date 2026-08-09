@@ -4,7 +4,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.jacstuff.spacearmada.Direction;
-import com.jacstuff.spacearmada.actors.ships.ControllableShip;
+import com.jacstuff.spacearmada.service.ships.ControllableShip;
 import com.jacstuff.spacearmada.service.ships.EnemyShipManager;
 import com.jacstuff.spacearmada.service.ships.PlayerShip;
 import com.jacstuff.spacearmada.service.collisions.CollisionDetector;

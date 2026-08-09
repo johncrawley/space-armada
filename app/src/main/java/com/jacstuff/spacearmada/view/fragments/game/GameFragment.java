@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,8 @@ import com.jacstuff.spacearmada.MainViewModel;
 import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.service.Game;
 import com.jacstuff.spacearmada.view.TransparentView;
+import com.jacstuff.spacearmada.view.fragments.game.controls.DpadControlView;
+import com.jacstuff.spacearmada.view.fragments.game.controls.FireButtonControlView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,14 +54,12 @@ public class GameFragment extends Fragment implements GameView {
     private int gamePaneWidth, gamePaneHeight;
     private int controlPanelWidth, controlPanelHeight;
     private final float gamePaneDimensionRatio = 1.5f;
-    public enum Message { CONNECT_TO_GAME }
     private int dPadViewWidth, dPadViewHeight, fireButtonViewWidth, fireButtonViewHeight;
 
     private int energyLayoutWidth = 100;
     private int energyLayoutHeight = 50;
     private int topPaneHeight = 100;
     private List<View> healthBarViews;
-    private MainViewModel viewModel;
     private boolean shouldStarsBeUpdated = false;
 
 
@@ -92,7 +93,7 @@ public class GameFragment extends Fragment implements GameView {
         setupViewModelAndGame();
         assignViews(parentView);
         assignViewDimensions();
-        addStarViewsTo(60);
+        addStarViewsTo();
         setupListeners();
         setupEnergyLayout();
         return parentView;
@@ -100,7 +101,7 @@ public class GameFragment extends Fragment implements GameView {
 
 
     private void setupViewModelAndGame(){
-        viewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
+        MainViewModel viewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
         game = viewModel.game;
         game.setGameView(this);
     }
@@ -180,16 +181,21 @@ public class GameFragment extends Fragment implements GameView {
         healthBarViews = new ArrayList<>(numberOfHealthBars);
         int healthBarMargin = 2;
         int healthBarWidth = (energyLayoutWidth - (numberOfHealthBars * 2 * healthBarMargin)) / numberOfHealthBars;
-        LinearLayout.LayoutParams healthBarLayoutParams = new LinearLayout.LayoutParams(healthBarWidth, energyLayoutHeight);
-        healthBarLayoutParams.setMargins(healthBarMargin, 10, healthBarMargin, 10);
+        var layoutParams = new LinearLayout.LayoutParams(healthBarWidth, energyLayoutHeight);
+        layoutParams.setMargins(healthBarMargin, 10, healthBarMargin, 10);
         for(int i = 0; i<numberOfHealthBars; i++){
-            View healthBar = new View(getContext());
-            healthBar.setBackgroundColor(Color.GREEN);
-            healthBar.setLayoutParams(healthBarLayoutParams);
-            energyLayout.addView(healthBar);
-            healthBarViews.add(healthBar);
+            addHealthBar(layoutParams);
         }
 
+    }
+
+
+    private void addHealthBar(LinearLayout.LayoutParams healthBarLayoutParams){
+        var healthBar = new View(getContext());
+        healthBar.setBackgroundColor(Color.GREEN);
+        healthBar.setLayoutParams(healthBarLayoutParams);
+        energyLayout.addView(healthBar);
+        healthBarViews.add(healthBar);
     }
 
 
@@ -285,8 +291,8 @@ public class GameFragment extends Fragment implements GameView {
     }
 
 
-    private void addStarViewsTo(int numberOfStars){
-        for(int i = 0; i < numberOfStars; i++){
+    private void addStarViewsTo(){
+        for(int i = 0; i < 60; i++){
             addStarViewTo();
         }
     }
@@ -326,34 +332,34 @@ public class GameFragment extends Fragment implements GameView {
 
 
     @Override
-    public void updateItems(List<DrawInfo> drawInfoList) {
+    public void updateItems(List<DrawInfoOLD> drawInfoList) {
         updateViewsFrom(drawInfoList, itemsMap, this::removeEnemyShip);
     }
 
 
     @Override
-    public void updateProjectiles(List<DrawInfo> drawInfoList) {
+    public void updateProjectiles(List<DrawInfoOLD> drawInfoList) {
         updateViewsFrom(drawInfoList, projectilesMap, this::removeProjectileViewIfOutOfBounds);
     }
 
 
-    private void updateViewsFrom(List<DrawInfo> drawInfoList, Map<Long, ImageView> viewMap, BiConsumer<DrawInfo, ImageView> removalConsumer){
+    private void updateViewsFrom(List<DrawInfoOLD> drawInfoList, Map<Long, ImageView> viewMap, BiConsumer<DrawInfoOLD, ImageView> removalConsumer){
         runOnUiThread(()-> {
-            for (DrawInfo drawInfo : drawInfoList) {
+            for (DrawInfoOLD drawInfo : drawInfoList) {
                 updateViewFrom(drawInfo, viewMap, removalConsumer, getContext(), gamePane, itemTypeMap);
             }
         });
     }
 
 
-    private void removeEnemyShip(DrawInfo drawInfo, ImageView view){
+    private void removeEnemyShip(DrawInfoOLD drawInfo, ImageView view){
         long id = drawInfo.getId();
         removeIfOutOfBounds(view, drawInfo, id);
         removeIfDestroyed(drawInfo, view, id);
     }
 
 
-    private void removeIfOutOfBounds(ImageView view, DrawInfo drawInfo, long id){
+    private void removeIfOutOfBounds(ImageView view, DrawInfoOLD drawInfo, long id){
         if(drawInfo.isOutOfBounds()){
             gamePane.removeView(view);
             itemsMap.remove(id);
@@ -361,7 +367,7 @@ public class GameFragment extends Fragment implements GameView {
     }
 
 
-    private void removeIfDestroyed(DrawInfo drawInfo, ImageView view, long id){
+    private void removeIfDestroyed(DrawInfoOLD drawInfo, ImageView view, long id){
         if(!drawInfo.isDestroyed()) {
             return;
         }
@@ -369,7 +375,7 @@ public class GameFragment extends Fragment implements GameView {
         var frameAnimation = (AnimationDrawable) view.getDrawable();
         frameAnimation.setOneShot(true);
         frameAnimation.start();
-        new Handler().postDelayed(() -> removeImageview(view, id), 1100);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> removeImageview(view, id), 1100);
     }
 
 
@@ -379,7 +385,7 @@ public class GameFragment extends Fragment implements GameView {
     }
 
 
-    private void removeProjectileViewIfOutOfBounds(DrawInfo drawInfo, ImageView view){
+    private void removeProjectileViewIfOutOfBounds(DrawInfoOLD drawInfo, ImageView view){
         if(drawInfo.isScheduledForRemoval() || drawInfo.isDestroyed()){
             gamePane.removeView(view);
             itemsMap.remove(drawInfo.getId());

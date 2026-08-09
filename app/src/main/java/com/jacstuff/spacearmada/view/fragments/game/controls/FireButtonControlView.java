@@ -1,4 +1,4 @@
-package com.jacstuff.spacearmada.view.fragments.game;
+package com.jacstuff.spacearmada.view.fragments.game.controls;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

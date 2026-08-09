@@ -1,17 +1,16 @@
-package com.jacstuff.spacearmada.managers;
+package com.jacstuff.spacearmada.view.fragments.game.controls;
 
-
-import java.util.List;
 
 import com.jacstuff.spacearmada.Direction;
-import com.jacstuff.spacearmada.controls.TouchPoint;
 import com.jacstuff.spacearmada.actors.ships.ControllableShip;
 import com.jacstuff.spacearmada.commands.Command;
 import com.jacstuff.spacearmada.commands.FireCommand;
 import com.jacstuff.spacearmada.commands.MoveCommand;
 import com.jacstuff.spacearmada.controls.CircularControl;
-import com.jacstuff.spacearmada.controls.ControlButton;
 import com.jacstuff.spacearmada.controls.DPad;
+import com.jacstuff.spacearmada.controls.TouchPoint;
+
+import java.util.List;
 
 /**
  * Created by John on 29/08/2017.
@@ -31,7 +30,7 @@ public class InputControlsManager {
 
     public void setupDpad(int centreX, int centreY, int radius){
         dpad = new DPad(centreX, centreY, radius);
-        for(Direction direction : Direction.values()){
+        for(var direction : Direction.values()){
             assignDPadCommand(direction);
         }
     }

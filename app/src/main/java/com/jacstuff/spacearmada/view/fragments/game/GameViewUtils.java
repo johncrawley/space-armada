@@ -10,9 +10,9 @@ import java.util.function.BiConsumer;
 public class GameViewUtils {
 
 
-    public static void updateViewFrom(DrawInfo drawInfo,
+    public static void updateViewFrom(DrawInfoOLD drawInfo,
                                       Map<Long, ImageView> map,
-                                      BiConsumer<DrawInfo, ImageView> removalConsumer,
+                                      BiConsumer<DrawInfoOLD, ImageView> removalConsumer,
                                       Context context,
                                       ViewGroup gamePane,
                                       Map<ItemType, Integer> itemTypeMap){
@@ -35,7 +35,7 @@ public class GameViewUtils {
     }
 
 
-    static ImageView createItemAndAddToGamePane(DrawInfo drawInfo,
+    static ImageView createItemAndAddToGamePane(DrawInfoOLD drawInfo,
                                                 Context context,
                                                 ViewGroup gamePane,
                                                 Map<ItemType, Integer> itemTypeMap) {
@@ -47,14 +47,14 @@ public class GameViewUtils {
     }
 
 
-    static ImageView createImageViewWithDimensionsFrom(DrawInfo drawInfo, Context context){
+    static ImageView createImageViewWithDimensionsFrom(DrawInfoOLD drawInfo, Context context){
         ImageView imageView = new ImageView(context);
         imageView.setLayoutParams(new ViewGroup.LayoutParams(drawInfo.getWidth(), drawInfo.getHeight()));
         return imageView;
     }
 
 
-    static void setImage(ImageView imageView, DrawInfo drawInfo, Map<ItemType, Integer> itemTypeMap){
+    static void setImage(ImageView imageView, DrawInfoOLD drawInfo, Map<ItemType, Integer> itemTypeMap){
         Integer imageResource = itemTypeMap.get(drawInfo.getItemType());
         if(imageResource != null){
             imageView.setImageResource(imageResource);
@@ -62,7 +62,7 @@ public class GameViewUtils {
     }
 
 
-    static void setImageViewCoordinates(ImageView imageView, DrawInfo drawInfo){
+    static void setImageViewCoordinates(ImageView imageView, DrawInfoOLD drawInfo){
         imageView.setY(drawInfo.getY());
         imageView.setX(drawInfo.getX());
     }

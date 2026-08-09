@@ -116,7 +116,7 @@ public class CollisionDetector {
 
 
     private void handleEnemyShipEnergyDepleted(AbstractItem abstractItem){
-        EnemyShip enemyShip = (EnemyShip) abstractItem;
+        var enemyShip = (EnemyShip) abstractItem;
         if(enemyShip.isEnergyDepleted()){
             enemyShip.getDrawInfo().markAsDestroyed();
             game.addToScore(enemyShip.getPoints());
