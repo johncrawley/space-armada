@@ -8,8 +8,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.jacstuff.spacearmada.service.GameService;
-
 public class MainActivity extends AppCompatActivity {
 
 
@@ -29,10 +27,4 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
     }
-
-
-    public GameService getGameService(){
-        return null;
-    }
-
 }

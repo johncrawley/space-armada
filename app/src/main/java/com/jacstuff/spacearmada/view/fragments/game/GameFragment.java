@@ -2,6 +2,7 @@ package com.jacstuff.spacearmada.view.fragments.game;
 
 import static com.jacstuff.spacearmada.view.fragments.game.GameViewUtils.updateViewFrom;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -16,19 +17,19 @@ import androidx.lifecycle.ViewModelProvider;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.jacstuff.spacearmada.MainActivity;
 import com.jacstuff.spacearmada.MainViewModel;
 import com.jacstuff.spacearmada.R;
 import com.jacstuff.spacearmada.service.Game;
 import com.jacstuff.spacearmada.view.TransparentView;
 import com.jacstuff.spacearmada.view.fragments.game.controls.DpadControlView;
-import com.jacstuff.spacearmada.view.fragments.game.controls.FireButtonControlView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,9 +45,9 @@ public class GameFragment extends Fragment implements GameView {
     private Game game;
     private ViewGroup controlPanel, energyLayout, topPane;
     private DpadControlView dpadControlView;
-    private FireButtonControlView fireButtonControlView;
     private final List<View> starViews = new ArrayList<>();
-    private TransparentView dpadView, fireButtonView;
+    private TransparentView dpadView;
+    private int dPadViewWidth, dPadViewHeight;
     private int containerWidth, containerHeight, smallestContainerDimension;
     private Map<Long, ImageView> itemsMap;
     private Map<Long, ImageView> projectilesMap;
@@ -54,10 +55,8 @@ public class GameFragment extends Fragment implements GameView {
     private int gamePaneWidth, gamePaneHeight;
     private int controlPanelWidth, controlPanelHeight;
     private final float gamePaneDimensionRatio = 1.5f;
-    private int dPadViewWidth, dPadViewHeight, fireButtonViewWidth, fireButtonViewHeight;
 
     private int energyLayoutWidth = 100;
-    private int energyLayoutHeight = 50;
     private int topPaneHeight = 100;
     private List<View> healthBarViews;
     private boolean shouldStarsBeUpdated = false;
@@ -93,8 +92,9 @@ public class GameFragment extends Fragment implements GameView {
         setupViewModelAndGame();
         assignViews(parentView);
         assignViewDimensions();
+        initControls(parentView);
+        setupDpadView(parentView);
         addStarViewsTo();
-        setupListeners();
         setupEnergyLayout();
         return parentView;
     }
@@ -109,7 +109,7 @@ public class GameFragment extends Fragment implements GameView {
 
     @Override
     public void onViewCreated(@NonNull View parentView, Bundle savedInstanceState) {
-        initControls();
+        initControls(parentView);
     }
 
 
@@ -155,32 +155,23 @@ public class GameFragment extends Fragment implements GameView {
     }
 
 
-    private void setupListeners(){
-       // FragmentUtils.setListener(this, Message.CONNECT_TO_GAME, this::connectViewToGame);
-    }
-
 
     private void assignViews(View parentView){
         controlPanel = parentView.findViewById(R.id.controlPanel);
         energyLayout = parentView.findViewById(R.id.energyLayout);
         gamePane = parentView.findViewById(R.id.gamePane);
         shipView = parentView.findViewById(R.id.shipView);
-        dpadView = parentView.findViewById(R.id.dpadView);
-        fireButtonView = parentView.findViewById(R.id.fireButtonView);
         topPane = parentView.findViewById(R.id.topPane);
     }
 
 
     private void setupEnergyLayout(){
-        Game game = getGame();
-        if(game == null){
-            return;
-        }
         energyLayout.removeAllViews();
         int numberOfHealthBars = getNumberOfHealthBarsFor(game.getPlayerInitialHealth());
         healthBarViews = new ArrayList<>(numberOfHealthBars);
         int healthBarMargin = 2;
         int healthBarWidth = (energyLayoutWidth - (numberOfHealthBars * 2 * healthBarMargin)) / numberOfHealthBars;
+        int energyLayoutHeight = 50;
         var layoutParams = new LinearLayout.LayoutParams(healthBarWidth, energyLayoutHeight);
         layoutParams.setMargins(healthBarMargin, 10, healthBarMargin, 10);
         for(int i = 0; i<numberOfHealthBars; i++){
@@ -233,12 +224,19 @@ public class GameFragment extends Fragment implements GameView {
         controlPanelWidth = containerWidth;
         controlPanelHeight = containerHeight - (gamePaneHeight + topPaneHeight);
         dPadViewHeight = controlPanelHeight;
-        fireButtonViewHeight = controlPanelHeight;
-
         dPadViewWidth = (controlPanelWidth / 3) * 2;
-        fireButtonViewWidth = controlPanelWidth - dPadViewWidth;
 
         energyLayoutWidth = containerWidth / 2;
+    }
+
+
+    private void setupDpadView(View parent){
+        dpadView = parent.findViewById(R.id.dpadView);
+        dpadView.setLayoutParams(new LinearLayout.LayoutParams(dPadViewWidth, dPadViewHeight));
+        if(dpadControlView == null) {
+            dpadControlView = new DpadControlView(getContext(), dpadView, game);
+        }
+        dpadControlView.initControls(dPadViewWidth, dPadViewHeight);
     }
 
 
@@ -255,8 +253,6 @@ public class GameFragment extends Fragment implements GameView {
     private void assignLayoutParamsToViews(){
         gamePane.setLayoutParams(new LinearLayout.LayoutParams(Math.max(300, gamePaneWidth), Math.max(300, gamePaneHeight)));
         controlPanel.setLayoutParams(new LinearLayout.LayoutParams(controlPanelWidth, controlPanelHeight));
-        dpadView.setLayoutParams(new LinearLayout.LayoutParams(dPadViewWidth, dPadViewHeight));
-        fireButtonView.setLayoutParams(new LinearLayout.LayoutParams(fireButtonViewWidth, fireButtonViewHeight));
         topPane.setLayoutParams(new LinearLayout.LayoutParams(gamePaneWidth, topPaneHeight));
         energyLayout.setLayoutParams(new LinearLayout.LayoutParams(energyLayoutWidth, topPaneHeight));
     }
@@ -279,15 +275,19 @@ public class GameFragment extends Fragment implements GameView {
     }
 
 
-    private void initControls(){
-        if(dpadControlView == null) {
-            dpadControlView = new DpadControlView(getContext(), dpadView);
-        }
-        dpadControlView.initControls(game, dPadViewWidth, dPadViewHeight);
-        if(fireButtonControlView == null){
-            fireButtonControlView = new FireButtonControlView(getContext(), fireButtonView);
-        }
-        fireButtonControlView.init(game, fireButtonViewWidth, fireButtonViewHeight);
+    @SuppressLint("ClickableViewAccessibility")
+    private void initControls(View parent){
+
+        Button fireButton = parent.findViewById(R.id.fireButtonView);
+        fireButton.setOnTouchListener((view, motionEvent) -> {
+            var action = motionEvent.getAction();
+            if (action == MotionEvent.ACTION_DOWN) {
+                game.fire();
+            } else if (action == MotionEvent.ACTION_UP) {
+                game.releaseFire();
+            }
+            return false;
+        });
     }
 
 
@@ -395,23 +395,6 @@ public class GameFragment extends Fragment implements GameView {
 
     private void log(String msg){
         System.out.println("^^^ GameFragment: " + msg);
-    }
-
-
-    private Game getGame(){
-        if(game != null){
-            return game;
-        }
-        MainActivity mainActivity = (MainActivity) getActivity();
-        if(mainActivity == null){
-            return null;
-        }
-        var gameService = mainActivity.getGameService();
-        if(gameService == null){
-            return null;
-        }
-        game = gameService.getGame();
-        return gameService.getGame();
     }
 
 

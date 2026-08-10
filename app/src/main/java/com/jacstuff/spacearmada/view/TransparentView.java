@@ -151,7 +151,7 @@ public class TransparentView extends View {
         canvasBitmap.translate(canvasTranslateX, canvasTranslateY);
         rotateCanvasBitmap();
         drawItems();
-        drawDrawableItems();
+       // drawDrawableItems();
         canvasBitmap.restore();
         return bitmap;
     }
@@ -175,7 +175,7 @@ public class TransparentView extends View {
         this.drawableItems.add(drawableItem);
     }
 
-
+/*
     public void drawDrawableItems(){
         List<DrawableItem> copiedList = new ArrayList<>(drawableItems);
         drawItemsInList(copiedList);
@@ -204,6 +204,6 @@ public class TransparentView extends View {
         }
         canvas.drawBitmap(bitmap , drawInfo.getX(), drawInfo.getY(), paint);
     }
-
+*/
 
 }

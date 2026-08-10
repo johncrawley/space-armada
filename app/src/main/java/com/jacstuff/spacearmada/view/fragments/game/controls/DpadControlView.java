@@ -9,34 +9,56 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.jacstuff.spacearmada.actors.ships.ControllableShip;
-import com.jacstuff.spacearmada.controls.TouchPoint;
+import com.jacstuff.spacearmada.Direction;
+import com.jacstuff.spacearmada.service.Game;
+import com.jacstuff.spacearmada.service.ships.ControllableShip;
 import com.jacstuff.spacearmada.view.TransparentView;
+import com.jacstuff.spacearmada.view.custom.DPad;
+import com.jacstuff.spacearmada.view.custom.MoveCommand;
+import com.jacstuff.spacearmada.view.custom.TouchPoint;
 
 import java.util.ArrayList;
 
 public class DpadControlView{
 
     private final TransparentView dpadView;
-    private InputControlsManager inputControlsManager;
     private final Context context;
+    private DPad dpad;
+    private Game game;
 
-    public DpadControlView(Context context, TransparentView dpadView){
+    public DpadControlView(Context context, TransparentView dpadView, Game game){
         this.context = context;
         this.dpadView = dpadView;
+        this.game = game;
     }
 
 
     @SuppressLint("ClickableViewAccessibility")
-    public void initControls(ControllableShip controllableShip, int width, int height){
+    public void initControls(int width, int height){
         int radius = getPixelsFrom(50);
         int centreX = width / 2;
         int centreY = height / 2;
 
-        inputControlsManager = new InputControlsManager(width, height, controllableShip);
-        inputControlsManager.setupDpad(centreX - radius, centreY - radius, radius);
+       // setupDpad(ship, centreX - radius, centreY - radius, radius);
+
+        dpad = new DPad(centreX - radius, centreY - radius, radius);
         dpadView.setOnTouchListener(this::onTouchEvent);
         drawCircleOnDpad(centreX, centreY, radius);
+    }
+
+
+    public void setupDpad(ControllableShip ship, int centreX, int centreY, int radius){
+        dpad = new DPad(centreX, centreY, radius);
+        for(var direction : Direction.values()){
+            assignDPadCommand(ship, direction);
+        }
+    }
+
+
+    private void assignDPadCommand(ControllableShip ship, Direction d){
+        var command = new MoveCommand(ship);
+        command.assignDirection(d);
+        dpad.assignCommand(d, command);
     }
 
 
@@ -61,11 +83,16 @@ public class DpadControlView{
 
     private boolean onTouchEvent(View view, MotionEvent motionEvent) {
         var touchPoints = new ArrayList<TouchPoint>();
+        if(motionEvent.getAction() == MotionEvent.ACTION_UP){
+            game.move(Direction.NONE);
+        }
         for (int i = 0; i < motionEvent.getPointerCount(); i++) {
-            //printCoordinatesToTextView(motionEvent);
             touchPoints.add(createTouchPoint(motionEvent, i));
         }
-        inputControlsManager.process(touchPoints);
+        // dpad.process(touchPoints);
+        var direction = dpad.getDirectionFor(touchPoints.get(0));
+        game.move(direction);
+
         return true;
     }
 

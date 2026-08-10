@@ -149,7 +149,6 @@ public class PlayerShip extends AbstractItem implements ControllableShip {
 
 
     private enum Movement {
-
         UP(-1), DOWN(1), LEFT(-1), RIGHT(1);
         final int value;
 
@@ -165,6 +164,7 @@ public class PlayerShip extends AbstractItem implements ControllableShip {
             return value > 0;
         }
     }
+
 
     @Override
     public void update() {

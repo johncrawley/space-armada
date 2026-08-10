@@ -4,7 +4,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.jacstuff.spacearmada.Direction;
-import com.jacstuff.spacearmada.service.ships.ControllableShip;
 import com.jacstuff.spacearmada.service.ships.EnemyShipManager;
 import com.jacstuff.spacearmada.service.ships.PlayerShip;
 import com.jacstuff.spacearmada.service.collisions.CollisionDetector;
@@ -20,7 +19,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class Game implements ControllableShip {
+public class Game{
 
         private final PlayerShip playerShip;
         private GameView gameView;
@@ -175,19 +174,14 @@ public class Game implements ControllableShip {
         }
 
 
-        @Override
         public void fire() {
                 playerShip.fire();
         }
 
-
-        @Override
         public void setDirection(Direction direction) {
                 playerShip.setDirection(direction);
         }
 
-
-        @Override
         public void releaseFire() {
             playerShip.releaseFire();
             int energy = playerShip.getEnergy().get() + 10;
@@ -195,14 +189,16 @@ public class Game implements ControllableShip {
             updatePlayerHealthOnView();
         }
 
-
-        @Override
         public void stopMoving() {
-                playerShip.stopMoving();
+            playerShip.stopMoving();
         }
 
 
-        @Override
+        public void move(Direction direction) {
+            playerShip.setDirection(direction);
+        }
+
+
         public void update() {
 
         }
