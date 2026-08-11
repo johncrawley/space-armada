@@ -9,13 +9,9 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.jacstuff.spacearmada.Direction;
-import com.jacstuff.spacearmada.service.Game;
-import com.jacstuff.spacearmada.service.ships.ControllableShip;
+import com.jacstuff.spacearmada.model.ships.player.Direction;
+import com.jacstuff.spacearmada.model.Game;
 import com.jacstuff.spacearmada.view.TransparentView;
-import com.jacstuff.spacearmada.view.custom.DPad;
-import com.jacstuff.spacearmada.view.custom.MoveCommand;
-import com.jacstuff.spacearmada.view.custom.TouchPoint;
 
 import java.util.ArrayList;
 
@@ -38,27 +34,9 @@ public class DpadControlView{
         int radius = getPixelsFrom(50);
         int centreX = width / 2;
         int centreY = height / 2;
-
-       // setupDpad(ship, centreX - radius, centreY - radius, radius);
-
         dpad = new DPad(centreX - radius, centreY - radius, radius);
         dpadView.setOnTouchListener(this::onTouchEvent);
         drawCircleOnDpad(centreX, centreY, radius);
-    }
-
-
-    public void setupDpad(ControllableShip ship, int centreX, int centreY, int radius){
-        dpad = new DPad(centreX, centreY, radius);
-        for(var direction : Direction.values()){
-            assignDPadCommand(ship, direction);
-        }
-    }
-
-
-    private void assignDPadCommand(ControllableShip ship, Direction d){
-        var command = new MoveCommand(ship);
-        command.assignDirection(d);
-        dpad.assignCommand(d, command);
     }
 
 
@@ -85,12 +63,13 @@ public class DpadControlView{
         var touchPoints = new ArrayList<TouchPoint>();
         if(motionEvent.getAction() == MotionEvent.ACTION_UP){
             game.move(Direction.NONE);
+            return true;
         }
         for (int i = 0; i < motionEvent.getPointerCount(); i++) {
             touchPoints.add(createTouchPoint(motionEvent, i));
         }
-        // dpad.process(touchPoints);
-        var direction = dpad.getDirectionFor(touchPoints.get(0));
+        int lastIndex = motionEvent.getPointerCount() -1;
+        var direction = dpad.getDirectionFor(touchPoints.get(lastIndex));
         game.move(direction);
 
         return true;

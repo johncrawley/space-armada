@@ -5,9 +5,9 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
-import com.jacstuff.spacearmada.service.Game;
-import com.jacstuff.spacearmada.service.sound.MusicPlayer;
-import com.jacstuff.spacearmada.service.sound.SoundPlayer;
+import com.jacstuff.spacearmada.model.Game;
+import com.jacstuff.spacearmada.model.sound.MusicPlayer;
+import com.jacstuff.spacearmada.model.sound.SoundPlayer;
 
 public class MainViewModel extends AndroidViewModel {
 

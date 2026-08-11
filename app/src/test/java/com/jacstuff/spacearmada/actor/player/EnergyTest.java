@@ -1,13 +1,13 @@
 package com.jacstuff.spacearmada.actor.player;
 
-import com.jacstuff.spacearmada.actors.ships.player.Energy;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
+
+import com.jacstuff.spacearmada.model.ships.Energy;
 
 public class EnergyTest {
 

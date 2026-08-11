@@ -8,8 +8,8 @@ public interface GameView {
     void updateShipPosition(float x, float y);
     void setShipSize(int width, int height);
     void updateStars(List<Point> starCoordinates);
-    void updateItems(List<DrawInfoOLD> drawInfoList);
-    void updateProjectiles(List<DrawInfoOLD> drawInfoList);
+    void updateItems(List<DrawInfo> drawInfoList);
+    void updateProjectiles(List<DrawInfo> drawInfoList);
     void onGameOver();
     void updateShipHealth(int remainingHealth);
 }

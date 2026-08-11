@@ -27,7 +27,7 @@ import android.widget.LinearLayout;
 
 import com.jacstuff.spacearmada.MainViewModel;
 import com.jacstuff.spacearmada.R;
-import com.jacstuff.spacearmada.service.Game;
+import com.jacstuff.spacearmada.model.Game;
 import com.jacstuff.spacearmada.view.TransparentView;
 import com.jacstuff.spacearmada.view.fragments.game.controls.DpadControlView;
 
@@ -332,34 +332,34 @@ public class GameFragment extends Fragment implements GameView {
 
 
     @Override
-    public void updateItems(List<DrawInfoOLD> drawInfoList) {
+    public void updateItems(List<DrawInfo> drawInfoList) {
         updateViewsFrom(drawInfoList, itemsMap, this::removeEnemyShip);
     }
 
 
     @Override
-    public void updateProjectiles(List<DrawInfoOLD> drawInfoList) {
+    public void updateProjectiles(List<DrawInfo> drawInfoList) {
         updateViewsFrom(drawInfoList, projectilesMap, this::removeProjectileViewIfOutOfBounds);
     }
 
 
-    private void updateViewsFrom(List<DrawInfoOLD> drawInfoList, Map<Long, ImageView> viewMap, BiConsumer<DrawInfoOLD, ImageView> removalConsumer){
+    private void updateViewsFrom(List<DrawInfo> drawInfoList, Map<Long, ImageView> viewMap, BiConsumer<DrawInfo, ImageView> removalConsumer){
         runOnUiThread(()-> {
-            for (DrawInfoOLD drawInfo : drawInfoList) {
+            for (DrawInfo drawInfo : drawInfoList) {
                 updateViewFrom(drawInfo, viewMap, removalConsumer, getContext(), gamePane, itemTypeMap);
             }
         });
     }
 
 
-    private void removeEnemyShip(DrawInfoOLD drawInfo, ImageView view){
+    private void removeEnemyShip(DrawInfo drawInfo, ImageView view){
         long id = drawInfo.getId();
         removeIfOutOfBounds(view, drawInfo, id);
         removeIfDestroyed(drawInfo, view, id);
     }
 
 
-    private void removeIfOutOfBounds(ImageView view, DrawInfoOLD drawInfo, long id){
+    private void removeIfOutOfBounds(ImageView view, DrawInfo drawInfo, long id){
         if(drawInfo.isOutOfBounds()){
             gamePane.removeView(view);
             itemsMap.remove(id);
@@ -367,7 +367,7 @@ public class GameFragment extends Fragment implements GameView {
     }
 
 
-    private void removeIfDestroyed(DrawInfoOLD drawInfo, ImageView view, long id){
+    private void removeIfDestroyed(DrawInfo drawInfo, ImageView view, long id){
         if(!drawInfo.isDestroyed()) {
             return;
         }
@@ -385,7 +385,7 @@ public class GameFragment extends Fragment implements GameView {
     }
 
 
-    private void removeProjectileViewIfOutOfBounds(DrawInfoOLD drawInfo, ImageView view){
+    private void removeProjectileViewIfOutOfBounds(DrawInfo drawInfo, ImageView view){
         if(drawInfo.isScheduledForRemoval() || drawInfo.isDestroyed()){
             gamePane.removeView(view);
             itemsMap.remove(drawInfo.getId());

@@ -1,0 +1,207 @@
+package com.jacstuff.spacearmada.model;
+
+import android.graphics.Rect;
+import android.graphics.RectF;
+
+import com.jacstuff.spacearmada.model.ships.player.Direction;
+import com.jacstuff.spacearmada.model.ships.enemy.EnemyShipManager;
+import com.jacstuff.spacearmada.model.ships.player.PlayerShip;
+import com.jacstuff.spacearmada.model.collisions.CollisionDetector;
+import com.jacstuff.spacearmada.model.ships.weapons.ProjectileManager;
+import com.jacstuff.spacearmada.model.sound.MusicPlayer;
+import com.jacstuff.spacearmada.model.sound.SoundPlayer;
+import com.jacstuff.spacearmada.model.star.StarManager;
+import com.jacstuff.spacearmada.view.fragments.game.GameView;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+public class Game{
+
+        private final PlayerShip playerShip;
+        private GameView gameView;
+        private ScheduledFuture<?> gameUpdateFuture;
+        private final ScheduledExecutorService scheduledExecutorService;
+        private final AtomicBoolean isRunning = new AtomicBoolean(false);
+
+        private RectF screenBounds;
+        private final StarManager starManager;
+        private final EnemyShipManager enemyShipManager;
+        private final ProjectileManager projectileManager;
+        private final CollisionDetector collisionDetector;
+        private int score;
+        private SoundPlayer soundPlayer;
+        private MusicPlayer musicPlayer;
+        private final int playerInitialHealth = 700;
+
+
+        public Game(){
+            projectileManager = new ProjectileManager();
+            playerShip = new PlayerShip(50,50, playerInitialHealth);
+            playerShip.initWeapons(projectileManager);
+            starManager = new StarManager();
+            scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+            enemyShipManager = new EnemyShipManager();
+            collisionDetector = new CollisionDetector(this, playerShip, enemyShipManager, projectileManager);
+        }
+
+
+        public int getPlayerInitialHealth(){
+                return playerInitialHealth;
+        }
+
+
+        public void init(MusicPlayer musicPlayer, SoundPlayer soundPlayer){
+            this.musicPlayer = musicPlayer;
+            this.soundPlayer = soundPlayer;
+            collisionDetector.setSoundPlayer(soundPlayer);
+        }
+
+
+        public void updatePlayerHealthOnView(){
+            gameView.updateShipHealth(playerShip.getEnergy().get());
+        }
+
+
+        public void setBounds(Rect gamePaneRect, int smallestDimension){
+            initBounds(gamePaneRect);
+            enemyShipManager.setScreenBounds(screenBounds);
+            playerShip.setScreenBoundsAndSize(screenBounds, smallestDimension);
+            gameView.setShipSize((int)playerShip.getWidth(), (int)playerShip.getHeight());
+            starManager.setBoundsAndGenerateStars(screenBounds);
+            projectileManager.setBounds(screenBounds);
+        }
+
+
+        private void initBounds(Rect gamePaneRect){
+            screenBounds = new RectF();
+            screenBounds.left = gamePaneRect.left;
+            screenBounds.top = gamePaneRect.top;
+            screenBounds.right = gamePaneRect.right;
+            screenBounds.bottom = gamePaneRect.bottom;
+        }
+
+
+        public void start(){
+            if(isRunning.get()){
+                    return;
+            }
+            isRunning.set(true);
+            gameUpdateFuture = scheduledExecutorService.scheduleWithFixedDelay(this::updateItems, 0,16, TimeUnit.MILLISECONDS);
+        }
+
+
+        private void updateItems(){
+            if(gameView == null){
+                    return;
+            }
+            updateEnemyShips();
+            updateStars();
+            updateShip();
+            updateProjectiles();
+            enemyShipManager.removeAnyDestroyedOrOutOfBounds();
+            projectileManager.removeProjectilesIfDestroyed();
+            collisionDetector.detect();
+        }
+
+
+        public int getScore(){
+                return score;
+        }
+
+
+        private void setGameOver(){
+            gameView.onGameOver();
+            musicPlayer.playGameOverMusic();
+        }
+
+
+        private void updateStars(){
+           gameView.updateStars(starManager.updateAndGetStars());
+        }
+
+
+        private void updateEnemyShips(){
+          gameView.updateItems(enemyShipManager.updateAndGetChanges());
+        }
+
+
+        private void updateProjectiles(){
+                gameView.updateProjectiles(projectileManager.update());
+        }
+
+
+        private void updateShip(){
+            playerShip.update();
+            if(playerShip.hasPositionChanged()){
+                   gameView.updateShipPosition(playerShip.getX(), playerShip.getY());
+            }
+        }
+
+
+        public void quit(){
+            isRunning.set(false);
+            if(gameUpdateFuture != null && !gameUpdateFuture.isCancelled()){
+                    gameUpdateFuture.cancel(false);
+            }
+        }
+
+
+        public void onUnbind(){
+            if(gameUpdateFuture != null && !gameUpdateFuture.isCancelled()){
+                    gameUpdateFuture.cancel(false);
+            }
+        }
+
+
+        public void addToScore(int value){
+                this.score += value;
+        }
+
+
+        public void setGameView(GameView gameView){
+                this.gameView = gameView;
+                start();
+        }
+
+
+        private void log(String msg){
+                System.out.println("^^^ Game: " + msg);
+        }
+
+
+        public void fire() {
+                playerShip.fire();
+        }
+
+
+        public void setDirection(Direction direction) {
+                playerShip.setDirection(direction);
+        }
+
+
+        public void releaseFire() {
+            playerShip.releaseFire();
+            int energy = playerShip.getEnergy().get() + 10;
+            playerShip.getEnergy().set(energy);
+            updatePlayerHealthOnView();
+        }
+
+
+        public void stopMoving() {
+            playerShip.stopMoving();
+        }
+
+
+        public void move(Direction direction) {
+            playerShip.setDirection(direction);
+        }
+
+
+        public void update() {
+
+        }
+}

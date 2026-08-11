@@ -1,6 +1,5 @@
 package com.jacstuff.spacearmada.view;
 
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -11,10 +10,6 @@ import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.jacstuff.spacearmada.DrawableItem;
-import com.jacstuff.spacearmada.view.custom.BitmapManager;
-import com.jacstuff.spacearmada.view.fragments.game.DrawInfoOLD;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,15 +17,9 @@ import androidx.annotation.Nullable;
 
 public class TransparentView extends View {
 
-    private int canvasTranslateX,canvasTranslateY;
-    private int angle = 0;
-    private List<SimpleDrawItem> items;
-    private List<TextItem> textItems;
     private Paint paint;
     private Canvas canvasBitmap;
     private boolean isViewDrawn = false;
-    private BitmapManager bitmapManager;
-    private List<DrawableItem> drawableItems;
 
 
     private List<SimpleDrawableItem> simpleDrawableItems;
@@ -45,12 +34,6 @@ public class TransparentView extends View {
         super(context, attrs);
         initPaint();
         simpleDrawableItems = new ArrayList<>();
-        drawableItems = new ArrayList<>();
-    }
-
-
-    public void setBitmapManager(BitmapManager bitmapManager){
-        this.bitmapManager = bitmapManager;
     }
 
 
@@ -61,52 +44,8 @@ public class TransparentView extends View {
     }
 
 
-    public void clearDrawableItems(){
-        this.simpleDrawableItems.clear();
-    }
-
-
-    public void setTextSize(float size){
-        paint.setTextSize(size);
-
-    }
-
-    public void setTextColor(int color){
-        paint.setColor(color);
-    }
-
-
-    public void setTranslateY(int y){
-        this.canvasTranslateY = y;
-    }
-
-    public void setTranslateX(int x){
-        this.canvasTranslateX = x;
-    }
-
-
-    public void updateAndDraw(){
-        //angle = (angle + 15) % 360;
-    }
-
-
     public void addDrawableItem(SimpleDrawableItem drawableItem){
         this.simpleDrawableItems.add(drawableItem);
-    }
-
-
-    public void setDrawItems(List<SimpleDrawItem> items){
-        this.items = items;
-    }
-
-
-    public void setTextItems(List<TextItem> items){
-        this.textItems = items;
-    }
-
-
-    public void translateXToMiddle(){
-        this.canvasTranslateX = getWidth() / 2;
     }
 
 
@@ -118,8 +57,7 @@ public class TransparentView extends View {
     }
 
 
-    //@Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(@androidx.annotation.NonNull Canvas canvas) {
         super.onDraw(canvas);
         if (!isViewDrawn) {
             defaultAttributes();
@@ -148,19 +86,9 @@ public class TransparentView extends View {
         bitmap.eraseColor(Color.TRANSPARENT);
         canvasBitmap = new Canvas(bitmap);
         canvasBitmap.save();
-        canvasBitmap.translate(canvasTranslateX, canvasTranslateY);
-        rotateCanvasBitmap();
         drawItems();
-       // drawDrawableItems();
         canvasBitmap.restore();
         return bitmap;
-    }
-
-
-    private void rotateCanvasBitmap(){
-        if(angle != 0){
-            canvasBitmap.rotate(angle);
-        }
     }
 
 
@@ -169,41 +97,5 @@ public class TransparentView extends View {
             item.draw(canvasBitmap, paint);
         }
     }
-
-
-    public void addDrawableItem(DrawableItem drawableItem){
-        this.drawableItems.add(drawableItem);
-    }
-
-/*
-    public void drawDrawableItems(){
-        List<DrawableItem> copiedList = new ArrayList<>(drawableItems);
-        drawItemsInList(copiedList);
-    }
-
-
-    public void drawItemsInList(List<? extends DrawableItem> drawableItems){
-        DrawInfoOLD drawInfo;
-        for(DrawableItem item : drawableItems) {
-            if (item == null) {
-                continue;
-            }
-            drawInfo = item.getDrawInfo();
-            if (drawInfo == null) {
-                continue;
-            }
-            drawBitmap(canvasBitmap, paint, drawInfo);
-        }
-    }
-
-
-    private void drawBitmap(Canvas canvas, Paint paint, DrawInfoOLD drawInfo){
-        Bitmap bitmap = bitmapManager.getBitmap(drawInfo);
-        if(bitmap == null || canvas == null || paint == null){
-            return;
-        }
-        canvas.drawBitmap(bitmap , drawInfo.getX(), drawInfo.getY(), paint);
-    }
-*/
 
 }
